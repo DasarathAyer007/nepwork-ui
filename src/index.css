@@ -1,1 +1,207 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  /* =========================
+     SURFACE SYSTEM
+  ========================== */
+  --color-surface: #f7fafc;
+  --color-surface-dim: #d2dcdf;
+  --color-surface-bright: #f2fbff;
+
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #ecf5f9;
+  --color-surface-container: #e8eff2;
+  --color-surface-container-high: #e0eaed;
+  --color-surface-container-highest: #dbe4e8;
+
+  --color-surface-variant: #dbe4e8;
+
+  --color-on-surface: #141d20;
+  --color-on-surface-variant: #40484b;
+
+  --color-outline: #737c80;
+  --color-outline-variant: #bfc8cc;
+
+  --color-surface-tint: #236679;
+
+  /* =========================
+     PRIMARY
+  ========================== */
+  --color-primary: #004f60;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #a8e6fd;
+  --color-on-primary-container: #a5e3f9;
+
+  --color-primary-fixed: #b4ebff;
+  --color-primary-fixed-dim: #92d0e5;
+  --color-on-primary-fixed: #001f27;
+  --color-on-primary-fixed-variant: #004e5f;
+
+  --color-inverse-primary: #92d0e5;
+
+  /* =========================
+     SECONDARY
+  ========================== */
+  --color-secondary: #4b6269;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #cee7ef;
+  --color-on-secondary-container: #51686f;
+
+  --color-secondary-fixed: #cee7ef;
+  --color-secondary-fixed-dim: #b2cbd3;
+  --color-on-secondary-fixed: #061f25;
+  --color-on-secondary-fixed-variant: #334a51;
+
+  /* =========================
+     TERTIARY
+  ========================== */
+  --color-tertiary: #33486a;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #4b6083;
+  --color-on-tertiary-container: #c8dbff;
+
+  --color-tertiary-fixed: #d5e3ff;
+  --color-tertiary-fixed-dim: #b2c7ef;
+  --color-on-tertiary-fixed: #021b3b;
+  --color-on-tertiary-fixed-variant: #324769;
+
+  /* =========================
+     ERROR
+  ========================== */
+  --color-error: #a83836;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* =========================
+     BACKGROUND / BASE
+  ========================== */
+  --color-background: #f2fbff;
+  --color-on-background: #141d20;
+
+  /* =========================
+     SEMANTIC ALIASES (IMPORTANT)
+     → use in real UI
+  ========================== */
+  --color-bg: var(--color-surface);
+  --color-card: var(--color-surface-container-low);
+  --color-elevated: var(--color-surface-container-high);
+
+  --color-text: var(--color-on-surface);
+  --color-muted: var(--color-on-surface-variant);
+  --color-border: var(--color-outline-variant);
+
+  /* =========================
+     TYPOGRAPHY
+  ========================== */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --text-headline-lg: 32px;
+  --leading-headline-lg: 40px;
+  --tracking-headline-lg: -0.02em;
+
+  --text-headline-lg-mobile: 28px;
+  --leading-headline-lg-mobile: 36px;
+  --tracking-headline-lg-mobile: -0.01em;
+
+  --text-headline-md: 24px;
+  --leading-headline-md: 32px;
+
+  --text-headline-sm: 20px;
+  --leading-headline-sm: 28px;
+
+  --text-body-lg: 16px;
+  --leading-body-lg: 24px;
+
+  --text-body-md: 14px;
+  --leading-body-md: 20px;
+
+  --text-label-md: 12px;
+  --leading-label-md: 16px;
+  --tracking-label-md: 0.05em;
+
+  /* =========================
+     SPACING (8px GRID)
+  ========================== */
+  --spacing-base: 8px;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --spacing-gutter: 16px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 24px;
+
+  /* =========================
+     RADIUS
+  ========================== */
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* =========================
+     SHADOWS (ELEVATION)
+  ========================== */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 30px rgba(36, 103, 122, 0.12);
+
+  --shadow-ambient:
+    0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.02);
+
+  /* --shadow-form: 0 10px 25px -5px rgba(36, 103, 122, 0.05); */
+
+  --shadow-form: 0 12px 30px -6px rgba(36, 103, 122, 0.15);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+body {
+  background-color: #f7fafc;
+  color: #2b3437;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+.role-card input:checked + div {
+  border-color: #24677a;
+  background-color: #f1faff;
+  box-shadow: 0 4px 12px rgba(36, 103, 122, 0.08);
+  transform: translateY(-2px);
+}
+.glass-effect {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-label {
+  @apply block text-xs font-bold uppercase tracking-wider text-secondary;
+}
+
+.form-input {
+  @apply w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-base focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-outline-variant;
+}

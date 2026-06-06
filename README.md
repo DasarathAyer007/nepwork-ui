@@ -6,17 +6,17 @@
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🔐 Authentication | Login, signup, and secure session management |
-| 💼 Job & Service Browsing | Browse listings with filters and categories |
-| 🗺️ Map-Based Discovery | Find nearby jobs and workers on an interactive map |
-| 👤 Freelancer Profiles | Rich profiles for freelancers and service providers |
-| 💬 Real-Time Chat | In-app messaging between clients and workers |
-| 📋 Job Applications | Apply to jobs and manage application status |
-| 💳 Payment Support | Payment integration via backend API |
-| 🤖 Recommendations | AI-powered job suggestions based on user profile |
-| 📱 Responsive Design | Optimized for desktop, tablet, and mobile |
+| Feature                   | Description                                         |
+| ------------------------- | --------------------------------------------------- |
+| 🔐 Authentication         | Login, signup, and secure session management        |
+| 💼 Job & Service Browsing | Browse listings with filters and categories         |
+| 🗺️ Map-Based Discovery    | Find nearby jobs and workers on an interactive map  |
+| 👤 Freelancer Profiles    | Rich profiles for freelancers and service providers |
+| 💬 Real-Time Chat         | In-app messaging between clients and workers        |
+| 📋 Job Applications       | Apply to jobs and manage application status         |
+| 💳 Payment Support        | Payment integration via backend API                 |
+| 🤖 Recommendations        | AI-powered job suggestions based on user profile    |
+| 📱 Responsive Design      | Optimized for desktop, tablet, and mobile           |
 
 ---
 
@@ -72,8 +72,6 @@ npm run preview
 
 ---
 
-
-
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
@@ -103,15 +101,15 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactDom from 'eslint-plugin-react-dom';
+import reactX from 'eslint-plugin-react-x';
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -132,5 +130,5 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
