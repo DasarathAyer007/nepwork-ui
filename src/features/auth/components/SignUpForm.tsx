@@ -10,7 +10,7 @@ import {
   UserRound,
   UserRoundPlus,
 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 import {
@@ -76,9 +76,9 @@ function SignUpForm() {
   const [showPrivacy, setShowPrivacy] = useState<boolean>(false);
 
   const {
+    control,
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
@@ -94,7 +94,12 @@ function SignUpForm() {
   const onSubmit = async (data: SignUpSchemaType) => {
     console.log('Sign up data:', data);
   };
-  const password = watch('password') || '';
+
+  const password = useWatch({
+    control,
+    name: 'password',
+    defaultValue: '',
+  });
 
   const score = getPasswordStrength(password);
   const strength = getStrengthLabel(score);

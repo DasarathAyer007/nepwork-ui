@@ -198,6 +198,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .form-label {
   @apply block text-xs font-bold uppercase tracking-wider text-secondary;
 }

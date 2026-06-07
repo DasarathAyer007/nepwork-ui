@@ -11,16 +11,18 @@ function SignUp() {
 
           <section className="flex-1 bg-background flex flex-col justify-center items-center px-margin py-xl relative gap-8">
             <div className="w-full max-w-105 bg-surface p-lg md:p-0 rounded-lg md:bg-transparent shadow-form md:shadow-none">
-              <div className="md:hidden flex flex-col items-center gap-sm mb-xl">
+              <Link
+                to="/"
+                className="md:hidden flex flex-col items-center gap-sm mb-xl">
                 <img
                   alt="NepWork Logo"
                   className="h-12 w-12"
                   src="favicon.svg"
                 />
-                <span className="font-headline text-headline-md text-primary">
+                <span className="font-bold text-headline-md text-primary">
                   NepWork
                 </span>
-              </div>
+              </Link>
               <div className="space-y-sm text-center md:text-left mb-xl">
                 <h1 className=" font-extrabold mb-xs tracking-tight text-headline-lg text-on-surface">
                   Join NepWork
@@ -32,11 +34,11 @@ function SignUp() {
               <SocialMediaLogin />
 
               <div className="relative flex items-center py-base">
-                <div className="flex-grow border-t border-outline-variant"></div>
-                <span className="flex-shrink mx-base text-outline text-label-md font-medium">
+                <div className="grow border-t border-outline-variant"></div>
+                <span className="shrink mx-base text-outline text-label-md font-medium">
                   OR
                 </span>
-                <div className="flex-grow border-t border-outline-variant"></div>
+                <div className="grow border-t border-outline-variant"></div>
               </div>
 
               <SignUpForm />
