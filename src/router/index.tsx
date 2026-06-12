@@ -18,5 +18,5 @@ function route() {
     </Routes>
   );
 }
-
+  
 export default route;
