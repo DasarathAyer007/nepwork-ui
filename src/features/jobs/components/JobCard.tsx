@@ -89,6 +89,13 @@ function JobCard({
       </div>
 
       {/* View Details Button */}
+      {/* <Link
+        to={`/jobs/${id}`}
+        className="mt-4 inline-block w-full sm:w-auto px-4 py-2 text-center text-body-md font-medium text-primary border border-outline-variant rounded-lg hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
+        aria-label={`View details for ${title} at ${company}`}
+      >
+        View Details
+      </Link> */}
       <Link
         to={`/jobs/${id}`}
         className="mt-4 inline-block w-full sm:w-auto px-4 py-2 text-center text-body-md font-medium text-primary border border-outline-variant rounded-lg hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"

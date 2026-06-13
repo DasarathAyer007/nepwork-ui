@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
 import SignUp from '../pages/SignUp';
+import JobDetails from '../pages/JobDetails';
 
 function route() {
   return (
@@ -12,6 +13,7 @@ function route() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="/jobs" element={<Jobs />} />
+        <Route path="jobs/:id" element={<JobDetails />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />

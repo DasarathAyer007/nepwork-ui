@@ -4,7 +4,3 @@ export { default as PopularCategory } from './componenets/PopularCategory';
 export { default as TrendingJob } from './componenets/TrendingJob';
 export { default as HowItWorks } from './componenets/HowItWorks';
 export { default as UserHighlights } from './componenets/UserHighlights';
-export { default as JobCard } from '../jobs/components/JobCard';
-export { default as JobFilters } from '../jobs/components/JobFilters';
-export { default as JobSearchBar } from '../jobs/components/JobSearchBar';
-export { default as JobPagination } from '../jobs/components/JobPagination';
