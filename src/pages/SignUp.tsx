@@ -31,15 +31,6 @@ function SignUp() {
                   Start your journey today by creating a new account.
                 </p>
               </div>
-              <SocialMediaLogin />
-
-              <div className="relative flex items-center py-base">
-                <div className="grow border-t border-outline-variant"></div>
-                <span className="shrink mx-base text-outline text-label-md font-medium">
-                  OR
-                </span>
-                <div className="grow border-t border-outline-variant"></div>
-              </div>
 
               <SignUpForm />
 
@@ -53,6 +44,14 @@ function SignUp() {
                   </Link>
                 </p>
               </div>
+              <div className="relative flex items-center py-base my-3">
+                <div className="grow border-t border-outline-variant"></div>
+                <span className="shrink mx-base text-outline text-label-md font-medium">
+                  OR
+                </span>
+                <div className="grow border-t border-outline-variant"></div>
+              </div>
+              <SocialMediaLogin />
             </div>
             <footer className="mt-xl text-center w-full ">
               <p className="font-label-md text-label-md text-outline">

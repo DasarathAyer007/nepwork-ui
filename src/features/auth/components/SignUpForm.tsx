@@ -3,16 +3,27 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AtSign,
+  Building2,
   Eye,
   EyeOff,
   Lock,
   Mail,
+  User,
   UserRound,
   UserRoundPlus,
 } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { Input, Label, SubmitButton } from '@/components/ui/forms';
+
+import BlurLoader from '../../../components/loaders/BlurLoader';
+import { handleApiErrors } from '../../../utils/handleApiErrors';
+import { setCredentials } from '../authSlice';
+import { useLoginMutation, useSignupMutation } from '../services/authApi';
 import {
   getPasswordStrength,
   getStrengthLabel,
@@ -23,6 +34,10 @@ import TermsAndConditions from './TermsConditions';
 
 const signUpSchema = z
   .object({
+    accountType: z.enum(['personal', 'organization'], {
+      message: 'Please select an account type',
+    }),
+
     fullName: z
       .string()
       .trim()
@@ -48,7 +63,7 @@ const signUpSchema = z
 
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
+      .min(3, 'Password must be at least 8 characters')
       .max(100, 'Password must be less than 100 characters')
       .refine((val) => val.trim().length > 0, {
         message: 'Password cannot be empty or spaces only',
@@ -79,6 +94,7 @@ function SignUpForm() {
     control,
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
@@ -88,17 +104,77 @@ function SignUpForm() {
       username: '',
       password: '',
       confirmPassword: '',
+      accountType: 'personal',
     },
   });
 
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const [signup, { isLoading: isSigningUp }] = useSignupMutation();
+  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+
   const onSubmit = async (data: SignUpSchemaType) => {
     console.log('Sign up data:', data);
+
+    const payload = {
+      full_name: data.fullName,
+      email: data.email,
+      username: data.username,
+      password: data.password,
+      account_type: data.accountType,
+      confirm_password: data.confirmPassword,
+    };
+
+    try {
+      await signup(payload).unwrap();
+
+      const loginPayload = {
+        username: data.username,
+        password: data.password,
+      };
+
+      const loginRes = await login(loginPayload).unwrap();
+
+      dispatch(
+        setCredentials({
+          accessToken: loginRes.access_token,
+          refreshToken: loginRes.refresh_token,
+          user: loginRes.user,
+        })
+      );
+
+      navigate('/onboarding');
+    } catch (err: unknown) {
+      handleApiErrors(err, setError, toast);
+
+      // if (errorData && typeof errorData === 'object') {
+      //   Object.entries(errorData).forEach(([field, messages]) => {
+      //     if (field in data) {
+      //       setError(field as keyof SignUpSchemaType, {
+      //         type: 'server',
+      //         message: (messages as string[])[0],
+      //       });
+      //     } else {
+      //       toast.error((messages as string[])[0]);
+      //     }
+      //   });
+      //   return;
+      // }
+      // toast.error(errorData?.detail || 'Something went wrong');
+    }
   };
 
   const password = useWatch({
     control,
     name: 'password',
     defaultValue: '',
+  });
+
+  const selectedAccountType = useWatch({
+    control,
+    name: 'accountType',
   });
 
   const score = getPasswordStrength(password);
@@ -114,15 +190,69 @@ function SignUpForm() {
         className="space-y-lg"
         id="signUpForm"
         onSubmit={handleSubmit(onSubmit)}>
+        <Label className="mb-1">Sign Up As</Label>
+        <div className="grid grid-cols-2 gap-md">
+          {/* Personal */}
+          <label
+            className={`cursor-pointer flex flex-col items-center justify-center p-md border rounded-2xl transition-all text-center h-full
+      ${
+        selectedAccountType === 'personal'
+          ? 'border-primary bg-primary/10'
+          : 'border-outline-variant hover:border-primary'
+      }
+    `}>
+            <input
+              type="radio"
+              value="personal"
+              {...register('accountType')}
+              className="hidden"
+            />
+
+            <span className="material-symbols-outlined text-primary mb-xs">
+              <User />
+            </span>
+
+            <span className="font-label-md text-label-md">Personal</span>
+          </label>
+
+          {/* Organization */}
+          <label
+            className={`cursor-pointer flex flex-col items-center justify-center p-md border rounded-2xl transition-all text-center h-full
+      ${
+        selectedAccountType === 'organization'
+          ? 'border-primary bg-primary/10'
+          : 'border-outline-variant hover:border-primary'
+      }
+    `}>
+            <input
+              type="radio"
+              value="organization"
+              {...register('accountType')}
+              className="hidden"
+            />
+
+            <span className="material-symbols-outlined text-primary mb-xs">
+              <Building2 />
+            </span>
+
+            <span className="font-label-md text-label-md">Organization</span>
+          </label>
+        </div>
+
+        {errors.accountType && (
+          <p className="text-error text-sm">{errors.accountType.message}</p>
+        )}
         {/* Full Name */}
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="fullName">
-            Full Name
-          </label>
+          <Label htmlFor="fullName">
+            {selectedAccountType === 'personal'
+              ? 'Full Name'
+              : 'Organization Name'}
+          </Label>
           <div className="relative">
             <UserRound className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-            <input
-              className="w-full pl-12 pr-md py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
+            <Input
+              variant="auth"
               id="fullName"
               placeholder="John Doe"
               type="text"
@@ -136,12 +266,11 @@ function SignUpForm() {
 
         {/* Email */}
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="email">
-            Email Address
-          </label>
+          <Label htmlFor="email">Email Address</Label>
           <div className="relative">
             <Mail className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-            <input
+            <Input
+              variant="auth"
               className="w-full pl-12 pr-md py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
               id="email"
               placeholder="john@example.com"
@@ -156,13 +285,11 @@ function SignUpForm() {
 
         {/* Username */}
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="username">
-            Username
-          </label>
+          <Label htmlFor="username">Username</Label>
           <div className="relative">
             <AtSign className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-            <input
-              className="w-full pl-12 pr-md py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
+            <Input
+              variant="auth"
               id="username"
               placeholder="JohnDoe123"
               type="text"
@@ -176,13 +303,11 @@ function SignUpForm() {
 
         {/* Password */}
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="password">
-            Password
-          </label>
+          <Label htmlFor="password">Password</Label>
           <div className="relative">
             <Lock className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-            <input
-              className="w-full pl-12 pr-12 py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
+            <Input
+              variant="auth"
               id="password"
               placeholder="••••••••"
               type={showPassword ? 'text' : 'password'}
@@ -213,13 +338,11 @@ function SignUpForm() {
 
         {/* Confirm Password */}
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="confirmPassword">
-            Confirm Password
-          </label>
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
           <div className="relative">
             <Lock className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-            <input
-              className="w-full pl-12 pr-12 py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
+            <Input
+              variant="auth"
               id="confirmPassword"
               placeholder="••••••••"
               type={showConfirmPassword ? 'text' : 'password'}
@@ -246,16 +369,14 @@ function SignUpForm() {
         {/* Terms */}
         <div className="flex items-start gap-sm">
           <div className="flex items-center h-5">
-            <input
-              className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer"
+            <Input
+              variant="auth"
               id="terms"
               type="checkbox"
               {...register('terms')}
             />
           </div>
-          <label
-            className="text-sm font-medium text-on-surface-variant cursor-pointer select-none"
-            htmlFor="terms">
+          <span className="text-sm font-medium text-on-surface-variant cursor-pointer select-none">
             I agree to the{' '}
             <button
               className="text-primary hover:underline font-semibold"
@@ -271,20 +392,22 @@ function SignUpForm() {
               Privacy Policy
             </button>
             .
-          </label>
+          </span>
         </div>
         {errors.terms && (
           <p className="text-error text-sm">{errors.terms.message}</p>
         )}
 
-        <button
-          className="w-full bg-primary text-on-primary py-3 px-lg rounded-md font-bold text-base shadow-ambient hover:bg-primary-dim active:scale-[0.99] transition-all flex items-center justify-center gap-sm cursor-pointer disabled:bg-primary/50 disabled:cursor-not-allowed"
+        <SubmitButton
           type="submit"
+          loading={isSubmitting}
           disabled={isSubmitting}>
           {isSubmitting ? 'Creating Account...' : 'Create Account'}
           <UserRoundPlus strokeWidth={2.75} />
-        </button>
+        </SubmitButton>
       </form>
+
+      <BlurLoader show={isSigningUp} />
     </>
   );
 }

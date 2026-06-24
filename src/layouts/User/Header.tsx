@@ -8,12 +8,15 @@ import {
   MessageCircle,
   X,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { selectIsAuthenticated } from '../../features/auth/authSelectors';
+
 function Header() {
-  const [isLogin] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const notificationCount = isLogin ? 3 : 0;
+  const isLogin = useSelector(selectIsAuthenticated);
+  const notificationCount = 0;
 
   const navLinks = [
     { name: 'Find Jobs', to: '/jobs' },
