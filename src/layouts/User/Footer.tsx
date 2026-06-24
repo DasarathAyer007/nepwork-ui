@@ -120,7 +120,7 @@ function Footer() {
           </div>
         </div>
         <div className="w-full px-6 md:px-12 py-6 border-t border-outline-variant/30 text-center text-on-surface-variant text-body-md max-w-7xl mx-auto">
-          © 2024 NepWork. All rights reserved.
+          © 2026 NepWork. All rights reserved.
         </div>
       </footer>
     </>
