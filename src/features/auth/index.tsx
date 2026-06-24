@@ -5,3 +5,5 @@ export { default as SignUpForm } from './components/SignUpForm';
 export { default as SignUpIntro } from './components/SignUpIntro';
 
 export { default as SocialMediaLogin } from './components/SocialMediaLogin';
+
+export { default as authReducer } from './authSlice';
