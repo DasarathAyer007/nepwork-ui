@@ -11,11 +11,17 @@ import {
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { selectIsAuthenticated } from '../../features/auth/authSelectors';
+import {
+  selectIsAuthenticated,
+  selectUser,
+} from '../../features/auth/authSelectors';
+import ProfileDropdown from '../ProfileDropdown';
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const isLogin = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
   const notificationCount = 0;
 
   const navLinks = [
@@ -81,12 +87,28 @@ function Header() {
                 )}
               </button>
 
-              <div className="relative group">
-                <button className="p-1 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110">
-                  <CircleUserRound size={25} className="stroke-[1.5]" />
+              <div className="relative group:">
+                <button
+                  onClick={() => setShowProfile((prev) => !prev)}
+                  className="p-1 text-on-surface-variant hover:scale-105 transition">
+                  <img
+                    className="size-10 rounded-full object-cover border border-border"
+                    src={user?.profile_picture ?? ''}
+                    alt=""
+                  />
                 </button>
-                {/* Optional dropdown hint – just a subtle ring on hover */}
-                <div className="absolute inset-0 rounded-full ring-2 ring-primary/0 group-hover:ring-primary/30 transition-all duration-200 pointer-events-none" />
+
+                {showProfile && user && (
+                  <ProfileDropdown
+                    user={user}
+                    onLogout={() => {
+                      // Handle logout logic here
+                      console.log('User logged out');
+                      setShowProfile(false);
+                    }}
+                    onClose={() => setShowProfile(false)}
+                  />
+                )}
               </div>
             </>
           ) : (
@@ -158,23 +180,3 @@ function Header() {
 }
 
 export default Header;
-
-{
-  /* <div className="flex items-center bg-surface-container rounded-full px-3 py-1 border border-outline-variant/30 mr-4">
-              <select className="bg-transparent border-none focus:ring-0 text-sm font-medium text-on-surface-variant pr-8 cursor-pointer">
-                <option>Jobs</option>
-                <option>Services</option>
-              </select>
-              <div className="h-4 w-px bg-outline-variant/50 mx-2"></div>
-              <div className="flex items-center gap-2 px-2">
-                <span className="material-symbols-outlined text-sm text-outline">
-                  search
-                </span>
-                <input
-                  className="bg-transparent border-none focus:ring-0 text-sm w-32 placeholder-outline"
-                  placeholder="Quick search..."
-                  type="text"
-                />
-              </div>
-            </div> */
-}

@@ -6,4 +6,5 @@ export { default as SignUpIntro } from './components/SignUpIntro';
 
 export { default as SocialMediaLogin } from './components/SocialMediaLogin';
 
-export { default as authReducer } from './authSlice';
+export { default as OrganizationProfileForm } from './components/OrganizationProfileForm';
+export { default as IndividualProfileForm } from './components/IndividualProfileForm';

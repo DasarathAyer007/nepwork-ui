@@ -52,7 +52,7 @@ export const baseQuery: BaseQueryFn<
 
       const refreshResult = await rawBaseQuery(
         {
-          url: '/token/refresh',
+          url: '/users/token/refresh',
           method: 'POST',
         },
         api,

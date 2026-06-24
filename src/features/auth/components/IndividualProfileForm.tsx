@@ -6,19 +6,24 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import { DropDown, Input, Label, SubmitButton,TextArea } from '@/components/ui/forms';
+import {
+  DropDown,
+  Input,
+  Label,
+  SubmitButton,
+  TextArea,
+} from '@/components/ui/forms';
 
 import { useDebounce } from '../../../hooks/useDebounce';
 import { handleApiErrors } from '../../../utils/handleApiErrors';
 import {
   useCompleteOnboardingMutation,
   useGetSkillsQuery,
-} from '../services/profileApi';
+} from '../services/authApi';
 import type { LoginUser } from '../types';
 import { ProfileImageForm } from './ProfileImageForm';
 import SocialLinksEditor from './SocialLinksEditor';
 import { type IndividualFormData, individualSchema } from './schemas';
-
 
 export default function IndividualProfileForm() {
   const [completeOnboarding] = useCompleteOnboardingMutation();

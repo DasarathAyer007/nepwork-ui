@@ -1,5 +1,6 @@
-import { Search, LayoutGrid, List } from 'lucide-react';
 import { useState } from 'react';
+
+import { LayoutGrid, List, Search } from 'lucide-react';
 
 interface JobSearchBarProps {
   searchTerm: string;
@@ -33,15 +34,13 @@ function JobSearchBar({ searchTerm, setSearchTerm }: JobSearchBarProps) {
           <button
             onClick={() => setViewMode('list')}
             className={`p-2 ${viewMode === 'list' ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}
-            aria-label="List view"
-          >
+            aria-label="List view">
             <List size={18} />
           </button>
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}
-            aria-label="Grid view"
-          >
+            aria-label="Grid view">
             <LayoutGrid size={18} />
           </button>
         </div>

@@ -1,12 +1,13 @@
+import type { UserDetails } from '@/types/user.types';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '../../../services/baseQuery';
 import type {
   AuthResponse,
   LoginRequest,
-  LoginUser,
   SignupRequest,
   SignupResponse,
+  Skill,
 } from '../types';
 
 export const AuthApi = createApi({
@@ -15,7 +16,6 @@ export const AuthApi = createApi({
   tagTypes: ['User'],
 
   endpoints: (builder) => ({
-    // LOGIN
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
         url: '/users/login',
@@ -24,7 +24,6 @@ export const AuthApi = createApi({
       }),
     }),
 
-    // SIGNUP
     signup: builder.mutation<SignupResponse, SignupRequest>({
       query: (body) => ({
         url: '/users/register',
@@ -33,28 +32,17 @@ export const AuthApi = createApi({
       }),
     }),
 
-    // REFRESH TOKEN
-    refreshToken: builder.mutation<{ accessToken: string }, void>({
-      query: () => ({
-        url: '/users/token/refresh',
-        method: 'POST',
-      }),
-    }),
-
-    // GET PROFILE
-    getProfile: builder.query<LoginUser, void>({
-      query: () => '/users/me',
-      providesTags: ['User'],
-    }),
-
-    // UPDATE ONBOARDING / PROFILE SETUP
-    completeOnboarding: builder.mutation<LoginUser, FormData>({
+    completeOnboarding: builder.mutation<UserDetails, FormData>({
       query: (body) => ({
         url: '/users/onboarding',
-        method: 'PATCH',
+        method: 'POST',
         body,
       }),
       invalidatesTags: ['User'],
+    }),
+
+    getSkills: builder.query<Skill[], { search: string }>({
+      query: ({ search }) => `/skills/?search=${search}`,
     }),
   }),
 });
@@ -62,7 +50,6 @@ export const AuthApi = createApi({
 export const {
   useLoginMutation,
   useSignupMutation,
-  useRefreshTokenMutation,
-  useGetProfileQuery,
   useCompleteOnboardingMutation,
+  useGetSkillsQuery,
 } = AuthApi;

@@ -6,17 +6,20 @@ interface JobPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationProps) {
+function JobPagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: JobPaginationProps) {
   // Generate page numbers
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="flex items-center justify-center gap-1">
-      <button 
+      <button
         className="p-2 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
         onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
+        disabled={currentPage === 1}>
         <ChevronLeft size={18} />
       </button>
 
@@ -28,17 +31,15 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
             page === currentPage
               ? 'bg-primary text-on-primary shadow-md'
               : 'text-on-surface-variant hover:bg-surface-container hover:text-primary'
-          }`}
-        >
+          }`}>
           {page}
         </button>
       ))}
 
-      <button 
+      <button
         className="p-2 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
+        disabled={currentPage === totalPages}>
         <ChevronRight size={18} />
       </button>
     </div>

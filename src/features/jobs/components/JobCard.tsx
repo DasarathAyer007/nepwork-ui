@@ -49,15 +49,16 @@ function JobCard({
               <h3 className="text-headline-sm font-bold text-on-surface group-hover:text-primary transition-colors">
                 <Link
                   to={`/jobs/${id}`}
-                  className="focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm"
-                >
+                  className="focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm">
                   {title}
                 </Link>
               </h3>
               <p className="text-body-md font-medium text-primary">{company}</p>
             </div>
             <div className="flex flex-col items-start sm:items-end gap-1">
-              <span className="text-body-md font-bold text-on-surface">{salary}</span>
+              <span className="text-body-md font-bold text-on-surface">
+                {salary}
+              </span>
               {isUrgent && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-error/10 text-error text-label-md font-bold rounded-full">
                   <span
@@ -99,8 +100,7 @@ function JobCard({
       <Link
         to={`/jobs/${id}`}
         className="mt-4 inline-block w-full sm:w-auto px-4 py-2 text-center text-body-md font-medium text-primary border border-outline-variant rounded-lg hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
-        aria-label={`View details for ${title} at ${company}`}
-      >
+        aria-label={`View details for ${title} at ${company}`}>
         View Details
       </Link>
     </div>

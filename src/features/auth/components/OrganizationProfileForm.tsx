@@ -5,10 +5,16 @@ import { ArrowRight, Upload } from 'lucide-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { DropDown, Input, Label, SubmitButton, TextArea } from '@/components/ui/forms';
+import {
+  DropDown,
+  Input,
+  Label,
+  SubmitButton,
+  TextArea,
+} from '@/components/ui/forms';
 
 import { handleApiErrors } from '../../../utils/handleApiErrors';
-import { useCompleteOnboardingMutation } from '../services/profileApi';
+import { useCompleteOnboardingMutation } from '../services/authApi';
 import { ProfileImageForm } from './ProfileImageForm';
 import SocialLinksEditor from './SocialLinksEditor';
 import { type OrganizationFormData, organizationSchema } from './schemas';

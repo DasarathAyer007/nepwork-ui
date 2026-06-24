@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
 import JobCard from '../features/jobs/components/JobCard';
-import JobSearchBar from '../features/jobs/components/JobSearchBar';
 import JobFilters from '../features/jobs/components/JobFilters';
 import JobPagination from '../features/jobs/components/JobPagination';
+import JobSearchBar from '../features/jobs/components/JobSearchBar';
 
 // Mock data - replace with API data later
 const JOBS_MOCK = [
@@ -51,13 +52,13 @@ const JOBS_MOCK = [
 function Jobs() {
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Filter states
   const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedExperience, setSelectedExperience] = useState('');
   const [salaryRange, setSalaryRange] = useState(10000);
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 5;
@@ -66,35 +67,46 @@ function Jobs() {
   const filteredJobs = useMemo(() => {
     return JOBS_MOCK.filter((job) => {
       // Search filter
-      const matchesSearch = 
+      const matchesSearch =
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.location.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       // Job type filter
-      const matchesJobType = 
-        selectedJobTypes.length === 0 || 
-        selectedJobTypes.includes(job.type);
-      
+      const matchesJobType =
+        selectedJobTypes.length === 0 || selectedJobTypes.includes(job.type);
+
       // Location filter
-      const matchesLocation = 
-        !selectedLocation || 
-        job.location.includes(selectedLocation);
-      
+      const matchesLocation =
+        !selectedLocation || job.location.includes(selectedLocation);
+
       // Experience filter (simplified)
-      const matchesExperience = 
-        !selectedExperience || 
-        (selectedExperience === 'Entry Level' && job.title.includes('Junior')) ||
+      const matchesExperience =
+        !selectedExperience ||
+        (selectedExperience === 'Entry Level' &&
+          job.title.includes('Junior')) ||
         (selectedExperience === 'Mid Level' && job.title.includes('Manager')) ||
         (selectedExperience === 'Senior Level' && job.title.includes('Senior'));
-      
+
       // Salary filter (extract number from salary string)
       const salaryNum = parseInt(job.salary.replace(/[^0-9]/g, ''));
       const matchesSalary = salaryNum >= salaryRange;
-      
-      return matchesSearch && matchesJobType && matchesLocation && matchesExperience && matchesSalary;
+
+      return (
+        matchesSearch &&
+        matchesJobType &&
+        matchesLocation &&
+        matchesExperience &&
+        matchesSalary
+      );
     });
-  }, [searchTerm, selectedJobTypes, selectedLocation, selectedExperience, salaryRange]);
+  }, [
+    searchTerm,
+    selectedJobTypes,
+    selectedLocation,
+    selectedExperience,
+    salaryRange,
+  ]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
@@ -106,10 +118,7 @@ function Jobs() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Search Bar */}
         <div className="mb-6">
-          <JobSearchBar 
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <JobSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
         {/* Main Layout */}
@@ -117,7 +126,7 @@ function Jobs() {
           {/* Filters - Sticky on desktop */}
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-24">
-              <JobFilters 
+              <JobFilters
                 selectedJobTypes={selectedJobTypes}
                 setSelectedJobTypes={setSelectedJobTypes}
                 selectedLocation={selectedLocation}
@@ -133,9 +142,7 @@ function Jobs() {
           {/* Job List */}
           <div className="lg:col-span-3 space-y-4">
             {currentJobs.length > 0 ? (
-              currentJobs.map((job) => (
-                <JobCard key={job.id} {...job} />
-              ))
+              currentJobs.map((job) => <JobCard key={job.id} {...job} />)
             ) : (
               <div className="text-center py-12 bg-surface-container-lowest rounded-lg border border-outline-variant">
                 <h3 className="text-headline-sm text-on-surface-variant">
@@ -150,7 +157,7 @@ function Jobs() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-8 pt-4 border-t border-outline-variant/30">
-                <JobPagination 
+                <JobPagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}

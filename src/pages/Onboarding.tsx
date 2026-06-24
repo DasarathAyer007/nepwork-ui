@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import * as Dialog from '@radix-ui/react-dialog';
 
-// import IndividualProfileForm from './IndividualProfileForm';
-// import OrganizationProfileForm from './OrganizationProfileForm';
-import IndividualProfileForm from '../features/auth/components/IndividualProfileForm';
-import OrganizationProfileForm from '../features/auth/components/OrganizationProfileForm';
+import {
+  IndividualProfileForm,
+  OrganizationProfileForm,
+} from '../features/auth';
 
 export default function Onboarding() {
   const [viewType, setViewType] = useState<'individual' | 'organization'>(

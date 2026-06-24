@@ -40,10 +40,9 @@ function JobFilters({
     <aside className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-headline-sm font-bold text-on-surface">Filters</h2>
-        <button 
+        <button
           className="text-body-md font-medium text-primary hover:underline"
-          onClick={clearAll}
-        >
+          onClick={clearAll}>
           Clear All
         </button>
       </div>
@@ -53,14 +52,18 @@ function JobFilters({
         <h3 className="text-body-lg font-bold text-on-surface">Job Type</h3>
         <div className="space-y-2">
           {['Full-time', 'Contract', 'Freelance', 'Part-time'].map((type) => (
-            <label key={type} className="flex items-center gap-2 cursor-pointer">
+            <label
+              key={type}
+              className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={selectedJobTypes.includes(type)}
                 onChange={() => toggleJobType(type)}
                 className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20"
               />
-              <span className="text-body-md text-on-surface-variant">{type}</span>
+              <span className="text-body-md text-on-surface-variant">
+                {type}
+              </span>
             </label>
           ))}
         </div>
@@ -73,11 +76,10 @@ function JobFilters({
         <h3 className="text-body-lg font-bold text-on-surface">Location</h3>
         <div className="relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-          <select 
+          <select
             className="w-full pl-10 pr-8 py-2 bg-surface-container-lowest border border-outline-variant rounded-md text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none"
             value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-          >
+            onChange={(e) => setSelectedLocation(e.target.value)}>
             <option value="">All Locations</option>
             <option>Kathmandu</option>
             <option>Pokhara</option>
@@ -93,10 +95,14 @@ function JobFilters({
 
       {/* Experience Level */}
       <div className="space-y-3">
-        <h3 className="text-body-lg font-bold text-on-surface">Experience Level</h3>
+        <h3 className="text-body-lg font-bold text-on-surface">
+          Experience Level
+        </h3>
         <div className="space-y-2">
           {['Entry Level', 'Mid Level', 'Senior Level'].map((level) => (
-            <label key={level} className="flex items-center gap-2 cursor-pointer">
+            <label
+              key={level}
+              className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="experience"
@@ -105,7 +111,9 @@ function JobFilters({
                 onChange={(e) => setSelectedExperience(e.target.value)}
                 className="w-4 h-4 border-outline-variant text-primary focus:ring-primary/20"
               />
-              <span className="text-body-md text-on-surface-variant">{level}</span>
+              <span className="text-body-md text-on-surface-variant">
+                {level}
+              </span>
             </label>
           ))}
         </div>
@@ -115,7 +123,9 @@ function JobFilters({
 
       {/* Salary Range */}
       <div className="space-y-3">
-        <h3 className="text-body-lg font-bold text-on-surface">Salary Range (Monthly)</h3>
+        <h3 className="text-body-lg font-bold text-on-surface">
+          Salary Range (Monthly)
+        </h3>
         <div className="space-y-1">
           <input
             type="range"
