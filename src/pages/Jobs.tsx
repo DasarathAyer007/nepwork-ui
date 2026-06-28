@@ -114,7 +114,7 @@ function Jobs() {
   const currentJobs = filteredJobs.slice(startIndex, startIndex + jobsPerPage);
 
   return (
-    <div className="bg-background min-h-screen pb-16">
+    <div className="mt-4 bg-background min-h-screen pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Search Bar */}
         <div className="mb-6">

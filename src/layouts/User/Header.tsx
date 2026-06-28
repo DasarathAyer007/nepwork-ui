@@ -31,7 +31,7 @@ function Header() {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/10 shadow-sm">
+    <header className="sticky top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/10 shadow-sm">
       <div className="flex items-center justify-between w-full px-4 md:px-8 py-2 max-w-8xl mx-auto">
         <div className="flex items-center gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2" aria-label="Home">
