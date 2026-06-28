@@ -6,5 +6,5 @@ export { default as SignUpIntro } from './components/SignUpIntro';
 
 export { default as SocialMediaLogin } from './components/SocialMediaLogin';
 
-export { default as OrganizationProfileForm } from './components/OrganizationProfileForm';
-export { default as IndividualProfileForm } from './components/IndividualProfileForm';
+export { default as OrganizationProfileForm } from './components/onboarding/OrganizationProfileForm';
+export { default as IndividualProfileForm } from './components/onboarding/IndividualProfileForm';

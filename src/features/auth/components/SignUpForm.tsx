@@ -22,8 +22,8 @@ import { Input, Label, SubmitButton } from '@/components/ui/forms';
 
 import BlurLoader from '../../../components/loaders/BlurLoader';
 import { handleApiErrors } from '../../../utils/handleApiErrors';
+import { useLoginMutation, useSignupMutation } from '../api/authApi';
 import { setCredentials } from '../authSlice';
-import { useLoginMutation, useSignupMutation } from '../services/authApi';
 import {
   getPasswordStrength,
   getStrengthLabel,

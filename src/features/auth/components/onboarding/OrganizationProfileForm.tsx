@@ -5,18 +5,11 @@ import { ArrowRight, Upload } from 'lucide-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import {
-  DropDown,
-  Input,
-  Label,
-  SubmitButton,
-  TextArea,
-} from '@/components/ui/forms';
+import { DropDown, Input, Label, SubmitButton } from '@/components/ui/forms';
 
-import { handleApiErrors } from '../../../utils/handleApiErrors';
-import { useCompleteOnboardingMutation } from '../services/authApi';
-import { ProfileImageForm } from './ProfileImageForm';
-import SocialLinksEditor from './SocialLinksEditor';
+import { handleApiErrors } from '../../../../utils/handleApiErrors';
+import { useCompleteOnboardingMutation } from '../../api/authApi';
+import { CommonProfileFields } from './CommonProfileFields';
 import { type OrganizationFormData, organizationSchema } from './schemas';
 
 export default function OrganizationProfileForm() {
@@ -63,10 +56,9 @@ export default function OrganizationProfileForm() {
 
     const payload = {
       account_type: 'organization' as const,
-      organization_name: data.organizationName.trim(),
       industry: data.industry.trim(),
       employees_count: data.employeesCount,
-      description: data.description?.trim() || undefined,
+      bio: data.bio?.trim() || undefined,
       founded_year:
         data.foundedYear === undefined || data.foundedYear === ''
           ? undefined
@@ -79,37 +71,19 @@ export default function OrganizationProfileForm() {
     const multipartData = new FormData();
     multipartData.append('payload', JSON.stringify(payload));
 
-    if (data.profilePic) {
+    if (data.profilePic)
       multipartData.append('profile_picture', data.profilePic);
-    }
+    if (data.coverPic) multipartData.append('cover_picture', data.coverPic);
+    if (data.logo) multipartData.append('organization_logo', data.logo);
 
-    if (data.coverPic) {
-      multipartData.append('cover_picture', data.coverPic);
-    }
-
-    if (data.logo) {
-      multipartData.append('organization_logo', data.logo);
-    }
-
-    return {
-      payload,
-      multipartData,
-    };
-  };
-
-  const submitPreparedData = async (submission: {
-    payload: Record<string, unknown>;
-    multipartData: FormData;
-  }) => {
-    await completeOnboarding(submission.multipartData).unwrap();
+    return multipartData;
   };
 
   const onSubmit = async (data: OrganizationFormData) => {
     clearErrors('root');
 
     try {
-      const submission = buildSubmissionData(data);
-      await submitPreparedData(submission);
+      await completeOnboarding(buildSubmissionData(data)).unwrap();
       toast.success('Organization onboarding completed successfully.');
     } catch (error) {
       handleApiErrors(error, setError, toast);
@@ -123,52 +97,31 @@ export default function OrganizationProfileForm() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-        <div className="space-y-2">
-          <Label>Profile & Cover Photos</Label>
+        {/* ── Shared fields (photos, account info, bio, social links) ──────── */}
+        <CommonProfileFields<OrganizationFormData>
+          setValue={setValue}
+          watch={watch}
+          bioPlaceholder="Describe your organization's mission and values..."
+        />
 
-          <ProfileImageForm<OrganizationFormData>
-            setValue={setValue}
-            watch={watch}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Email</Label>
-          <Input
-            variant="profile"
-            type="email"
-            value="john.doe@example.com"
-            disabled
-            className="cursor-not-allowed"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Username</Label>
-          <Input
-            variant="profile"
-            type="text"
-            value="john_doe"
-            disabled
-            className="cursor-not-allowed"
-          />
-        </div>
-        {/* Organization Name */}
-        <div className="space-y-2">
-          <Label>Organization Name</Label>
-          <Input
-            {...register('organizationName')}
-            placeholder="Acme Corp"
-            variant="profile"
-          />
-          {errors.organizationName && (
-            <p className="text-error text-xs mt-1">
-              {errors.organizationName.message}
-            </p>
-          )}
-        </div>
-
-        {/* Industry & Employees */}
+        {/* ── Industry & Founded Year ──────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <Label>Founded Year</Label>
+            <Input
+              variant="profile"
+              {...register('foundedYear')}
+              type="number"
+              min={1900}
+              max={2024}
+              placeholder="e.g. 2015"
+            />
+            {errors.foundedYear && (
+              <p className="text-error text-xs mt-1">
+                {errors.foundedYear.message}
+              </p>
+            )}
+          </div>
           <div className="space-y-2">
             <Label>Industry</Label>
             <DropDown
@@ -188,6 +141,10 @@ export default function OrganizationProfileForm() {
               </p>
             )}
           </div>
+        </div>
+
+        {/* ── Employees & Tax ID ───────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
             <Label>Employees Count</Label>
             <DropDown
@@ -206,36 +163,7 @@ export default function OrganizationProfileForm() {
               </p>
             )}
           </div>
-        </div>
 
-        {/* Description */}
-        <div className="space-y-2">
-          <Label>Description</Label>
-          <TextArea
-            {...register('description')}
-            rows={4}
-            placeholder="Describe your organization's mission..."
-          />
-        </div>
-
-        {/* Founded Year & Tax ID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-2">
-            <Label>Founded Year</Label>
-            <Input
-              variant="profile"
-              {...register('foundedYear')}
-              type="number"
-              min={1900}
-              max={2024}
-              placeholder="e.g. 2015"
-            />
-            {errors.foundedYear && (
-              <p className="text-error text-xs mt-1">
-                {errors.foundedYear.message}
-              </p>
-            )}
-          </div>
           <div className="space-y-2">
             <Label>Tax ID / Registration Number</Label>
             <Input
@@ -246,7 +174,7 @@ export default function OrganizationProfileForm() {
           </div>
         </div>
 
-        {/* Office Address */}
+        {/* ── Office Address ───────────────────────────────────────────────── */}
         <div className="space-y-2">
           <Label>Office Address</Label>
           <Input
@@ -256,7 +184,7 @@ export default function OrganizationProfileForm() {
           />
         </div>
 
-        {/* Company Logo */}
+        {/* ── Company Logo ─────────────────────────────────────────────────── */}
         <div className="space-y-2">
           <Label>Company Logo</Label>
           <div
@@ -292,13 +220,7 @@ export default function OrganizationProfileForm() {
           )}
         </div>
 
-        {/* Social Links */}
-        <div className="border-t border-outline-variant pt-8">
-          <Label>Social Profiles</Label>
-          <SocialLinksEditor name="socialLinks" />
-        </div>
-
-        {/* Submit */}
+        {/* ── Submit ──────────────────────────────────────────────────────── */}
         <div className="flex justify-end">
           <SubmitButton
             disabled={isSubmitting}

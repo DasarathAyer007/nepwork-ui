@@ -114,7 +114,7 @@ function JobDetailsPage() {
 
   if (!job) {
     return (
-      <div className="bg-background min-h-screen pt-20 pb-16">
+      <div className="bg-background min-h-screen pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center py-20">
           <h1 className="text-headline-lg font-bold text-on-surface">
             Job not found

@@ -3,15 +3,6 @@ export interface LoginRequest {
   password: string;
 }
 
-// export interface SignupRequest {
-//   fullName: string;
-//   email: string;
-//   username: string;
-//   password: string;
-//   confirmPassword: string;
-//   accountType: 'personal' | 'organization';
-// }
-
 export interface SignupRequest {
   full_name: string;
   email: string;

@@ -3,26 +3,17 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRight, Plus, X } from 'lucide-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
-import {
-  DropDown,
-  Input,
-  Label,
-  SubmitButton,
-  TextArea,
-} from '@/components/ui/forms';
+import { DropDown, Input, Label, SubmitButton } from '@/components/ui/forms';
 
-import { useDebounce } from '../../../hooks/useDebounce';
-import { handleApiErrors } from '../../../utils/handleApiErrors';
+import { useDebounce } from '../../../../hooks/useDebounce';
+import { handleApiErrors } from '../../../../utils/handleApiErrors';
 import {
   useCompleteOnboardingMutation,
   useGetSkillsQuery,
-} from '../services/authApi';
-import type { LoginUser } from '../types';
-import { ProfileImageForm } from './ProfileImageForm';
-import SocialLinksEditor from './SocialLinksEditor';
+} from '../../api/authApi';
+import { CommonProfileFields } from './CommonProfileFields';
 import { type IndividualFormData, individualSchema } from './schemas';
 
 export default function IndividualProfileForm() {
@@ -82,7 +73,7 @@ export default function IndividualProfileForm() {
     const formData = new FormData();
 
     formData.append('account_type', 'personal');
-    formData.append('date_of_birth', data.dateOfBirth);
+    formData.append('date_of_birth', data.dateOfBirth || '');
     formData.append('gender', data.gender || '');
     formData.append('bio', data.bio?.trim() || '');
     formData.append('profile_visibility', data.profileVisibility ?? 'public');
@@ -123,56 +114,20 @@ export default function IndividualProfileForm() {
     }
   };
 
-  const user = useSelector(
-    (state: { auth: { user: LoginUser } }) => state.auth.user
-  );
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-        <div className="space-y-2">
-          <Label>Profile & Cover Photos</Label>
+        {/* ── Shared fields (photos, account info, bio, social links) ──────── */}
+        <CommonProfileFields<IndividualFormData>
+          setValue={setValue}
+          watch={watch}
+          bioPlaceholder="Tell us about your professional background..."
+        />
 
-          <ProfileImageForm<IndividualFormData>
-            setValue={setValue}
-            watch={watch}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label className="form-label">Full Name</Label>
-          <Input
-            variant="profile"
-            type="text"
-            value={user?.full_name || ''}
-            disabled
-            className="cursor-not-allowed"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label className="form-label">Email</Label>
-          <Input
-            variant="profile"
-            type="email"
-            value={user?.email || ''}
-            disabled
-            className="cursor-not-allowed"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label className="form-label">Username</Label>
-          <Input
-            variant="profile"
-            type="text"
-            value={user?.username || ''}
-            disabled
-            className="cursor-not-allowed"
-          />
-        </div>
-
+        {/* ── Date of Birth & Gender ───────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
-            <Label className="form-label">Date of Birth</Label>
+            <Label>Date of Birth</Label>
             <Input {...register('dateOfBirth')} type="date" variant="profile" />
             {errors.dateOfBirth && (
               <p className="text-error text-xs mt-1">
@@ -181,15 +136,15 @@ export default function IndividualProfileForm() {
             )}
           </div>
           <div className="space-y-2">
-            <Label className="form-label">Gender</Label>
+            <Label>Gender</Label>
             <DropDown
               {...register('gender')}
-              className="form-input"
               options={[
                 { label: 'Select Gender', value: '' },
                 { label: 'Male', value: 'male' },
                 { label: 'Female', value: 'female' },
-                { label: 'Other', value: 'other' },
+                { label: 'Non-binary', value: 'non-binary' },
+                { label: 'Prefer not to say', value: 'prefer-not-to-say' },
               ]}
             />
             {errors.gender && (
@@ -198,17 +153,7 @@ export default function IndividualProfileForm() {
           </div>
         </div>
 
-        {/* Bio */}
-        <div className="space-y-2">
-          <Label>Bio</Label>
-          <TextArea
-            {...register('bio')}
-            rows={4}
-            placeholder="Tell us about your professional background..."
-          />
-        </div>
-
-        {/* Skills */}
+        {/* ── Skills ──────────────────────────────────────────────────────── */}
         <div className="space-y-2">
           <Label>Skills (Select multiple)</Label>
           <div className="flex flex-wrap gap-2 mb-3">
@@ -273,7 +218,7 @@ export default function IndividualProfileForm() {
           )}
         </div>
 
-        {/* Profile Visibility */}
+        {/* ── Profile Visibility ───────────────────────────────────────────── */}
         <div className="space-y-2">
           <Label>Profile Visibility</Label>
           <DropDown
@@ -283,22 +228,15 @@ export default function IndividualProfileForm() {
               { label: 'Private', value: 'private' },
               { label: 'Limited', value: 'connections' },
             ]}
-            className="pxbg-surface-container border-outline-variant rounded-md p-2 input-focus border text-on-surface"
           />
         </div>
 
-        {/* Social Links */}
-        <div className="border-t border-outline-variant pt-8">
-          <Label>Social Profiles</Label>
-          <SocialLinksEditor name="socialLinks" />
-        </div>
-
-        {/* Submit */}
+        {/* ── Submit ──────────────────────────────────────────────────────── */}
         <div className="flex justify-end">
           <SubmitButton
             disabled={isSubmitting}
             className="bg-primary text-on-primary px-10 py-3 rounded-md font-bold hover:shadow-lg transition-all active:scale-[0.98] flex items-center gap-2">
-            {isSubmitting ? 'Submitting...' : 'Complete Onboarding'}
+            {isSubmitting ? 'Submitting…' : 'Complete Onboarding'}
             <ArrowRight className="w-5 h-5" />
           </SubmitButton>
         </div>

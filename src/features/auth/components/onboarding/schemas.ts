@@ -30,7 +30,14 @@ const socialLinkSchema = z.object({
     }),
 });
 
-export const individualSchema = z.object({
+const commonProfileSchema = z.object({
+  bio: optionalText,
+  profilePic: optionalImageFile,
+  coverPic: optionalImageFile,
+  socialLinks: z.array(socialLinkSchema).optional(),
+});
+
+export const individualSchema = commonProfileSchema.extend({
   dateOfBirth: z
     .string()
     .min(1, 'Date of birth is required')
@@ -45,28 +52,19 @@ export const individualSchema = z.object({
       message: 'Select a gender',
     })
     .optional(),
-  bio: optionalText,
   skills: z
     .array(z.string().trim().min(1, 'Skill cannot be empty'))
     .min(1, 'Add at least one skill')
     .max(20, 'You can add up to 20 skills'),
   profileVisibility: z.enum(['public', 'private', 'connections']).optional(),
-  profilePic: optionalImageFile,
-  coverPic: optionalImageFile,
-  socialLinks: z.array(socialLinkSchema).optional(),
 });
 
-export const organizationSchema = z.object({
-  organizationName: z
-    .string()
-    .trim()
-    .min(2, 'Organization name must be at least 2 characters')
-    .max(120, 'Organization name is too long'),
+// ── Organization ─────────────────────────────────────────────────────────────
+export const organizationSchema = commonProfileSchema.extend({
   industry: z.string().trim().min(1, 'Industry is required'),
   employeesCount: z.enum(['1-10', '11-50', '51-200', '201+'], {
     message: 'Select number of employees',
   }),
-  description: optionalText,
   foundedYear: z
     .union([z.string(), z.number()])
     .optional()
@@ -78,11 +76,8 @@ export const organizationSchema = z.object({
       `Year must be between 1900 and ${CURRENT_YEAR}`
     ),
   taxId: optionalText,
-  address: optionalText,
-  profilePic: optionalImageFile,
-  coverPic: optionalImageFile,
+  address: optionalText, // simple office address string
   logo: optionalImageFile,
-  socialLinks: z.array(socialLinkSchema).optional(),
 });
 
 export type IndividualFormData = z.infer<typeof individualSchema>;

@@ -1,10 +1,12 @@
+import type { Skill } from './skill.types';
+
 interface BaseUser {
   id: string;
   full_name: string;
+  username: string;
   email: string;
   phone_number: string | null;
   status: 'active' | 'inactive';
-  username: string;
   account_type: 'personal' | 'organization';
   profile_picture: string | null;
   cover_photo: string | null;
@@ -16,14 +18,15 @@ interface BaseUser {
 
 export interface PersonalProfile extends BaseUser {
   account_type: 'personal';
-  skills: string[];
-  description: string | null;
+  skills: Skill[];
   bio: string | null;
   date_of_birth: string | null;
+  access_level: 'full' | 'public' | 'limited' | 'private';
 }
 
 export interface OrganizationProfile extends BaseUser {
   account_type: 'organization';
+  bio: string | null;
   organization_name: string;
   logo: string | null;
   employees_count: number | null;
@@ -31,6 +34,7 @@ export interface OrganizationProfile extends BaseUser {
   address: string | null;
   industry: string | null;
   is_verified: boolean;
+  access_level: 'full' | 'public' | 'limited' | 'private';
 }
 
 export type UserDetails = PersonalProfile | OrganizationProfile;

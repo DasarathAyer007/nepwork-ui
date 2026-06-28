@@ -75,12 +75,14 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
 
   // Cleanup on unmount only – revoke any remaining URLs
   useEffect(() => {
+    const profileUrl = profileUrlRef;
+    const coverUrl = coverUrlRef;
     return () => {
-      if (profileUrlRef.current) {
-        URL.revokeObjectURL(profileUrlRef.current);
+      if (profileUrl.current) {
+        URL.revokeObjectURL(profileUrl.current);
       }
-      if (coverUrlRef.current) {
-        URL.revokeObjectURL(coverUrlRef.current);
+      if (coverUrl.current) {
+        URL.revokeObjectURL(coverUrl.current);
       }
     };
   }, []);

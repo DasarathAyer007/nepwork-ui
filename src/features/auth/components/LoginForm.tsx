@@ -11,8 +11,8 @@ import { z } from 'zod';
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
 
 import { handleApiErrors } from '../../../utils/handleApiErrors';
+import { useLoginMutation } from '../api/authApi';
 import { setCredentials } from '../authSlice';
-import { useLoginMutation } from '../services/authApi';
 import {
   getPasswordStrength,
   getStrengthLabel,

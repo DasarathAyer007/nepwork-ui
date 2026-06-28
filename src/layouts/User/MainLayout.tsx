@@ -9,10 +9,9 @@ function MainLayout() {
       <div className="bg-background text-on-background antialiased overflow-x-hidden">
         <Header />
 
-        <main className="min-h-screen">
+        <main className="mt-20 min-h-screen">
           <Outlet />
         </main>
-
         <Footer />
       </div>
     </>

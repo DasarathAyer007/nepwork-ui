@@ -9,6 +9,7 @@ import type {
   SignupResponse,
   Skill,
 } from '../types';
+import { authEndpoints } from './authEndpoints';
 
 export const AuthApi = createApi({
   reducerPath: 'authApi',
@@ -18,7 +19,7 @@ export const AuthApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
-        url: '/users/login',
+        url: authEndpoints.LOGIN,
         method: 'POST',
         body,
       }),
@@ -26,7 +27,7 @@ export const AuthApi = createApi({
 
     signup: builder.mutation<SignupResponse, SignupRequest>({
       query: (body) => ({
-        url: '/users/register',
+        url: authEndpoints.SIGNUP,
         method: 'POST',
         body,
       }),
@@ -34,7 +35,7 @@ export const AuthApi = createApi({
 
     completeOnboarding: builder.mutation<UserDetails, FormData>({
       query: (body) => ({
-        url: '/users/onboarding',
+        url: authEndpoints.ONBOARDING,
         method: 'POST',
         body,
       }),
