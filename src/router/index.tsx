@@ -5,7 +5,7 @@ import Home from '../pages/Home';
 import JobDetails from '../pages/JobDetails';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
-
+import JobApplication from '../pages/JobApplication';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
@@ -18,6 +18,7 @@ function route() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetails />} />
+        <Route path="/jobs/:id/apply" element={<JobApplication />} />
         <Route path="/profile/:username" element={<Profile />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />

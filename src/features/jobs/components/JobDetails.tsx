@@ -303,12 +303,18 @@ function JobDetails({
         <div className="lg:col-span-1 space-y-6">
           {/* Apply Card */}
           <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
-            <button
+            {/* <button
               className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95"
               onClick={() => console.log(`Applying to job ${id}`)}>
               Apply Now
-            </button>
-
+            </button> */}
+            <Link to={`/jobs/${id}/apply`}>
+              <button
+                className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95"
+              >
+                Apply Now
+              </button>
+            </Link>
             <div className="mt-4 border-2 border-dashed border-outline-variant rounded-lg p-6 text-center">
               <FileText
                 size={32}
