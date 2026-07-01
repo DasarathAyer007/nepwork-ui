@@ -26,7 +26,7 @@ function Header() {
       <div className="flex items-center justify-between w-full px-4 md:px-8 py-2 max-w-8xl mx-auto">
         <div className="flex items-center gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2" aria-label="Home">
-            <img alt="NepWork Logo" className="h-10 w-auto" src="favicon.svg" />
+            {/* <img alt="NepWork Logo" className="h-10 w-auto" src="favicon.svg" /> */}
             <span className="text-headline-md font-bold text-primary hidden sm:block">
               NepWork
             </span>

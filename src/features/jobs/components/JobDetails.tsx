@@ -258,6 +258,7 @@ function JobDetails({
         <div className="lg:col-span-1 space-y-6">
           {/* Apply Card */}
           <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+<<<<<<< Updated upstream
             <button 
               className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95"
               onClick={() => console.log(`Applying to job ${id}`)}
@@ -270,6 +271,30 @@ function JobDetails({
               <p className="text-body-md font-medium text-on-surface">Upload Resume</p>
               <p className="text-label-md text-on-surface-variant">PDF, DOCX (Max 5MB)</p>
             </div>
+=======
+            
+            {/* 🔥 UPDATED APPLY NOW BUTTON 🔥 */}
+            <Link to={`/jobs/${id}/apply`}>
+              <button
+                className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95"
+              >
+                Apply Now
+              </button>
+            </Link>
+
+            {/* <div className="mt-4 border-2 border-dashed border-outline-variant rounded-lg p-6 text-center">
+              <FileText
+                size={32}
+                className="mx-auto text-on-surface-variant mb-2"
+              />
+              <p className="text-body-md font-medium text-on-surface">
+                Upload Resume
+              </p>
+              <p className="text-label-md text-on-surface-variant">
+                PDF, DOCX (Max 5MB)
+              </p>
+            </div> */}
+>>>>>>> Stashed changes
 
             <div className="mt-4 space-y-3">
               <div className="flex justify-between items-center text-body-md">

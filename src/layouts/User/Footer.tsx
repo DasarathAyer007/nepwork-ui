@@ -5,11 +5,11 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 w-full px-6 md:px-12 py-12 max-w-7xl mx-auto">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <img
+              {/* <img
                 alt="NepWork Logo"
                 className="h-8"
                 src="https://lh3.googleusercontent.com/aida/AP1WRLt3hNw3JuAWJRY-AKyc5z66_4EZ7uEthgXj26ZNRy9LJuLRLQ6lhM4dHDxXITBb-rRS159HT4VH1jsLM6PbvKnhiOxxZEqJvo4sqck8trpfl_G2Ouf0_B01915M3NjmVzvF2jMYlgAiV-D0iNrbfAqqoYVkQ6qppZ2uFvkMYD4JOdw19g3sha8Dbs2epCtQdse4U1xKPA7aB0cdQ5Seyq9rLggTNgtVEbwQbxE1cj5P6b9tm3jfmMJ1YWM"
-              />
+              /> */}
               <span className="text-headline-sm font-bold text-on-surface dark:text-on-surface">
                 NepWork
               </span>
@@ -25,7 +25,7 @@ function Footer() {
               <li>
                 <a
                   className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
+                  href="jobs">
                   Find Jobs
                 </a>
               </li>
