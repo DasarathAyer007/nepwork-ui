@@ -12,7 +12,7 @@ function Home() {
   return (
     <>
       <div className="bg-background text-on-background antialiased overflow-x-hidden">
-        <main className="pt-15">
+        <main className="">
           <HeroSection />
 
           <section className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 relative z-10 pb-20">

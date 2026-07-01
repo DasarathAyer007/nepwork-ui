@@ -1,8 +1,15 @@
+import { Toaster } from 'sonner';
+
 import './App.css';
 import AppRoute from './router';
 
 function App() {
-  return <AppRoute />;
+  return (
+    <>
+      <AppRoute />
+      <Toaster />
+    </>
+  );
 }
 
 export default App;

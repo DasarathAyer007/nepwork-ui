@@ -1,10 +1,18 @@
 import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
+import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { Input, Label, SubmitButton } from '@/components/ui/forms';
+
+import { handleApiErrors } from '../../../utils/handleApiErrors';
+import { useLoginMutation } from '../api/authApi';
+import { setCredentials } from '../authSlice';
 import {
   getPasswordStrength,
   getStrengthLabel,
@@ -12,16 +20,19 @@ import {
 } from '../utils/passwordStrength';
 
 const loginSchema = z.object({
-  email: z
+  username: z
     .string()
     .trim()
-    .toLowerCase()
-    .email('Please enter a valid email address')
-    .max(254, 'Email is too long'),
+    .min(3, 'Username must be at least 3 characters')
+    .max(30, 'Username must be less than 30 characters')
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Username can only contain letters, numbers, and underscores'
+    ),
 
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(3, 'Password must be at least 3 characters')
     .max(100, 'Password must be less than 100 characters')
     .refine((val) => val.trim().length > 0, {
       message: 'Password cannot be empty or spaces only',
@@ -40,12 +51,13 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
+    setError,
     control,
     formState: { errors, isSubmitting },
   } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -56,8 +68,28 @@ function LoginForm() {
     defaultValue: '',
   });
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+
   const onSubmit = async (data: LoginSchemaType) => {
-    console.log('Login data:', data);
+    try {
+      const res = await login(data).unwrap();
+
+      console.log('Login successful:', res);
+      dispatch(
+        setCredentials({
+          accessToken: res.access_token,
+          refreshToken: res.refresh_token,
+          user: res.user,
+        })
+      );
+
+      navigate('/');
+    } catch (err: unknown) {
+      handleApiErrors(err, setError, toast);
+    }
   };
 
   const score = getPasswordStrength(password);
@@ -71,21 +103,19 @@ function LoginForm() {
         id="signInForm"
         onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-1.5">
-          <label className="form-label" htmlFor="email">
-            Email Address
-          </label>
+          <Label htmlFor="username">Username</Label>
           <div className="relative">
-            <Mail className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
+            <User className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
 
-            <input
-              className="w-full pl-12 pr-md py-3 bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
-              id="email"
-              placeholder="name@company.com"
-              {...register('email')}
+            <Input
+              variant="auth"
+              id="username"
+              placeholder="Enter your username"
+              {...register('username')}
             />
           </div>
-          {errors.email && (
-            <p className="text-error text-sm">{errors.email.message}</p>
+          {errors.username && (
+            <p className="text-error text-sm">{errors.username.message}</p>
           )}
         </div>
         <div className="space-y-1.5">
@@ -102,11 +132,11 @@ function LoginForm() {
           <div className="relative">
             <Lock className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
 
-            <input
-              className="w-full pl-12 pr-3 py-3  bg-surface border border-outline-variant rounded-md focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none text-on-surface placeholder:text-on-surface-variant/40"
+            <Input
               id="password"
               placeholder="••••••••"
               type={showPassword ? 'text' : 'password'}
+              variant="auth"
               {...register('password')}
             />
 
@@ -145,15 +175,15 @@ function LoginForm() {
             Remember me for 30 days
           </label>
         </div>
-        <button
-          className="w-full bg-primary text-on-primary py-3 px-lg rounded-md font-bold text-base shadow-ambient hover:bg-primary-dim active:scale-[0.99] transition-all flex items-center justify-center gap-sm cursor-pointer disabled:bg-primary/50 disabled:cursor-not-allowed"
+        <SubmitButton
           type="submit"
-          disabled={isSubmitting}>
-          {isSubmitting ? 'Signing In...' : 'Sign In'}
+          loading={isSubmitting || isLoggingIn}
+          disabled={isSubmitting || isLoggingIn}>
+          {isSubmitting || isLoggingIn ? 'Signing In...' : 'Sign In'}
           <span className="material-symbols-outlined text-[18px]">
             <LogIn strokeWidth={2.75} />
           </span>
-        </button>
+        </SubmitButton>
       </form>
     </>
   );

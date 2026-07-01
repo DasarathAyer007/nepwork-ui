@@ -6,13 +6,11 @@ import Header from './Header';
 function MainLayout() {
   return (
     <>
-      <div className="bg-background text-on-background antialiased overflow-x-hidden">
+      <div className="bg-background text-on-background antialiased ">
         <Header />
-
-        <main className="min-h-screen">
+        <main className=" min-h-screen overflow-x-hidden">
           <Outlet />
         </main>
-
         <Footer />
       </div>
     </>

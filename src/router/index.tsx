@@ -6,6 +6,8 @@ import JobDetails from '../pages/JobDetails';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
 
+import Onboarding from '../pages/Onboarding';
+import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
 
 function route() {
@@ -13,8 +15,10 @@ function route() {
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetails />} />
+        <Route path="/profile/:username" element={<Profile />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />
