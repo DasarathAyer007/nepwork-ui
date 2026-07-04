@@ -1,3 +1,4 @@
+import Services from '@/pages/Services.tsx';
 import { Route, Routes } from 'react-router-dom';
 
 import MainLayout from '../layouts/User/MainLayout';
@@ -18,6 +19,7 @@ function route() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetails />} />
         <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/services" element={<Services />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />
