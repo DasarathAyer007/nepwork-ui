@@ -1,4 +1,3 @@
-// ServiceFilter.tsx
 import { useState } from 'react';
 
 import { ChevronDown } from 'lucide-react';
@@ -13,7 +12,7 @@ interface ServiceFilterProps {
   mapview: boolean;
 }
 
-// Placeholder skills – replace with API (e.g., useGetSkillsQuery)
+// Placeholder skills – replace with API
 const SKILLS_LIST = [
   { id: '1', name: 'Plumbing' },
   { id: '2', name: 'Electrical' },
@@ -43,10 +42,7 @@ export default function ServiceFilter({
   };
 
   const toggleCategory = (categoryId: string) => {
-    const updated = filters.category.includes(categoryId)
-      ? filters.category.filter((id) => id !== categoryId)
-      : [...filters.category, categoryId];
-    handleChange('category', updated);
+    handleChange('category', filters.category === categoryId ? '' : categoryId);
   };
 
   const toggleSkill = (skillId: string) => {
@@ -66,8 +62,7 @@ export default function ServiceFilter({
   return (
     <aside
       className={`bg-surface-container-lowest  rounded-lg p-6 space-y-6 
-    
-    ${mapview ? 'bg-surface-container-lowest/60 border-outline-variant/30 backdrop-blur-sm ' : 'bg-surface-container-lowest border-outline-variant'}
+    ${mapview ? 'bg-surface-container-lowest/60 border-outline-variant/30 backdrop-blur-sm ' : 'bg-surface-container-lowest  border border-outline-variant '}
     `}>
       <div className="flex items-center justify-between">
         <h2 className="text-headline-sm font-bold text-on-surface">Filters</h2>
@@ -88,7 +83,7 @@ export default function ServiceFilter({
               className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={filters.category.includes(cat.id)}
+                checked={filters.category === cat.id}
                 onChange={() => toggleCategory(cat.id)}
                 className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20"
               />
@@ -271,20 +266,6 @@ export default function ServiceFilter({
             <span className="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
           </span>
         </label>
-      </div>
-
-      {/* Promo card */}
-      <div className="relative overflow-hidden rounded-lg h-48 bg-primary p-6 text-on-primary">
-        <div className="relative z-10">
-          <h4 className="font-bold text-headline-sm mb-2">Hire Instantly</h4>
-          <p className="text-body-md opacity-90 mb-4">
-            Get professional help at your doorstep in minutes.
-          </p>
-          <button className="bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded-lg font-bold text-label-md hover:brightness-110">
-            LEARN MORE
-          </button>
-        </div>
-        <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-primary-container rounded-full blur-3xl opacity-30"></div>
       </div>
     </aside>
   );

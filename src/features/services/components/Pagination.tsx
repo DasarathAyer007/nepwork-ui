@@ -30,7 +30,7 @@ export default function Pagination({
   return (
     <div className="flex justify-center items-center gap-2 mt-8">
       <button
-        className="p-2 rounded-lg hover:bg-surface-container text-on-surface-variant disabled:opacity-50"
+        className="p-2 rounded-md hover:bg-surface-container text-on-surface-variant disabled:opacity-50"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}>
         <span className="material-symbols-outlined">
@@ -47,7 +47,7 @@ export default function Pagination({
           <button
             key={page}
             onClick={() => onPageChange(page as number)}
-            className={`w-10 h-10 rounded-lg font-bold ${
+            className={`w-10 h-10 rounded-md font-bold ${
               page === currentPage
                 ? 'bg-primary text-on-primary'
                 : 'hover:bg-surface-container'

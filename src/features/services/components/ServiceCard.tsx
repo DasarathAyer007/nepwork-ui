@@ -1,13 +1,13 @@
 import { BookmarkCheck, BookmarkPlus, MapPin, Star, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import type { Category, ServiceResult } from '../types';
 import CategoryIcon from '@/components/CategoryIcon';
+
+import type { Category, ServiceResult } from '../types';
 
 interface ServiceCardProps {
   data: ServiceResult;
   onSaveToggle: (id: string) => void;
-  skillNames?: Record<string, string>;
   maxSkillsShown?: number;
 }
 
@@ -29,17 +29,13 @@ const getCategoryIcon = (category: Category | null) => {
 export default function ServiceCard({
   data,
   onSaveToggle,
-  skillNames = {},
   maxSkillsShown = 3,
 }: ServiceCardProps) {
   const priceAmount = data?.price ? parseFloat(data.price) : 0;
   const locationText = buildLocation(data?.location);
 
-  const skillLabels = data?.skills.map(
-    (skillId) => skillNames[skillId] || skillId
-  );
-  const visibleSkills = skillLabels.slice(0, maxSkillsShown);
-  const extraSkillsCount = skillLabels.length - visibleSkills.length;
+  const visibleSkills = data.skills.slice(0, maxSkillsShown);
+  const extraSkillsCount = data.skills.length - visibleSkills.length;
 
   return (
     <div className="group relative flex gap-3 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg hover:shadow-md hover:border-primary/30 transition-all duration-200">
@@ -58,7 +54,6 @@ export default function ServiceCard({
             <span className="material-symbols-outlined text-2xl">image</span>
           </div>
         )}
-        {/* Availability badge lives on the thumbnail so it doesn't compete with text rows */}
         <span
           className={`absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium leading-none ${
             data.is_currently_available
@@ -76,7 +71,6 @@ export default function ServiceCard({
 
       {/* Content */}
       <div className="flex-grow min-w-0 flex flex-col gap-1">
-        {/* Top row: category (left) + bookmark (top right) */}
         <div className="flex items-start justify-between gap-2">
           {data.category ? (
             <div className="flex items-center gap-1 min-w-0">

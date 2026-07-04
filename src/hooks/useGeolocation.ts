@@ -23,8 +23,17 @@ const INITIAL_STATE: GeoState = {
   permissionStatus: 'checking',
 };
 
+function getInitialPermissionStatus(): GeoPermissionState {
+  if (!navigator.geolocation) return 'unsupported';
+  if (!('permissions' in navigator)) return 'prompt';
+  return 'checking';
+}
+
 export function useGeolocation() {
-  const [state, setState] = useState<GeoState>(INITIAL_STATE);
+  const [state, setState] = useState<GeoState>(() => ({
+    ...INITIAL_STATE,
+    permissionStatus: getInitialPermissionStatus(),
+  }));
 
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -73,19 +82,20 @@ export function useGeolocation() {
   }, []);
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setState((prev) => ({
-        ...prev,
-        permissionStatus: 'unsupported',
-      }));
-      return;
-    }
+    if (!navigator.geolocation || !('permissions' in navigator)) {
+    // if (!navigator.geolocation) {
+    //   setState((prev) => ({
+    //     ...prev,
+    //     permissionStatus: 'unsupported',
+    //   }));
+    //   return;
+    // }
 
-    if (!('permissions' in navigator)) {
-      setState((prev) => ({
-        ...prev,
-        permissionStatus: 'prompt',
-      }));
+    // if (!('permissions' in navigator)) {
+    //   setState((prev) => ({
+    //     ...prev,
+    //     permissionStatus: 'prompt',
+    //   }));
       return;
     }
 
