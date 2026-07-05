@@ -9,6 +9,8 @@ import LogIn from '../pages/LogIn';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
+import CreatePostType from '../pages/ChoosePostType';
+import CreateService from '@/pages/CreateService.tsx';
 
 function route() {
   return (
@@ -20,6 +22,8 @@ function route() {
         <Route path="jobs/:id" element={<JobDetails />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/create" element={<CreatePostType />} />
+        <Route path="/create/service" element={<CreateService />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />
