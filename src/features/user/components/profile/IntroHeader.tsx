@@ -1,5 +1,6 @@
 import type { UserDetails } from '@/types/user.types';
 import { BadgeCheck, Building, MapPin, UserRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 type IntroHeaderProps = {
   profileDetails: UserDetails;
@@ -7,6 +8,17 @@ type IntroHeaderProps = {
 
 function IntroHeader({ profileDetails }: IntroHeaderProps) {
   const isOrg = profileDetails.account_type === 'organization';
+  const navigate = useNavigate();
+
+  const handleMessageClick = () => {
+    const params = new URLSearchParams({
+      userId: String(profileDetails.id),
+      username: profileDetails.username,
+      profile_picture: profileDetails.profile_picture || '',
+      fullName: profileDetails.full_name,
+    });
+    navigate(`/messages?${params.toString()}`);
+  };
 
   return (
     <header className="relative mb-xl bg-surface-container-lowest rounded-md overflow-hidden shadow-sm border border-outline-variant">
@@ -66,14 +78,13 @@ function IntroHeader({ profileDetails }: IntroHeaderProps) {
           </div>
         </div>
 
-        {/* Actions — only for full-access viewers */}
-        {profileDetails.access_level === 'full' && (
-          <div className="flex gap-sm mb-2 w-full md:w-auto">
-            <button className="flex-1 md:flex-none px-xl py-xs border border-primary text-primary rounded-xl font-label-md text-label-md hover:bg-primary/10 transition-colors">
-              Message
-            </button>
-          </div>
-        )}
+        <div className="flex gap-sm mb-2 w-full md:w-auto">
+          <button
+            onClick={handleMessageClick}
+            className="flex-1 md:flex-none px-xl py-xs border border-primary text-primary rounded-xl font-label-md text-label-md hover:bg-primary/10 transition-colors">
+            Message
+          </button>
+        </div>
       </div>
     </header>
   );

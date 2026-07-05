@@ -1,22 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Bell, Menu, MessageCircle, X } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
 import {
   selectIsAuthenticated,
   selectUser,
 } from '../../features/auth/authSelectors';
+import {
+  selectChatUnreadCount,
+  setChatUnreadCount,
+} from '../../features/chat/chatSlice';
+import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
+import { selectUnreadCount } from '../../features/notifications/notificationsSlice';
 import PostDropdown from '../PostDropdown';
 import ProfileDropdown from '../ProfileDropdown';
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const isLogin = useSelector(selectIsAuthenticated);
-  const user = useSelector(selectUser);
-  const notificationCount = 0;
+  const dispatch = useAppDispatch();
+  const isLogin = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectUser);
+  const notificationCount = useAppSelector(selectUnreadCount);
+  const unreadMessageCount = useAppSelector(selectChatUnreadCount);
+  const { data: unreadCountData } = useGetUnreadCountQuery(undefined, {
+    skip: !isLogin,
+  });
+
+  useEffect(() => {
+    if (unreadCountData?.unread_count !== undefined) {
+      dispatch(setChatUnreadCount(unreadCountData.unread_count));
+    }
+  }, [dispatch, unreadCountData]);
 
   const navLinks = [
     { name: 'Find Jobs', to: '/jobs' },
@@ -52,15 +69,17 @@ function Header() {
             <>
               <PostDropdown />
 
-              <button
+              <Link
+                to="/messages"
                 className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
-                aria-label="Messages">
+                aria-label={`Messages${unreadMessageCount > 0 ? ` (${unreadMessageCount} unread)` : ''}`}>
                 <MessageCircle size={25} />
-                <span className="absolute top-1 right-1 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                </span>
-              </button>
+                {unreadMessageCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-4.5 h-4.5 text-[10px] font-bold text-white bg-error rounded-full px-1">
+                    {unreadMessageCount}
+                  </span>
+                )}
+              </Link>
 
               <button
                 className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
