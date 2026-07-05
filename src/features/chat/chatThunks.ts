@@ -3,7 +3,12 @@ import type { ChatReadConfirmedPayload } from '@/types/websocket.types';
 import type { AppDispatch, RootState } from '../../app/store';
 import webSocketService from '../../services/webSocketService';
 import { chatApi } from './chatApi';
-import { chatReadConfirmed, messageReceived } from './chatSlice';
+import {
+  chatReadConfirmed,
+  decrementChatUnreadCount,
+  incrementChatUnreadCount,
+  messageReceived,
+} from './chatSlice';
 import type { Chat, Message } from './types';
 
 /**
@@ -16,7 +21,26 @@ export const handleIncomingChatMessage =
     const currentUserId = getState().auth.user?.id;
     const activeChatId = getState().chat.activeChatId;
 
+    const chatsQuery = chatApi.endpoints.getChats.select()(getState());
+    const existingChat = chatsQuery.data?.find((c) => c.id === message.chat_id);
+    const wasChatUnread = Boolean(existingChat?.unread_count);
+
     dispatch(messageReceived(message));
+
+    if (
+      message.sender.id !== currentUserId &&
+      activeChatId !== message.chat_id &&
+      !wasChatUnread
+    ) {
+      dispatch(incrementChatUnreadCount());
+      dispatch(
+        chatApi.util.updateQueryData('getUnreadCount', undefined, (draft) => {
+          if (draft) {
+            draft.unread_count += 1;
+          }
+        })
+      );
+    }
 
     dispatch(
       chatApi.util.updateQueryData('getChats', undefined, (draft) => {
@@ -43,6 +67,14 @@ export const handleIncomingChatMessage =
 export const handleChatReadConfirmed =
   (payload: ChatReadConfirmedPayload) => (dispatch: AppDispatch) => {
     dispatch(chatReadConfirmed(payload));
+    dispatch(decrementChatUnreadCount(1));
+    dispatch(
+      chatApi.util.updateQueryData('getUnreadCount', undefined, (draft) => {
+        if (draft) {
+          draft.unread_count = Math.max(0, draft.unread_count - 1);
+        }
+      })
+    );
     dispatch(
       chatApi.util.updateQueryData('getChats', undefined, (draft) => {
         const chat = draft.find((c) => c.id === payload.chat_id);

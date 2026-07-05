@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Bell, Menu, MessageCircle, X } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
 import {
   selectIsAuthenticated,
   selectUser,
 } from '../../features/auth/authSelectors';
-import { useGetChatsQuery } from '../../features/chat/chatApi';
+import {
+  selectChatUnreadCount,
+  setChatUnreadCount,
+} from '../../features/chat/chatSlice';
+import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
 import { selectUnreadCount } from '../../features/notifications/notificationsSlice';
 import PostDropdown from '../PostDropdown';
 import ProfileDropdown from '../ProfileDropdown';
@@ -16,16 +20,20 @@ import ProfileDropdown from '../ProfileDropdown';
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const isLogin = useSelector(selectIsAuthenticated);
-  const user = useSelector(selectUser);
-  const notificationCount = useSelector(selectUnreadCount);
-  const { unreadMessageCount } = useGetChatsQuery(undefined, {
+  const dispatch = useAppDispatch();
+  const isLogin = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectUser);
+  const notificationCount = useAppSelector(selectUnreadCount);
+  const unreadMessageCount = useAppSelector(selectChatUnreadCount);
+  const { data: unreadCountData } = useGetUnreadCountQuery(undefined, {
     skip: !isLogin,
-    selectFromResult: ({ data }) => ({
-      unreadMessageCount:
-        data?.reduce((total, chat) => total + (chat.unread_count > 0 ? 1 : 0), 0) ?? 0,
-    }),
   });
+
+  useEffect(() => {
+    if (unreadCountData?.unread_count !== undefined) {
+      dispatch(setChatUnreadCount(unreadCountData.unread_count));
+    }
+  }, [dispatch, unreadCountData]);
 
   const navLinks = [
     { name: 'Find Jobs', to: '/jobs' },

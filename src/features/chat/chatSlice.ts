@@ -12,18 +12,31 @@ interface ChatState {
   messagesByChat: Record<string, Message[]>;
   typingByChat: Record<string, Record<string, string>>; // chatId -> userId -> username
   activeChatId: string | null;
+  unreadCount: number;
 }
 
 const initialState: ChatState = {
   messagesByChat: {},
   typingByChat: {},
   activeChatId: null,
+  unreadCount: 0,
 };
 
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    setChatUnreadCount: (state, action: PayloadAction<number>) => {
+      state.unreadCount = action.payload;
+    },
+
+    incrementChatUnreadCount: (state) => {
+      state.unreadCount += 1;
+    },
+
+    decrementChatUnreadCount: (state, action: PayloadAction<number>) => {
+      state.unreadCount = Math.max(0, state.unreadCount - action.payload);
+    },
     setActiveChat: (state, action: PayloadAction<string | null>) => {
       state.activeChatId = action.payload;
     },
@@ -91,6 +104,9 @@ const chatSlice = createSlice({
 
 export const {
   setActiveChat,
+  setChatUnreadCount,
+  incrementChatUnreadCount,
+  decrementChatUnreadCount,
   messageReceived,
   typingReceived,
   chatReadConfirmed,
@@ -99,6 +115,9 @@ export const {
 } = chatSlice.actions;
 
 // Selectors — curried, so usage is useSelector(selectLiveMessages(chatId))
+export const selectChatUnreadCount = (state: RootState): number =>
+  state.chat.unreadCount;
+
 export const selectLiveMessages =
   (chatId: string) =>
   (state: RootState): Message[] =>
