@@ -60,9 +60,6 @@ export default function MessagePage() {
     );
   }, [chats, draftUser]);
 
-
-
-
   const activeSelection = useMemo<SelectedChat>(() => {
     if (!draftUser) {
       return selectedChat;
@@ -79,7 +76,6 @@ export default function MessagePage() {
       };
     }
 
-
     if (
       selectedChat?.mode === 'draft' &&
       selectedChat.user.id === draftUser.id
@@ -93,10 +89,10 @@ export default function MessagePage() {
     };
   }, [draftUser, existingChat, selectedChat]);
 
-
-    const activeChat = activeSelection?.mode === 'existing'
-  ? chats.find((c) => c.id === activeSelection.chatId) ?? null
-  : null;
+  const activeChat =
+    activeSelection?.mode === 'existing'
+      ? (chats.find((c) => c.id === activeSelection.chatId) ?? null)
+      : null;
 
   const handleSelectChat = (chat: Chat) => {
     setSelectedChat({
@@ -163,8 +159,12 @@ export default function MessagePage() {
       />
 
       {chatWindowTarget ? (
-        <ChatWindow target={chatWindowTarget} chat={activeChat} currentUserId={currentUserId} onChatCreated={handleChatCreated} />
-
+        <ChatWindow
+          target={chatWindowTarget}
+          chat={activeChat}
+          currentUserId={currentUserId}
+          onChatCreated={handleChatCreated}
+        />
       ) : (
         <div className="flex flex-1 items-center justify-center bg-surface-bright">
           <p className="text-body-lg text-on-surface-variant">

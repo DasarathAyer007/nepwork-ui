@@ -1,174 +1,293 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import JobCard from '../features/jobs/components/JobCard';
+import JobList from '@/features/jobs/components/JobList';
+import type {
+  JobCategory,
+  JobFilters as JobFiltersType,
+  JobResult,
+} from '@/features/jobs/jobTypes';
+
+import { SpinnerLoader } from '@/components/loaders/SpinnerLoader';
+
+import { useGeolocation } from '@/hooks/useGeolocation';
+
 import JobFilters from '../features/jobs/components/JobFilters';
-import JobPagination from '../features/jobs/components/JobPagination';
+import JobMapView from '../features/jobs/components/JobMapView';
 import JobSearchBar from '../features/jobs/components/JobSearchBar';
+import {
+  useGetJobCategoryQuery,
+  useGetJobsListQuery,
+} from '../features/jobs/jobApi';
 
-// Mock data - replace with API data later
-const JOBS_MOCK = [
-  {
-    id: '1',
-    title: 'Senior Agronomist',
-    company: 'GreenTerra Solutions',
-    location: 'Pokhara, Nepal',
-    salary: 'Rs. 85,000 - 120,000/mo',
-    type: 'Full-time',
-    postedAt: '2 hours ago',
-    isUrgent: false,
-  },
-  {
-    id: '2',
-    title: 'Full-Stack Developer (React/Node)',
-    company: 'Nepal Digital Labs',
-    location: 'Kathmandu, Remote Friendly',
-    salary: 'Rs. 150,000 - 200,000/mo',
-    type: 'Contract',
-    postedAt: '1 day ago',
-    isUrgent: false,
-  },
-  {
-    id: '3',
-    title: 'Hospitality Manager',
-    company: 'Everest View Resort',
-    location: 'Namche Bazaar',
-    salary: 'Rs. 45,000 - 60,000/mo',
-    type: 'Full-time',
-    postedAt: '3 days ago',
-    isUrgent: false,
-  },
-  {
-    id: '4',
-    title: 'Civil Engineer (Infrastructure)',
-    company: 'Kathmandu Builders Group',
-    location: 'Lalitpur',
-    salary: 'Rs. 90,000 - 130,000/mo',
-    type: 'Full-time',
-    postedAt: '5 hours ago',
-    isUrgent: true,
-  },
-];
+const FALLBACK_CENTER = { lat: 27.7172, lng: 85.324 }; // Kathmandu — match JobMapView's fallback
 
-function Jobs() {
-  // Search state
+const EMPTY_JOBS: JobResult[] = [];
+const EMPTY_CATEGORIES: JobCategory[] = [];
+
+export default function Jobs() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
 
-  // Filter states
-  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedExperience, setSelectedExperience] = useState('');
-  const [salaryRange, setSalaryRange] = useState(10000);
+  const [geoParams, setGeoParams] = useState<{
+    lat: number;
+    lng: number;
+    radius_km: number;
+  } | null>(null);
+  const [hasAppliedRealLocation, setHasAppliedRealLocation] = useState(false);
+  const geolocation = useGeolocation();
 
-  // Pagination state
+  const [filters, setFilters] = useState<JobFiltersType>({
+    category: '',
+    jobType: '',
+    workMode: '',
+    experienceLevel: '',
+    experienceYears: null,
+    skills: [],
+    salaryMin: '',
+    salaryMax: '',
+    currency: '',
+    city: '',
+    state: '',
+    country: '',
+    postalCode: '',
+    hasLocation: null,
+  });
+
+  const [sortBy, setSortBy] = useState('-created_at');
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 5;
 
-  // Filter logic
-  const filteredJobs = useMemo(() => {
-    return JOBS_MOCK.filter((job) => {
-      // Search filter
-      const matchesSearch =
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchTerm.toLowerCase());
+  const { data: categories } = useGetJobCategoryQuery(null);
 
-      // Job type filter
-      const matchesJobType =
-        selectedJobTypes.length === 0 || selectedJobTypes.includes(job.type);
+  const queryParams = useMemo(() => {
+    const params: any = {
+      page: currentPage,
+      page_size: viewMode === 'map' ? 200 : 20, // map isn't paginated visually — fetch everything in the radius
+      ordering: sortBy,
+    };
 
-      // Location filter
-      const matchesLocation =
-        !selectedLocation || job.location.includes(selectedLocation);
+    if (searchTerm.trim()) params.search = searchTerm.trim();
+    if (filters.category) params.category = filters.category;
+    if (filters.jobType) params.job_type = filters.jobType;
+    if (filters.workMode) params.work_mode = filters.workMode;
+    if (filters.experienceLevel)
+      params.experience_level = filters.experienceLevel;
+    if (filters.experienceYears !== null && filters.experienceYears > 0) {
+      params.experience_years = filters.experienceYears;
+    }
+    if (filters.skills.length > 0) params.skills = filters.skills;
+    if (filters.salaryMin) params.salary_min = filters.salaryMin;
+    if (filters.salaryMax) params.salary_max = filters.salaryMax;
+    if (filters.currency) params.currency = filters.currency;
+    if (filters.city) params.city = filters.city;
+    if (filters.state) params.state = filters.state;
+    if (filters.country) params.country = filters.country;
+    if (filters.postalCode) params.postal_code = filters.postalCode;
+    if (filters.hasLocation !== null) params.has_location = filters.hasLocation;
 
-      // Experience filter (simplified)
-      const matchesExperience =
-        !selectedExperience ||
-        (selectedExperience === 'Entry Level' &&
-          job.title.includes('Junior')) ||
-        (selectedExperience === 'Mid Level' && job.title.includes('Manager')) ||
-        (selectedExperience === 'Senior Level' && job.title.includes('Senior'));
+    if (viewMode === 'map' && geoParams) {
+      params.lat = geoParams.lat;
+      params.lng = geoParams.lng;
+      params.radius_km = geoParams.radius_km;
+    }
 
-      // Salary filter (extract number from salary string)
-      const salaryNum = parseInt(job.salary.replace(/[^0-9]/g, ''));
-      const matchesSalary = salaryNum >= salaryRange;
+    return params;
+  }, [currentPage, sortBy, searchTerm, filters, viewMode, geoParams]);
 
-      return (
-        matchesSearch &&
-        matchesJobType &&
-        matchesLocation &&
-        matchesExperience &&
-        matchesSalary
-      );
+  const { data, isLoading, isError, error } = useGetJobsListQuery(queryParams);
+  const totalPages = data?.total_pages ?? 1;
+  const totalCount = data?.count ?? 0;
+
+  const handleSearch = useCallback(() => setCurrentPage(1), []);
+
+  const handleFilterChange = useCallback((newFilters: JobFiltersType) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  }, []);
+
+  const handleResetFilters = useCallback(() => {
+    setFilters({
+      category: '',
+      jobType: '',
+      workMode: '',
+      experienceLevel: '',
+      experienceYears: null,
+      skills: [],
+      salaryMin: '',
+      salaryMax: '',
+      currency: '',
+      city: '',
+      state: '',
+      country: '',
+      postalCode: '',
+      hasLocation: null,
     });
-  }, [
-    searchTerm,
-    selectedJobTypes,
-    selectedLocation,
-    selectedExperience,
-    salaryRange,
-  ]);
+    setSearchTerm('');
+    setSortBy('-created_at');
+    setCurrentPage(1);
+  }, []);
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const startIndex = (currentPage - 1) * jobsPerPage;
-  const currentJobs = filteredJobs.slice(startIndex, startIndex + jobsPerPage);
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
-  return (
-    <div className="mt-4 bg-background min-h-screen pb-16">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Search Bar */}
-        <div className="mb-6">
-          <JobSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+  const userLocation = useMemo(
+    () =>
+      geolocation.lat && geolocation.lng
+        ? { lat: geolocation.lat, lng: geolocation.lng }
+        : null,
+    [geolocation.lat, geolocation.lng]
+  );
+
+  // Reset/seed geo params whenever we switch modes.
+  const [prevViewMode, setPrevViewMode] = useState(viewMode);
+  if (viewMode !== prevViewMode) {
+    setPrevViewMode(viewMode);
+    if (viewMode === 'map') {
+      setGeoParams({
+        lat: userLocation?.lat ?? FALLBACK_CENTER.lat,
+        lng: userLocation?.lng ?? FALLBACK_CENTER.lng,
+        radius_km: 10,
+      });
+      setHasAppliedRealLocation(!!userLocation);
+    } else {
+      setGeoParams(null);
+      setHasAppliedRealLocation(false);
+    }
+  }
+
+  // Once real geolocation resolves after entering map mode, snap to it.
+  const [appliedLocationKey, setAppliedLocationKey] = useState<string | null>(
+    null
+  );
+  const userLocationKey = userLocation
+    ? `${userLocation.lat},${userLocation.lng}`
+    : null;
+  if (
+    viewMode === 'map' &&
+    userLocation &&
+    !hasAppliedRealLocation &&
+    userLocationKey !== appliedLocationKey
+  ) {
+    setAppliedLocationKey(userLocationKey);
+    setHasAppliedRealLocation(true);
+    setGeoParams({
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+      radius_km: 10,
+    });
+  }
+
+  useEffect(() => {
+    if (viewMode === 'map' && geolocation.permissionStatus === 'prompt') {
+      geolocation.requestLocation();
+    }
+  }, [viewMode, geolocation.permissionStatus, geolocation.requestLocation]);
+
+  const handleBoundsChange = useCallback(
+    (lat: number, lng: number, radius_km: number) => {
+      setGeoParams({ lat, lng, radius_km });
+    },
+    []
+  );
+
+  if (viewMode === 'map') {
+    return (
+      <div className="fixed inset-0 top-15 z-0">
+        <JobMapView
+          jobs={data?.results ?? EMPTY_JOBS}
+          totalCount={totalCount}
+          center={geoParams ? { lat: geoParams.lat, lng: geoParams.lng } : null}
+          userLocation={userLocation}
+          onBoundsChange={handleBoundsChange}
+          isLoading={isLoading}
+          permissionStatus={geolocation.permissionStatus}
+          onRequestLocation={geolocation.requestLocation}
+        />
+
+        <div className="absolute top-4 left-4 right-4 z-999">
+          <JobSearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={handleSearch}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
         </div>
 
-        {/* Main Layout */}
+        <div className="absolute top-30 left-4 z-999 w-72 max-h-[calc(100%-8rem)] overflow-y-auto">
+          <JobFilters
+            categories={categories ?? EMPTY_CATEGORIES}
+            filters={filters}
+            onChange={handleFilterChange}
+            onReset={handleResetFilters}
+            mapview={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-background min-h-screen pb-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-4">
+        <div className="mb-6">
+          <JobSearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={handleSearch}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Filters - Sticky on desktop */}
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-24">
               <JobFilters
-                selectedJobTypes={selectedJobTypes}
-                setSelectedJobTypes={setSelectedJobTypes}
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-                selectedExperience={selectedExperience}
-                setSelectedExperience={setSelectedExperience}
-                salaryRange={salaryRange}
-                setSalaryRange={setSalaryRange}
+                categories={categories ?? EMPTY_CATEGORIES}
+                filters={filters}
+                onChange={handleFilterChange}
+                onReset={handleResetFilters}
+                mapview={false}
               />
             </div>
           </div>
 
-          {/* Job List */}
           <div className="lg:col-span-3 space-y-4">
-            {currentJobs.length > 0 ? (
-              currentJobs.map((job) => <JobCard key={job.id} {...job} />)
-            ) : (
-              <div className="text-center py-12 bg-surface-container-lowest rounded-lg border border-outline-variant">
-                <h3 className="text-headline-sm text-on-surface-variant">
-                  No jobs found matching your criteria
-                </h3>
-                <p className="text-body-md text-on-surface-variant mt-2">
-                  Try adjusting your filters or search term
+            {!isLoading && !isError && (
+              <div className="text-body-md text-on-surface-variant">
+                Showing {data?.results?.length || 0} of {totalCount} jobs
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="flex items-center justify-center py-12">
+                <SpinnerLoader />
+              </div>
+            )}
+
+            {isError && (
+              <div className="flex items-center justify-center py-12">
+                <p className="text-error">
+                  Error: {(error as any)?.message || 'Failed to load jobs'}
                 </p>
               </div>
             )}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-8 pt-4 border-t border-outline-variant/30">
-                <JobPagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
-              </div>
-            )}
+            <JobList
+              jobs={data?.results ?? EMPTY_JOBS}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default Jobs;

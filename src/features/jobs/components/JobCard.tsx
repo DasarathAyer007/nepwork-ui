@@ -1,110 +1,267 @@
-import { Briefcase, Clock, MapPin } from 'lucide-react';
+import {
+  BookmarkCheck,
+  BookmarkPlus,
+  Briefcase,
+  Clock,
+  MapPin,
+  Star,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import CategoryIcon from '@/components/CategoryIcon';
+
+import type { BasicJobCategory, JobResult } from '../jobTypes';
+
 interface JobCardProps {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-  type: string;
-  postedAt: string;
-  isUrgent?: boolean;
-  logo?: string;
+  data: JobResult;
+  onSaveToggle: (id: string) => void;
+  maxSkillsShown?: number;
 }
 
-function JobCard({
-  id,
-  title,
-  company,
-  location,
-  salary,
-  type,
-  postedAt,
-  isUrgent = false,
-  logo,
-}: JobCardProps) {
+const buildLocation = (loc: JobResult['location']) => {
+  if (!loc) return 'Remote';
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 hover:shadow-md transition-all duration-200 hover:border-primary/30 group">
-      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-        {/* Logo */}
-        <div className="shrink-0">
-          <div className="w-14 h-14 bg-surface-container-high rounded-lg flex items-center justify-center border border-outline-variant/50">
-            {logo ? (
-              <img
-                src={logo}
-                alt={`${company} logo`}
-                className="w-8 h-8 object-contain"
-              />
-            ) : (
-              <Briefcase className="w-6 h-6 text-primary" aria-hidden="true" />
-            )}
+    [loc.address, loc.city, loc.state, loc.country]
+      .filter(Boolean)
+      .join(', ') || 'Remote'
+  );
+};
+
+const getCategoryIcon = (category: BasicJobCategory | null) => {
+  if (!category) return null;
+  return <CategoryIcon iconname={category.icon} />;
+};
+
+const formatSalary = (
+  min: string | null,
+  max: string | null,
+  currency: string
+) => {
+  if (!min && !max) return 'Salary not specified';
+
+  const minNum = min ? parseFloat(min) : null;
+  const maxNum = max ? parseFloat(max) : null;
+
+  if (minNum && maxNum) {
+    return `${currency} ${minNum.toLocaleString()} - ${maxNum.toLocaleString()}`;
+  }
+  if (minNum) {
+    return `${currency} ${minNum.toLocaleString()}+`;
+  }
+  if (maxNum) {
+    return `${currency} ${maxNum.toLocaleString()}`;
+  }
+  return 'Salary not specified';
+};
+
+const getExperienceLabel = (level: string, years: number | null) => {
+  if (years !== null) {
+    return `${years}+ years`;
+  }
+  const labels: Record<string, string> = {
+    entry: 'Entry Level',
+    mid: 'Mid Level',
+    senior: 'Senior',
+    lead: 'Lead',
+    manager: 'Manager',
+  };
+  return labels[level] || level;
+};
+
+const getJobTypeLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    full_time: 'Full Time',
+    part_time: 'Part Time',
+    contract: 'Contract',
+    internship: 'Internship',
+    freelance: 'Freelance',
+  };
+  return labels[type] || type;
+};
+
+const getWorkModeLabel = (mode: string) => {
+  const labels: Record<string, string> = {
+    REMOTE: 'Remote',
+    ONSITE: 'On-site',
+    HYBRID: 'Hybrid',
+  };
+  return labels[mode] || mode;
+};
+
+const getStatusBadge = (status: string) => {
+  const config: Record<string, { color: string; label: string }> = {
+    OPEN: { color: 'bg-green-500/90 text-white', label: 'Open' },
+    CLOSED: { color: 'bg-error/90 text-white', label: 'Closed' },
+    DRAFT: {
+      color: 'bg-surface-container-high text-on-surface-variant',
+      label: 'Draft',
+    },
+    PAUSED: { color: 'bg-warning/90 text-white', label: 'Paused' },
+  };
+  return (
+    config[status] || {
+      color: 'bg-surface-container-high text-on-surface-variant',
+      label: status,
+    }
+  );
+};
+
+export default function JobCard({
+  data,
+  onSaveToggle,
+  maxSkillsShown = 3,
+}: JobCardProps) {
+  const locationText = buildLocation(data.location);
+  const salaryText = formatSalary(
+    data.salary_min,
+    data.salary_max,
+    data.currency
+  );
+  const experienceLabel = getExperienceLabel(
+    data.experience_level,
+    data.experience_years
+  );
+  const statusBadge = getStatusBadge(data.status);
+  const isOpen = data.status === 'open';
+
+  const visibleSkills = data.skills_required.slice(0, maxSkillsShown);
+  const extraSkillsCount = data.skills_required.length - visibleSkills.length;
+
+  return (
+    <div className="group relative flex gap-3 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg hover:shadow-md hover:border-primary/30 transition-all duration-200">
+      {/* Thumbnail / Logo */}
+      <Link
+        to={`/jobs/${data.id}`}
+        className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden shrink-0 bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/20">
+        {data.thumbnail ? (
+          <img
+            src={data.thumbnail}
+            alt={data.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-outline">
+            <Briefcase className="w-8 h-8" />
           </div>
+        )}
+        <span
+          className={`absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium leading-none ${statusBadge.color}`}>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              isOpen ? 'bg-white' : 'bg-outline'
+            }`}
+          />
+          {statusBadge.label}
+        </span>
+      </Link>
+
+      {/* Content */}
+      <div className="flex-grow min-w-0 flex flex-col gap-1">
+        <div className="flex items-start justify-between gap-2">
+          {data.category ? (
+            <div className="flex items-center gap-1 min-w-0">
+              <span className="material-symbols-outlined text-primary text-sm shrink-0">
+                {getCategoryIcon(data.category)}
+              </span>
+              <span className="text-label-md font-bold text-primary uppercase tracking-wider truncate">
+                {data.category.name}
+              </span>
+            </div>
+          ) : (
+            <span />
+          )}
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onSaveToggle(data.id);
+            }}
+            className="shrink-0 p-1.5 -m-1.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
+            aria-label={data.is_saved ? 'Remove from saved' : 'Save job'}>
+            {data.is_saved ? (
+              <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
+            ) : (
+              <BookmarkPlus className="w-5 h-5" />
+            )}
+          </button>
         </div>
 
-        {/* Job Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <h3 className="text-headline-sm font-bold text-on-surface group-hover:text-primary transition-colors">
-                <Link
-                  to={`/jobs/${id}`}
-                  className="focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm">
-                  {title}
-                </Link>
-              </h3>
-              <p className="text-body-md font-medium text-primary">{company}</p>
-            </div>
-            <div className="flex flex-col items-start sm:items-end gap-1">
-              <span className="text-body-md font-bold text-on-surface">
-                {salary}
-              </span>
-              {isUrgent && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-error/10 text-error text-label-md font-bold rounded-full">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full bg-error animate-pulse"
-                    aria-hidden="true"
-                  />
-                  <span>Urgent</span>
-                </span>
-              )}
-            </div>
+        {/* Title */}
+        <h3 className="text-title-md font-bold text-on-surface leading-snug line-clamp-1 group-hover:text-primary transition-colors">
+          <Link
+            to={`/jobs/${data.id}`}
+            className="focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-sm">
+            {data.title}
+          </Link>
+        </h3>
+
+        {/* Meta row: job type, work mode, location, experience */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-body-sm text-on-surface-variant">
+          <div className="flex items-center gap-1 min-w-0">
+            <Briefcase className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{getJobTypeLabel(data.job_type)}</span>
           </div>
 
-          {/* Metadata */}
-          <div className="mt-3 flex flex-wrap gap-4 text-body-md text-on-surface-variant">
-            <div className="flex items-center gap-1">
-              <MapPin size={16} className="shrink-0" aria-hidden="true" />
-              <span>{location}</span>
+          <div className="flex items-center gap-1 min-w-0">
+            <Clock className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{getWorkModeLabel(data.work_mode)}</span>
+          </div>
+
+          <div className="flex items-center gap-1 min-w-0">
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{locationText}</span>
+          </div>
+
+          {experienceLabel && (
+            <div className="flex items-center gap-1 min-w-0">
+              <span className="text-outline">•</span>
+              <span className="truncate">{experienceLabel}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock size={16} className="shrink-0" aria-hidden="true" />
-              <span>{postedAt}</span>
+          )}
+
+          {data.deadline && (
+            <div className="flex items-center gap-1 min-w-0">
+              <span className="text-outline">•</span>
+              <span className="truncate">
+                Deadline: {new Date(data.deadline).toLocaleDateString()}
+              </span>
             </div>
-            <div className="flex items-center gap-1">
-              <Briefcase size={16} className="shrink-0" aria-hidden="true" />
-              <span>{type}</span>
-            </div>
+          )}
+        </div>
+
+        {/* Skills */}
+        {visibleSkills.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1">
+            {visibleSkills.map((skillName) => (
+              <span
+                key={skillName}
+                className="bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded-full text-label-sm">
+                {skillName}
+              </span>
+            ))}
+            {extraSkillsCount > 0 && (
+              <span className="text-label-sm text-outline px-1">
+                +{extraSkillsCount} more
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Bottom bar */}
+        <div className="flex items-center justify-between gap-3 mt-auto pt-1.5 border-t border-outline-variant/40">
+          <span className="text-body-sm text-on-surface-variant">
+            {data.total_applications}{' '}
+            {data.total_applications === 1 ? 'application' : 'applications'}
+          </span>
+
+          <div className="flex items-baseline gap-1">
+            <span className="text-label-sm text-outline">Salary</span>
+            <span className="text-title-md font-bold text-primary leading-none">
+              {salaryText}
+            </span>
           </div>
         </div>
       </div>
-
-      {/* View Details Button */}
-      {/* <Link
-        to={`/jobs/${id}`}
-        className="mt-4 inline-block w-full sm:w-auto px-4 py-2 text-center text-body-md font-medium text-primary border border-outline-variant rounded-lg hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
-        aria-label={`View details for ${title} at ${company}`}
-      >
-        View Details
-      </Link> */}
-      <Link
-        to={`/jobs/${id}`}
-        className="mt-4 inline-block w-full sm:w-auto px-4 py-2 text-center text-body-md font-medium text-primary border border-outline-variant rounded-lg hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
-        aria-label={`View details for ${title} at ${company}`}>
-        View Details
-      </Link>
     </div>
   );
 }
-
-export default JobCard;

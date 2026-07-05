@@ -1,4 +1,5 @@
 // Mirrors JobWriteSerializer and the Job model's choice fields.
+import type { BasicLocation } from '@/types/location.types';
 
 export type JobType =
   | 'full_time'
@@ -30,6 +31,12 @@ export interface JobCategory {
   name: string;
   icon: string;
   description: string;
+}
+
+export interface BasicJobCategory {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 export interface JobCreatePayload {
@@ -81,4 +88,105 @@ export interface JobDetail {
   deadline: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface JobResult {
+  id: string;
+  slug: string;
+  title: string;
+  thumbnail: string | null;
+  job_type: JobType;
+  work_mode: WorkMode;
+  status: JobStatus;
+  category: BasicJobCategory | null;
+  skills_required: string[];
+  experience_level: ExperienceLevel;
+  experience_years: number | null;
+  location: BasicLocation | null;
+  salary_min: string | null;
+  salary_max: string | null;
+  currency: string;
+  deadline: string | null;
+  total_applications: number;
+  is_saved: boolean;
+}
+
+export interface JobListResponse {
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  next: string | null;
+  previous: string | null;
+  results: JobResult[];
+}
+
+export interface JobListQueryParams {
+  search?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+  has_location?: string;
+
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
+
+  salary_min?: number | string;
+  salary_max?: number | string;
+  currency?: string;
+
+  job_type?: string;
+
+  work_mode?: string;
+
+  experience_level?: string;
+  experience_years?: number | string;
+
+  category?: string;
+  category_slug?: string;
+
+  skills?: string[];
+
+  deadline_before?: string;
+  deadline_after?: string;
+
+  status?: string;
+
+  ordering?: string;
+
+  page?: number;
+  page_size?: number;
+}
+
+export type JobOrdering =
+  | 'salary_min'
+  | '-salary_min'
+  | 'salary_max'
+  | '-salary_max'
+  | 'created_at'
+  | '-created_at'
+  | 'total_applications'
+  | '-total_applications'
+  | 'experience_years'
+  | '-experience_years'
+  | 'distance';
+
+export interface JobFilters {
+  category: string;
+  jobType: JobType | '';
+  workMode: WorkMode | '';
+  experienceLevel: ExperienceLevel | '';
+  experienceYears: number | null;
+  skills: string[];
+  salaryMin: string;
+  salaryMax: string;
+  currency: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  hasLocation: boolean | null;
+  status?: JobStatus | '';
 }

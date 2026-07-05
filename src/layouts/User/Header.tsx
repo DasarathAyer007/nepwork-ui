@@ -4,15 +4,16 @@ import { Bell, Menu, MessageCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
+
 import {
   selectIsAuthenticated,
   selectUser,
 } from '../../features/auth/authSelectors';
+import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
 import {
   selectChatUnreadCount,
   setChatUnreadCount,
 } from '../../features/chat/chatSlice';
-import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
 import { selectUnreadCount } from '../../features/notifications/notificationsSlice';
 import PostDropdown from '../PostDropdown';
 import ProfileDropdown from '../ProfileDropdown';

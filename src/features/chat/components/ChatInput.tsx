@@ -8,7 +8,7 @@ interface ChatInputProps {
   onSend: (content: string) => void;
   disabled?: boolean;
   placeholder?: string;
-  chatId?: string; 
+  chatId?: string;
 }
 
 export default function ChatInput({
@@ -80,7 +80,10 @@ export default function ChatInput({
           onClick={handleSend}
           disabled={disabled || !draft.trim()}
           className="bg-primary text-on-primary p-2 rounded-lg flex items-center justify-center hover:bg-primary-dim transition-all group disabled:opacity-50 disabled:cursor-not-allowed">
-          <Send size={18} className="group-hover:scale-110 transition-transform" />
+          <Send
+            size={18}
+            className="group-hover:scale-110 transition-transform"
+          />
         </button>
       </div>
     </div>

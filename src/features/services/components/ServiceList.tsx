@@ -1,5 +1,5 @@
+import Pagination from '../../../components/Pagination';
 import type { ServiceResult } from '../types';
-import Pagination from './Pagination';
 import ServiceCard from './ServiceCard';
 
 interface ServiceListProps {

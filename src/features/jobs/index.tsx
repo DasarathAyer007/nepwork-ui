@@ -3,6 +3,8 @@ export { default as JobFilters } from '../jobs/components/JobFilters';
 export { default as JobSearchBar } from '../jobs/components/JobSearchBar';
 export { default as JobPagination } from '../jobs/components/JobPagination';
 
+export { default as JobMapView } from '../jobs/components/JobMapView';
+
 // create job
 
 export { default as JobCategorySelector } from './components/create/JobCategorySelector';

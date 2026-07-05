@@ -3,6 +3,16 @@ export interface LocationPoint {
   lng: number;
 }
 
+export interface BasicLocation {
+  point: LocationPoint;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  label: string;
+}
+
 export interface ExactLocation {
   point: LocationPoint;
   address: string;

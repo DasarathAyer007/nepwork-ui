@@ -18,15 +18,19 @@ import {
   socketError,
   socketOpened,
 } from '@/features/socket/socketSlice';
-import type { ClientFrame, ClientMessageType, ServerEvent } from '@/types/websocket.types';
+import type {
+  ClientFrame,
+  ClientMessageType,
+  ServerEvent,
+} from '@/types/websocket.types';
 import type { Store } from '@reduxjs/toolkit';
 
 import type { AppDispatch, RootState } from '../app/store';
+import { typingReceived } from '../features/chat/chatSlice';
 import {
   handleChatReadConfirmed,
   handleIncomingChatMessage,
 } from '../features/chat/chatThunks';
-import { typingReceived } from '../features/chat/chatSlice';
 
 const RECONNECT_BASE_DELAY = 1000; // ms
 const RECONNECT_MAX_DELAY = 30000; // ms
@@ -47,7 +51,6 @@ class WebSocketService {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldReconnect = true;
   private messageQueue: string[] = [];
-
 
   /**
    * Call once, after the Redux store is created (e.g. in AppRoot on mount).

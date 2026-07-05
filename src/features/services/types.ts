@@ -1,3 +1,4 @@
+import type { BasicLocation } from '@/types/location.types';
 import type { BasicUser } from '@/types/user.types';
 
 export interface Category {
@@ -5,21 +6,6 @@ export interface Category {
   name: string;
   icon: string;
   description: string;
-}
-
-export interface LocationPoint {
-  lat: number;
-  lng: number;
-}
-
-export interface Location {
-  point: LocationPoint;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  label: string;
 }
 
 export interface ServiceResult {
@@ -32,7 +18,7 @@ export interface ServiceResult {
   currency: string;
   availability_status: string;
   status: string;
-  location: Location | null;
+  location: BasicLocation | null;
   user: BasicUser;
   category: Category | null;
   skills: string[];

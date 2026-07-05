@@ -1,11 +1,10 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-
-import type { RootState } from '../../app/store';
 import type {
   ChatReadConfirmedPayload,
   TypingIndicatorPayload,
 } from '@/types/websocket.types';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import type { RootState } from '../../app/store';
 import type { Message } from './types';
 
 interface ChatState {
