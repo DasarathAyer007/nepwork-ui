@@ -1,13 +1,6 @@
 import { useState } from 'react';
 
-import {
-  Bell,
-  CircleUserRound,
-  MapPin,
-  Menu,
-  MessageCircle,
-  X,
-} from 'lucide-react';
+import { Bell, Menu, MessageCircle, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -15,6 +8,7 @@ import {
   selectIsAuthenticated,
   selectUser,
 } from '../../features/auth/authSelectors';
+import PostDropdown from '../PostDropdown';
 import ProfileDropdown from '../ProfileDropdown';
 
 function Header() {
@@ -35,7 +29,7 @@ function Header() {
       <div className="flex items-center justify-between w-full px-4 md:px-8 py-2 max-w-8xl mx-auto">
         <div className="flex items-center gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2" aria-label="Home">
-            {/* <img alt="NepWork Logo" className="h-10 w-auto" src="favicon.svg" /> */}
+            <img alt="NepWork Logo" className="h-10 w-auto" src="favicon.svg" />
             <span className="text-headline-md font-bold text-primary hidden sm:block">
               NepWork
             </span>
@@ -56,15 +50,7 @@ function Header() {
         <div className="flex items-center gap-3 md:gap-5">
           {isLogin ? (
             <>
-              <button
-                className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
-                aria-label="Location">
-                <MapPin size={25} />
-                <span className="absolute top-1 right-1 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                </span>
-              </button>
+              <PostDropdown />
 
               <button
                 className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
