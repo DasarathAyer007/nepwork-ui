@@ -309,9 +309,7 @@ function JobDetails({
               Apply Now
             </button> */}
             <Link to={`/jobs/${id}/apply`}>
-              <button
-                className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95"
-              >
+              <button className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95">
                 Apply Now
               </button>
             </Link>
