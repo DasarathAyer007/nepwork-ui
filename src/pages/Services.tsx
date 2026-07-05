@@ -178,7 +178,7 @@ export default function Services() {
 
   if (viewMode === 'map') {
     return (
-      <div className="fixed inset-0 top-[3.75rem] z-0">
+      <div className="fixed inset-0 top-15 z-0">
         <ServiceMapView
           services={data?.results ?? EMPTY_SERVICES}
           totalCount={totalCount}
@@ -190,7 +190,7 @@ export default function Services() {
           onRequestLocation={geolocation.requestLocation}
         />
 
-        <div className="absolute top-4 left-4 right-4 z-[1000]">
+        <div className="absolute top-4 left-4 right-4 z-999">
           <SearchBar
             serviceName={serviceName}
             onSearchChange={setServiceName}
@@ -202,7 +202,7 @@ export default function Services() {
           />
         </div>
 
-        <div className="absolute top-[7.5rem] left-4 z-[1000] w-72 max-h-[calc(100%-8rem)] overflow-y-auto">
+        <div className="absolute top-30 left-4 z-999 w-72 max-h-[calc(100%-8rem)] overflow-y-auto">
           <ServiceFilter
             categories={categories ?? EMPTY_CATEGORIES}
             filters={filters}
@@ -244,12 +244,12 @@ export default function Services() {
 
         <div className="lg:col-span-3 space-y-4">
           {isLoading && (
-            <div className="flex-grow flex items-center justify-center">
+            <div className="grow flex items-center justify-center">
               <SpinnerLoader />
             </div>
           )}
           {isError && (
-            <div className="flex-grow flex items-center justify-center">
+            <div className="grow flex items-center justify-center">
               <p className="text-error">Error: {(error as any)?.message}</p>
             </div>
           )}

@@ -1,12 +1,5 @@
 import type { BasicUser } from '@/types/user.types';
 
-// export interface Filters {
-//   categories: string[];
-//   priceMax: number;
-//   minRating: number | null;
-//   availableNow: boolean;
-// }
-
 export interface Category {
   id: string;
   name: string;
@@ -91,4 +84,69 @@ export interface Filters {
   availabilityStatus: string; // "", "available", "busy", "unavailable"
   availableNow: boolean;
   hasLocation: boolean | null;
+}
+
+export interface ServiceLocationPayload {
+  latitude: number;
+  longitude: number;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+}
+
+export type ServicePriceType = "FIXED" | "HOURLY";
+export type ServiceStatus = "active" | "inactive";
+
+export interface ServiceCreatePayload {
+  title: string;
+  slug?: string;
+  description: string;
+  thumbnail?: File | null;
+  category: string;
+  availability_status?: string;
+  location?: ServiceLocationPayload;
+  price_type: ServicePriceType;
+  status?: ServiceStatus;
+  price?: number;
+  currency: string;
+  skills: string[];
+  radius_km: number;
+  available_from?: string | null;
+  available_to?: string | null;
+}
+
+
+export interface Service {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  category: string;
+  availability_status: string;
+  location: ServiceLocationPayload | null;
+  price_type: ServicePriceType;
+  status: ServiceStatus;
+  price: string | null;
+  currency: string;
+  skills: string[];
+  radius_km: number;
+  available_from: string | null;
+  available_to: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  discription: string;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
 }

@@ -12,12 +12,8 @@ export default function CategoryIcon({
   size = 20,
   color = 'white',
 }: Props) {
-  if (!iconname) return <Icons.CircleHelp size={size}  />;
+  if (!iconname) return <Icons.CircleHelp size={size} />;
   const Icon = Icons[iconname as keyof typeof Icons] as LucideIcon;
 
-  return Icon ? (
-    <Icon size={size}  />
-  ) : (
-    <Icons.CircleHelp size={size} />
-  );
+  return Icon ? <Icon size={size} /> : <Icons.CircleHelp size={size} />;
 }

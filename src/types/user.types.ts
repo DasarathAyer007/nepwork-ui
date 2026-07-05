@@ -24,6 +24,12 @@ export interface PersonalProfile extends BaseUser {
   access_level: 'full' | 'public' | 'limited' | 'private';
 }
 
+export interface BasicUser {
+  id: string;
+  username: string;
+  profile_picture: string;
+}
+
 export interface OrganizationProfile extends BaseUser {
   account_type: 'organization';
   bio: string | null;
