@@ -17,6 +17,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const STEP_LABELS = [
   'Tell us about the task',
@@ -30,6 +31,7 @@ const TOTAL_STEPS = 4;
 export default function CreateService() {
   const [step, setStep] = useState(1);
   const [createService, { isLoading }] = useCreateServiceMutation();
+  const navigate = useNavigate();
 
   const methods = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
@@ -79,7 +81,7 @@ export default function CreateService() {
 
     try {
       await createService(formData).unwrap();
-      // TODO: navigate to the new service's detail page / show a success toast
+      navigate('/services');
     } catch (err) {
       // TODO: surface a submit error to the user
       console.error('Failed to create service', err);

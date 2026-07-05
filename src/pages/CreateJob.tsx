@@ -18,6 +18,7 @@ import ServiceStepIndicator from '@/features/services/components/create/ServiceS
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const STEP_LABELS = [
   'Tell us about the role',
@@ -38,6 +39,7 @@ export default function CreateJob() {
     defaultValues: defaultJobFormValues,
     mode: 'onChange',
   });
+  const navigate = useNavigate();
 
   const { trigger, handleSubmit } = methods;
 
@@ -121,6 +123,7 @@ export default function CreateJob() {
     formData.append('currency', values.currency);
     try {
       await createJob(formData).unwrap();
+      navigate('/jobs');
       // TODO: navigate to the new job's detail page / show a success toast
     } catch (err) {
       // TODO: surface a submit error to the user
