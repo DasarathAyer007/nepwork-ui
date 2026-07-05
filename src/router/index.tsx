@@ -8,7 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 import MainLayout from '../layouts/User/MainLayout';
 import CreatePostType from '../pages/ChoosePostType';
 import Home from '../pages/Home';
-import JobDetails from '../pages/JobDetails';
+import JobDetailsPage from '../pages/JobDetailsPage.tsx';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
 import Onboarding from '../pages/Onboarding';
@@ -22,7 +22,7 @@ function route() {
         <Route index element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
-        <Route path="jobs/:id" element={<JobDetails />} />
+        <Route path="jobs/:id" element={<JobDetailsPage />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/services" element={<Services />} />

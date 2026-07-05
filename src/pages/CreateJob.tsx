@@ -71,7 +71,11 @@ export default function CreateJob() {
       values.experience_years ? String(values.experience_years) : ''
     );
     formData.append('skills_required', JSON.stringify(values.skills_required));
-    formData.append('requirements', JSON.stringify(values.requirements));
+
+    const requirements = Object.fromEntries(
+    values.requirements?.map((item) => [item.key, item.value])
+  );
+    formData.append('requirements', JSON.stringify(requirements));
     formData.append(
       'salary_min',
       values.salary_min ? String(values.salary_min) : ''
@@ -81,7 +85,11 @@ export default function CreateJob() {
       values.salary_max ? String(values.salary_max) : ''
     );
     formData.append('currency', values.currency);
-    formData.append('benefits', JSON.stringify(values.benefits));
+
+    const benefits = Object.fromEntries(
+      values.benefits?.map((item) => [item.key, item.value])
+    );
+    formData.append('benefits', JSON.stringify(benefits));
     formData.append('deadline', values.deadline || '');
     formData.append('contact_email', values.contact_email || '');
     formData.append('contact_phone', values.contact_phone || '');

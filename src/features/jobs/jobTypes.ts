@@ -10,6 +10,8 @@ export type JobType =
 export type WorkMode = 'onsite' | 'remote' | 'hybrid';
 export type ExperienceLevel = 'entry' | 'mid' | 'senior' | 'lead';
 export type JobStatus = 'draft' | 'open' | 'paused' | 'closed';
+export type ProfileAccessLevel = 'full' | 'public' | 'limited' | 'private';
+
 
 export interface JobLocationPayload {
   lat: number;
@@ -63,31 +65,64 @@ export interface JobCreatePayload {
   deadline?: string | null;
 }
 
+export interface JobEmployer {
+  id: string;
+  username: string;
+  access_level: ProfileAccessLevel;
+  account_type?: 'individual' | 'organization';
+
+  // present on "limited" and above
+  full_name?: string;
+  profile_picture?: string | null;
+
+  // present on "public" and above
+  cover_photo?: string | null;
+  bio?: string;
+  location?: BasicLocation | null;
+  social_links?: Record<string, string>;
+
+  // present on "full" only
+  email?: string;
+  phone_number?: string;
+  date_joined?: string;
+  last_login?: string;
+
+  // organization-flavored extras (present when account_type === 'organization',
+  // still gated by the same access_level rules)
+  industry?: string;
+  logo?: string | null;
+  employees_count?: number;
+  founded_at?: string;
+  address?: string;
+  is_verified?: boolean;
+}
+
 export interface JobDetail {
   id: string;
-  slug: string;
   title: string;
-  description: string;
+  slug: string;
   thumbnail: string | null;
-  organization: string | null;
   job_type: JobType;
   work_mode: WorkMode;
   status: JobStatus;
-  category: string | null;
+  location: BasicLocation | null;
+  posted_by: string;
+  category: JobCategory;
   skills_required: string[];
-  requirements: KeyValuePair[];
-  experience_level: ExperienceLevel;
-  experience_years: number | null;
-  location: JobLocationPayload | null;
-  salary_min: string | null;
-  salary_max: string | null;
+  salary_min: string;
+  salary_max: string;
   currency: string;
+  experience_level: ExperienceLevel;
+  experience_years: number;
+  deadline: string;
+  description: string;
+  requirements: Record<string, string>[];
+  benefits: Record<string, string>[];
   contact_email: string;
   contact_phone: string;
-  benefits: KeyValuePair[];
-  deadline: string | null;
   created_at: string;
   updated_at: string;
+  employer: JobEmployer;
 }
 
 export interface JobResult {

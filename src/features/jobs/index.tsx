@@ -13,3 +13,8 @@ export { default as StepJobBasicInfo } from './components/create/StepJobBasicInf
 export { default as StepJobLocationStatus } from './components/create/StepJobLocationStatus';
 export { default as StepJobSkillsCompensation } from './components/create/StepJobSkillsCompensation';
 export { default as StepJobReview } from './components/create/StepJobReview';
+
+
+
+export { default as JobDetails } from './components/details/JobDetails';
+export { default as JobDetailsSkeleton } from './components/details/JobDetailsSkeleton';
