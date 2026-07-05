@@ -4,6 +4,7 @@ export interface Category {
   id: string;
   name: string;
   icon: string;
+  description: string;
 }
 
 export interface LocationPoint {
@@ -96,8 +97,8 @@ export interface ServiceLocationPayload {
   postal_code?: string;
 }
 
-export type ServicePriceType = "FIXED" | "HOURLY";
-export type ServiceStatus = "active" | "inactive";
+export type ServicePriceType = 'FIXED' | 'HOURLY';
+export type ServiceStatus = 'active' | 'inactive';
 
 export interface ServiceCreatePayload {
   title: string;
@@ -116,7 +117,6 @@ export interface ServiceCreatePayload {
   available_from?: string | null;
   available_to?: string | null;
 }
-
 
 export interface Service {
   id: string;
@@ -137,13 +137,6 @@ export interface Service {
   available_to: string | null;
   created_at: string;
   updated_at: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  discription: string;
 }
 
 export interface Skill {

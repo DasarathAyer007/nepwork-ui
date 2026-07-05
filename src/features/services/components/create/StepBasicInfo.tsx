@@ -1,8 +1,10 @@
-import { useRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import { ImagePlus, X } from "lucide-react";
-import type { ServiceFormValues } from "../../serviceSchema";
-import CategorySelector from "./CategorySelector";
+import { useRef } from 'react';
+
+import { ImagePlus, X } from 'lucide-react';
+import { Controller, useFormContext } from 'react-hook-form';
+
+import type { ServiceFormValues } from '../../serviceSchema';
+import CategorySelector from './CategorySelector';
 
 export default function StepBasicInfo() {
   const {
@@ -14,7 +16,7 @@ export default function StepBasicInfo() {
   } = useFormContext<ServiceFormValues>();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const thumbnail = watch("thumbnail");
+  const thumbnail = watch('thumbnail');
 
   return (
     <section className="bg-surface-container-lowest border border-outline-variant rounded-md p-md md:p-lg shadow-sm">
@@ -24,7 +26,7 @@ export default function StepBasicInfo() {
             Service Title
           </label>
           <input
-            {...register("title")}
+            {...register('title')}
             className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             placeholder="e.g., Custom logo design in 48 hours"
             type="text"
@@ -42,13 +44,15 @@ export default function StepBasicInfo() {
             Description
           </label>
           <textarea
-            {...register("description")}
+            {...register('description')}
             rows={5}
             className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low resize-none"
             placeholder="Describe exactly what you offer, your process, and what clients get..."
           />
           {errors.description && (
-            <p className="text-body-sm text-error">{errors.description.message}</p>
+            <p className="text-body-sm text-error">
+              {errors.description.message}
+            </p>
           )}
         </div>
 
@@ -72,8 +76,7 @@ export default function StepBasicInfo() {
           {!thumbnail ? (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer group"
-            >
+              className="border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer group">
               <div className="w-16 h-16 bg-primary-container flex items-center justify-center rounded-full mb-md group-hover:scale-110 transition-transform">
                 <ImagePlus size={28} className="text-primary" />
               </div>
@@ -88,7 +91,9 @@ export default function StepBasicInfo() {
                 accept="image/*"
                 className="hidden"
                 type="file"
-                onChange={(e) => setValue("thumbnail", e.target.files?.[0] ?? null)}
+                onChange={(e) =>
+                  setValue('thumbnail', e.target.files?.[0] ?? null)
+                }
               />
             </div>
           ) : (
@@ -100,9 +105,8 @@ export default function StepBasicInfo() {
               />
               <button
                 type="button"
-                onClick={() => setValue("thumbnail", null)}
-                className="absolute top-2 right-2 p-1.5 rounded-full bg-surface-container-lowest shadow-md hover:bg-surface-container transition-colors"
-              >
+                onClick={() => setValue('thumbnail', null)}
+                className="absolute top-2 right-2 p-1.5 rounded-full bg-surface-container-lowest shadow-md hover:bg-surface-container transition-colors">
                 <X size={16} className="text-on-surface-variant" />
               </button>
             </div>

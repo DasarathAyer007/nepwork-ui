@@ -1,7 +1,8 @@
-import { Controller, useFormContext } from "react-hook-form";
-import type { ServiceFormValues } from "../../serviceSchema";
-import LocationPicker from "./LocationPicker";
-import LocationMapDialog from "./LocationMapDialog";
+import { Controller, useFormContext } from 'react-hook-form';
+
+import type { ServiceFormValues } from '../../serviceSchema';
+import LocationMapDialog from './LocationMapDialog';
+import LocationPicker from './LocationPicker';
 
 export default function StepLocation() {
   const {
@@ -12,13 +13,17 @@ export default function StepLocation() {
     formState: { errors },
   } = useFormContext<ServiceFormValues>();
 
-  const latitude = watch("location.latitude");
-  const longitude = watch("location.longitude");
-  const radiusKm = watch("radius_km");
+  const latitude = watch('location.latitude');
+  const longitude = watch('location.longitude');
+  const radiusKm = watch('radius_km');
 
   function handleMapSelect(lat: number, lng: number) {
-    setValue("location.latitude", Number(lat.toFixed(6)), { shouldValidate: true });
-    setValue("location.longitude", Number(lng.toFixed(6)), { shouldValidate: true });
+    setValue('location.latitude', Number(lat.toFixed(6)), {
+      shouldValidate: true,
+    });
+    setValue('location.longitude', Number(lng.toFixed(6)), {
+      shouldValidate: true,
+    });
   }
 
   return (
@@ -58,7 +63,7 @@ export default function StepLocation() {
               Latitude
             </span>
             <input
-              value={latitude ?? ""}
+              value={latitude ?? ''}
               readOnly
               placeholder="Select on map"
               className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
@@ -69,7 +74,7 @@ export default function StepLocation() {
               Longitude
             </span>
             <input
-              value={longitude ?? ""}
+              value={longitude ?? ''}
               readOnly
               placeholder="Select on map"
               className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
@@ -83,7 +88,7 @@ export default function StepLocation() {
               City
             </span>
             <input
-              {...register("location.city")}
+              {...register('location.city')}
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Nepalgunj"
             />
@@ -93,7 +98,7 @@ export default function StepLocation() {
               State / Province
             </span>
             <input
-              {...register("location.state")}
+              {...register('location.state')}
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Lumbini"
             />
@@ -103,7 +108,7 @@ export default function StepLocation() {
               Country
             </span>
             <input
-              {...register("location.country")}
+              {...register('location.country')}
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Nepal"
             />
@@ -113,7 +118,7 @@ export default function StepLocation() {
               Postal Code
             </span>
             <input
-              {...register("location.postal_code")}
+              {...register('location.postal_code')}
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., 21900"
             />
@@ -126,7 +131,9 @@ export default function StepLocation() {
           <label className="font-headline-sm text-headline-sm text-on-surface">
             Service radius
           </label>
-          <span className="font-body-md font-medium text-primary">{radiusKm} km</span>
+          <span className="font-body-md font-medium text-primary">
+            {radiusKm} km
+          </span>
         </div>
         <Controller
           control={control}
@@ -153,10 +160,13 @@ export default function StepLocation() {
           )}
         />
         <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-          Clients within this distance from your pin can find and book this service.
+          Clients within this distance from your pin can find and book this
+          service.
         </p>
         {errors.radius_km && (
-          <p className="text-body-sm text-error mt-1">{errors.radius_km.message}</p>
+          <p className="text-body-sm text-error mt-1">
+            {errors.radius_km.message}
+          </p>
         )}
       </section>
 
@@ -170,7 +180,7 @@ export default function StepLocation() {
               Available From
             </span>
             <input
-              {...register("available_from")}
+              {...register('available_from')}
               type="time"
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             />
@@ -180,7 +190,7 @@ export default function StepLocation() {
               Available To
             </span>
             <input
-              {...register("available_to")}
+              {...register('available_to')}
               type="time"
               className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             />
@@ -190,7 +200,9 @@ export default function StepLocation() {
 
       <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm flex items-center justify-between">
         <div>
-          <h2 className="font-headline-sm text-headline-sm text-on-surface">Status</h2>
+          <h2 className="font-headline-sm text-headline-sm text-on-surface">
+            Status
+          </h2>
           <p className="font-body-sm text-body-sm text-on-surface-variant">
             Active services are visible to clients right away.
           </p>
@@ -201,15 +213,18 @@ export default function StepLocation() {
           render={({ field }) => (
             <button
               type="button"
-              onClick={() => field.onChange(field.value === "active" ? "inactive" : "active")}
+              onClick={() =>
+                field.onChange(field.value === 'active' ? 'inactive' : 'active')
+              }
               className={`relative w-14 h-8 rounded-full transition-colors ${
-                field.value === "active" ? "bg-primary" : "bg-surface-container-highest"
+                field.value === 'active'
+                  ? 'bg-primary'
+                  : 'bg-surface-container-highest'
               }`}
-              aria-pressed={field.value === "active"}
-            >
+              aria-pressed={field.value === 'active'}>
               <span
                 className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-surface-container-lowest shadow-md transition-transform ${
-                  field.value === "active" ? "translate-x-6" : "translate-x-0"
+                  field.value === 'active' ? 'translate-x-6' : 'translate-x-0'
                 }`}
               />
             </button>

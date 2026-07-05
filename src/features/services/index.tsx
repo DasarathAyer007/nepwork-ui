@@ -25,4 +25,4 @@ export { default as CategorySelector } from './components/create/CategorySelecto
 
 export { default as SkillsInput } from './components/create/SkillsInput';
 
-export {default as LocationPicker} from './components/create/LocationPicker';
+export { default as LocationPicker } from './components/create/LocationPicker';

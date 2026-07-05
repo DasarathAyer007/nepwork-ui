@@ -1,9 +1,10 @@
-import { Controller, useFormContext } from "react-hook-form";
-import { Wallet, Clock } from "lucide-react";
-import type { ServiceFormValues } from "../../serviceSchema";
-import SkillsInput from "./SkillsInput";
+import { Clock, Wallet } from 'lucide-react';
+import { Controller, useFormContext } from 'react-hook-form';
 
-const CURRENCIES = ["USD", "NPR", "INR", "EUR", "GBP"];
+import type { ServiceFormValues } from '../../serviceSchema';
+import SkillsInput from './SkillsInput';
+
+const CURRENCIES = ['USD', 'NPR', 'INR', 'EUR', 'GBP'];
 
 export default function StepPricingSkills() {
   const {
@@ -13,7 +14,7 @@ export default function StepPricingSkills() {
     formState: { errors },
   } = useFormContext<ServiceFormValues>();
 
-  const priceType = watch("price_type");
+  const priceType = watch('price_type');
 
   return (
     <section className="bg-surface-container-lowest border border-outline-variant rounded-md p-md md:p-lg shadow-sm space-y-lg">
@@ -24,13 +25,23 @@ export default function StepPricingSkills() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
           {(
             [
-              { value: "fixed", label: "Fixed Price", desc: "One price for the whole job.", Icon: Wallet },
-              { value: "hourly", label: "Hourly Rate", desc: "Charge by the hour for ongoing work.", Icon: Clock },
+              {
+                value: 'fixed',
+                label: 'Fixed Price',
+                desc: 'One price for the whole job.',
+                Icon: Wallet,
+              },
+              {
+                value: 'hourly',
+                label: 'Hourly Rate',
+                desc: 'Charge by the hour for ongoing work.',
+                Icon: Clock,
+              },
             ] as const
           ).map(({ value, label, desc, Icon }) => (
             <label key={value} className="relative cursor-pointer group">
               <input
-                {...register("price_type")}
+                {...register('price_type')}
                 className="peer sr-only"
                 type="radio"
                 value={value}
@@ -39,8 +50,12 @@ export default function StepPricingSkills() {
                 <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary mb-xs">
                   <Icon size={22} />
                 </div>
-                <span className="font-headline-sm text-headline-sm text-on-surface">{label}</span>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">{desc}</span>
+                <span className="font-headline-sm text-headline-sm text-on-surface">
+                  {label}
+                </span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">
+                  {desc}
+                </span>
               </div>
             </label>
           ))}
@@ -53,12 +68,14 @@ export default function StepPricingSkills() {
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-md items-start">
         <label className="block">
           <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-            {priceType === "HOURLY" ? "Hourly Rate" : "Fixed Price"}
+            {priceType === 'HOURLY' ? 'Hourly Rate' : 'Fixed Price'}
           </span>
           <div className="relative flex items-center">
-            <span className="absolute left-md font-headline-md text-on-surface-variant">$</span>
+            <span className="absolute left-md font-headline-md text-on-surface-variant">
+              $
+            </span>
             <input
-              {...register("price")}
+              {...register('price')}
               className="w-full pl-xl pr-md py-md rounded-lg border border-outline font-headline-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               placeholder="0.00"
               type="number"
@@ -66,7 +83,9 @@ export default function StepPricingSkills() {
             />
           </div>
           {errors.price && (
-            <p className="text-body-sm text-error mt-1">{errors.price.message}</p>
+            <p className="text-body-sm text-error mt-1">
+              {errors.price.message}
+            </p>
           )}
         </label>
 
@@ -75,9 +94,8 @@ export default function StepPricingSkills() {
             Currency
           </span>
           <select
-            {...register("currency")}
-            className="px-md py-md rounded-lg border border-outline-variant bg-surface-container-low font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-          >
+            {...register('currency')}
+            className="px-md py-md rounded-lg border border-outline-variant bg-surface-container-low font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
             {CURRENCIES.map((c) => (
               <option key={c} value={c}>
                 {c}

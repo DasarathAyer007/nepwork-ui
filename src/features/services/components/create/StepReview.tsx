@@ -1,6 +1,7 @@
-import { useFormContext } from "react-hook-form";
-import { MapPin, Tag, Wallet, Clock, CircleCheck, CircleX } from "lucide-react";
-import type { ServiceFormValues } from "../../serviceSchema";
+import { CircleCheck, CircleX, Clock, MapPin, Tag, Wallet } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
+
+import type { ServiceFormValues } from '../../serviceSchema';
 
 export default function StepReview() {
   const { watch } = useFormContext<ServiceFormValues>();
@@ -19,10 +20,10 @@ export default function StepReview() {
           )}
           <div className="min-w-0">
             <h2 className="font-headline-md text-headline-md text-on-surface truncate">
-              {values.title || "Untitled service"}
+              {values.title || 'Untitled service'}
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant mt-1 line-clamp-3">
-              {values.description || "No description yet."}
+              {values.description || 'No description yet.'}
             </p>
           </div>
         </div>
@@ -38,8 +39,8 @@ export default function StepReview() {
               Pricing
             </h4>
             <p className="font-body-md text-body-md text-on-surface mt-1">
-              {values.price_type === "HOURLY" ? "Hourly" : "Fixed"} — {values.currency}{" "}
-              {values.price ?? "—"}
+              {values.price_type === 'HOURLY' ? 'Hourly' : 'Fixed'} —{' '}
+              {values.currency} {values.price ?? '—'}
             </p>
           </div>
         </div>
@@ -57,13 +58,14 @@ export default function StepReview() {
                 values.skills.map((s) => (
                   <span
                     key={s}
-                    className="text-body-sm bg-surface-container-high text-on-surface px-2 py-0.5 rounded-full"
-                  >
+                    className="text-body-sm bg-surface-container-high text-on-surface px-2 py-0.5 rounded-full">
                     {s}
                   </span>
                 ))
               ) : (
-                <span className="text-body-sm text-on-surface-variant">None added</span>
+                <span className="text-body-sm text-on-surface-variant">
+                  None added
+                </span>
               )}
             </div>
           </div>
@@ -78,9 +80,13 @@ export default function StepReview() {
               Location & Radius
             </h4>
             <p className="font-body-md text-body-md text-on-surface mt-1">
-              {[values.location.city, values.location.state, values.location.country]
+              {[
+                values.location.city,
+                values.location.state,
+                values.location.country,
+              ]
                 .filter(Boolean)
-                .join(", ") || "Coordinates set on map"}
+                .join(', ') || 'Coordinates set on map'}
             </p>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               Serving within {values.radius_km} km
@@ -99,21 +105,21 @@ export default function StepReview() {
             <p className="font-body-md text-body-md text-on-surface mt-1">
               {values.available_from && values.available_to
                 ? `${values.available_from} – ${values.available_to}`
-                : "Not specified"}
+                : 'Not specified'}
             </p>
           </div>
         </div>
       </section>
 
       <section className="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm flex items-center gap-sm">
-        {values.status === "active" ? (
+        {values.status === 'active' ? (
           <CircleCheck size={18} className="text-primary" />
         ) : (
           <CircleX size={18} className="text-on-surface-variant" />
         )}
         <span className="font-body-md text-body-md text-on-surface">
-          This service will be posted as{" "}
-          <strong>{values.status === "active" ? "Active" : "Inactive"}</strong>
+          This service will be posted as{' '}
+          <strong>{values.status === 'active' ? 'Active' : 'Inactive'}</strong>
         </span>
       </section>
     </div>

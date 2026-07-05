@@ -2,8 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '@/services/baseQuery';
 
-import type { Service, ServiceCreatePayload} from './types';
-
+import type { Service, ServiceCreatePayload } from './types';
 import type {
   Category,
   ServicesListResponse,
@@ -11,36 +10,36 @@ import type {
 } from './types';
 
 export const ServiceApi = createApi({
-  reducerPath: "serviceApi",
+  reducerPath: 'serviceApi',
   baseQuery,
-  tagTypes: ["User", "Service"],
- 
+  tagTypes: ['User', 'Service'],
+
   endpoints: (builder) => ({
     getServicesList: builder.query<ServicesListResponse, ServicesQueryParams>({
       query: (params) => ({
-        url: "/services/",
+        url: '/services/',
         params,
       }),
-      providesTags: ["Service"],
+      providesTags: ['Service'],
     }),
- 
+
     getCategory: builder.query<Category[], null>({
       query: () => ({
-        url: "/services/category/",
+        url: '/services/category/',
       }),
     }),
- 
-    createService: builder.mutation<Service, ServiceCreatePayload>({
+
+    createService: builder.mutation<Service, FormData>({
       query: (body) => ({
-        url: "/services/",
-        method: "POST",
+        url: '/services/',
+        method: 'POST',
         body,
       }),
-      invalidatesTags: ["Service"],
+      invalidatesTags: ['Service'],
     }),
   }),
 });
- 
+
 export const {
   useGetServicesListQuery,
   useGetCategoryQuery,
