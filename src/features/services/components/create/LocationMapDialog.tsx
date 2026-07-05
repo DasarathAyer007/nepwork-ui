@@ -1,6 +1,7 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { Maximize2, X } from "lucide-react";
-import LocationPicker from "./LocationPicker";
+import * as Dialog from '@radix-ui/react-dialog';
+import { Maximize2, X } from 'lucide-react';
+
+import LocationPicker from './LocationPicker';
 
 interface Props {
   latitude: number | null;
@@ -9,15 +10,19 @@ interface Props {
   onSelect: (lat: number, lng: number) => void;
 }
 
-export default function LocationMapDialog({ latitude, longitude, radiusKm, onSelect }: Props) {
+export default function LocationMapDialog({
+  latitude,
+  longitude,
+  radiusKm,
+  onSelect,
+}: Props) {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button
           type="button"
           title="Expand map"
-          className="absolute top-3 right-3 z-[400] p-2 rounded-md bg-surface-container-lowest border border-outline-variant shadow-md hover:bg-surface-container transition-colors"
-        >
+          className="absolute top-3 right-3 z-[400] p-2 rounded-md bg-surface-container-lowest border border-outline-variant shadow-md hover:bg-surface-container transition-colors">
           <Maximize2 size={16} className="text-on-surface-variant" />
         </button>
       </Dialog.Trigger>
@@ -32,8 +37,7 @@ export default function LocationMapDialog({ latitude, longitude, radiusKm, onSel
             <Dialog.Close asChild>
               <button
                 aria-label="Close"
-                className="p-1.5 rounded-md hover:bg-surface-container transition-colors"
-              >
+                className="p-1.5 rounded-md hover:bg-surface-container transition-colors">
                 <X size={18} className="text-on-surface-variant" />
               </button>
             </Dialog.Close>
@@ -48,7 +52,8 @@ export default function LocationMapDialog({ latitude, longitude, radiusKm, onSel
           />
 
           <p className="text-body-sm text-on-surface-variant mt-sm">
-            Click anywhere on the map to drop your marker. Close this dialog when you're done.
+            Click anywhere on the map to drop your marker. Close this dialog
+            when you're done.
           </p>
         </Dialog.Content>
       </Dialog.Portal>

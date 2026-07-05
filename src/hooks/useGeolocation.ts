@@ -83,19 +83,19 @@ export function useGeolocation() {
 
   useEffect(() => {
     if (!navigator.geolocation || !('permissions' in navigator)) {
-    // if (!navigator.geolocation) {
-    //   setState((prev) => ({
-    //     ...prev,
-    //     permissionStatus: 'unsupported',
-    //   }));
-    //   return;
-    // }
+      // if (!navigator.geolocation) {
+      //   setState((prev) => ({
+      //     ...prev,
+      //     permissionStatus: 'unsupported',
+      //   }));
+      //   return;
+      // }
 
-    // if (!('permissions' in navigator)) {
-    //   setState((prev) => ({
-    //     ...prev,
-    //     permissionStatus: 'prompt',
-    //   }));
+      // if (!('permissions' in navigator)) {
+      //   setState((prev) => ({
+      //     ...prev,
+      //     permissionStatus: 'prompt',
+      //   }));
       return;
     }
 

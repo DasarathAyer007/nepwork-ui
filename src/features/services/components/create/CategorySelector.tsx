@@ -1,7 +1,8 @@
+import { useGetCategoryQuery } from '@/features/services/serviceApi';
 
-import {useGetCategoryQuery} from "@/features/services/serviceApi"; 
-import CategoryIcon from "@/components/CategoryIcon"; 
-import type { Category } from "../../types";
+import CategoryIcon from '@/components/CategoryIcon';
+
+import type { Category } from '../../types';
 
 interface Props {
   value: string;
@@ -37,24 +38,23 @@ export default function CategorySelector({ value, onChange, error }: Props) {
 
       {categories && (
         <div className="flex gap-sm overflow-x-auto pb-2 -mx-1 px-1 scrollbar-thin">
-          {categories.map((cat: Category) => {
-            const selected = value === cat.id;
+          {categories?.map((cat: Category) => {
+            const selected = String(value) === String(cat.id);
             return (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => onChange(cat.id)}
-                title={cat.discription}
+                onClick={() => onChange(String(cat.id))}
+                title={cat.description}
                 className={`flex items-center gap-2 shrink-0 px-4 py-2 rounded-full border text-body-md whitespace-nowrap transition-all ${
                   selected
-                    ? "border-primary bg-primary text-on-primary shadow-sm"
-                    : "border-outline-variant bg-surface-container-lowest text-on-surface hover:border-primary/50 hover:bg-surface-container"
-                }`}
-              >
+                    ? 'border-primary bg-primary text-on-primary shadow-sm'
+                    : 'border-outline-variant bg-surface-container-lowest text-on-surface hover:border-primary/50 hover:bg-surface-container'
+                }`}>
                 <CategoryIcon
                   iconname={cat.icon}
                   size={16}
-                  color={selected ? "currentColor" : "currentColor"}
+                  color={selected ? 'currentColor' : 'currentColor'}
                 />
                 {cat.name}
               </button>

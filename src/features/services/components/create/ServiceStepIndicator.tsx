@@ -4,8 +4,13 @@ interface Props {
   label: string;
 }
 
-export default function ServiceStepIndicator({ step, totalSteps, label }: Props) {
-  const percent = Math.round((step / totalSteps) * 100);
+export default function ServiceStepIndicator({
+  step,
+  totalSteps,
+  label,
+}: Props) {
+  const completedSteps = Math.max(0, step - 1);
+  const percent = Math.round((completedSteps / totalSteps) * 100);
 
   return (
     <div className="mb-xl">

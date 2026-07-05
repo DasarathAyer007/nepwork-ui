@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { useGetSkillsQuery } from '@/features/auth/api/authApi';
+import type { Skill } from '@/types/skill.types';
 import { Plus, X } from 'lucide-react';
-
-// adjust to your actual path
-import type { Skill } from '../../types';
 
 interface Props {
   value: string[];

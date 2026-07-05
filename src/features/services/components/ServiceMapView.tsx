@@ -390,7 +390,7 @@ export default function ServiceMapView({
 
       {(permissionStatus === 'prompt' || permissionStatus === 'denied') && (
         <div className="absolute inset-0 z-[400] flex items-center justify-center bg-surface-container-lowest/60 backdrop-blur-sm">
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 max-w-sm text-center shadow-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6  text-center shadow-md">
             <p className="text-body-md font-medium mb-1">
               See services near you
             </p>

@@ -1,12 +1,21 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Circle, useMapEvents, useMap } from "react-leaflet";
-import L from "leaflet";
+import { useEffect } from 'react';
+
+import L from 'leaflet';
+import {
+  Circle,
+  MapContainer,
+  Marker,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet';
 
 // Default marker icon fix for bundlers (Leaflet's default asset paths break under webpack/vite)
 const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl:
+    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
@@ -21,7 +30,11 @@ interface Props {
   height?: number | string;
 }
 
-function ClickHandler({ onSelect }: { onSelect: (lat: number, lng: number) => void }) {
+function ClickHandler({
+  onSelect,
+}: {
+  onSelect: (lat: number, lng: number) => void;
+}) {
   useMapEvents({
     click(e) {
       onSelect(e.latlng.lat, e.latlng.lng);
@@ -30,7 +43,13 @@ function ClickHandler({ onSelect }: { onSelect: (lat: number, lng: number) => vo
   return null;
 }
 
-function RecenterOnChange({ latitude, longitude }: { latitude: number | null; longitude: number | null }) {
+function RecenterOnChange({
+  latitude,
+  longitude,
+}: {
+  latitude: number | null;
+  longitude: number | null;
+}) {
   const map = useMap();
   useEffect(() => {
     if (latitude != null && longitude != null) {
@@ -40,16 +59,27 @@ function RecenterOnChange({ latitude, longitude }: { latitude: number | null; lo
   return null;
 }
 
-export default function LocationPicker({ latitude, longitude, radiusKm, onSelect, height = 260 }: Props) {
+export default function LocationPicker({
+  latitude,
+  longitude,
+  radiusKm,
+  onSelect,
+  height = 260,
+}: Props) {
   const center: [number, number] =
-    latitude != null && longitude != null ? [latitude, longitude] : FALLBACK_CENTER;
+    latitude != null && longitude != null
+      ? [latitude, longitude]
+      : FALLBACK_CENTER;
 
   return (
     <div
       style={{ height }}
-      className="w-full rounded-lg overflow-hidden border border-outline-variant"
-    >
-      <MapContainer center={center} zoom={12} scrollWheelZoom style={{ height: "100%", width: "100%" }}>
+      className="w-full rounded-lg overflow-hidden border border-outline-variant">
+      <MapContainer
+        center={center}
+        zoom={12}
+        scrollWheelZoom
+        style={{ height: '100%', width: '100%' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -63,8 +93,8 @@ export default function LocationPicker({ latitude, longitude, radiusKm, onSelect
               center={[latitude, longitude]}
               radius={radiusKm * 1000}
               pathOptions={{
-                color: "#004f60",
-                fillColor: "#a8e6fd",
+                color: '#004f60',
+                fillColor: '#a8e6fd',
                 fillOpacity: 0.2,
                 weight: 1.5,
               }}
