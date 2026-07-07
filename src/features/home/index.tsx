@@ -1,6 +1,6 @@
-export { default as HeroSection } from './componenets/HeroSection';
-export { default as EntryCard } from './componenets/EntryCard';
-export { default as PopularCategory } from './componenets/PopularCategory';
-export { default as TrendingJob } from './componenets/TrendingJob';
-export { default as HowItWorks } from './componenets/HowItWorks';
-export { default as UserHighlights } from './componenets/UserHighlights';
+export { default as HeroSection } from './components/HeroSection';
+export { default as EntryCard } from './components/EntryCard';
+export { default as PopularCategory } from './components/PopularCategory';
+export { default as TrendingJob } from './components/TrendingJob';
+export { default as HowItWorks } from './components/HowItWorks';
+export { default as UserHighlights } from './components/UserHighlights';

@@ -14,7 +14,7 @@ import {
   jobFormSchema,
   jobStepFields,
 } from '@/features/jobs/jobSchema';
-import ServiceStepIndicator from '@/features/services/components/create/ServiceStepIndicator';
+import StepIndicator from '@/components/ui/StepIndicator';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
@@ -138,7 +138,7 @@ export default function CreateJob() {
   return (
     <main className="flex-grow pt-24 pb-xl px-margin-mobile md:px-margin-desktop">
       <div className="max-w-3xl mx-auto">
-        <ServiceStepIndicator
+        <StepIndicator
           step={step}
           totalSteps={TOTAL_STEPS}
           label={STEP_LABELS[step - 1]}

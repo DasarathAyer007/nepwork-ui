@@ -1,11 +1,12 @@
 import { ArrowBigRight, Handshake, UserPlus } from 'lucide-react';
+import { Card } from '@/components/ui/Card';
 
 function EntryCard() {
   return (
     <>
       <div className="grid md:grid-cols-2 gap-8">
         {/* <!-- Worker Entry --> */}
-        <div className="group bg-surface-container-lowest p-8 rounded-xl shadow-lg border border-outline-variant hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <Card variant="interactive" className="group p-8 hover:-translate-y-2">
           <div className="flex items-start justify-between">
             <div className="space-y-4">
               <div className="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center text-primary">
@@ -28,9 +29,9 @@ function EntryCard() {
               </button>
             </div>
           </div>
-        </div>
+        </Card>
         {/* <!-- Employer Entry --> */}
-        <div className="group bg-surface-container-lowest p-8 rounded-xl shadow-lg border border-outline-variant hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <Card variant="interactive" className="group p-8 hover:-translate-y-2">
           <div className="flex items-start justify-between">
             <div className="space-y-4">
               <div className="w-14 h-14 bg-secondary-container rounded-xl flex items-center justify-center text-secondary">
@@ -53,7 +54,7 @@ function EntryCard() {
               </button>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </>
   );

@@ -1,14 +1,14 @@
-interface Props {
+interface StepIndicatorProps {
   step: number;
   totalSteps: number;
   label: string;
 }
 
-export default function ServiceStepIndicator({
+export default function StepIndicator({
   step,
   totalSteps,
   label,
-}: Props) {
+}: StepIndicatorProps) {
   const completedSteps = Math.max(0, step - 1);
   const percent = Math.round((completedSteps / totalSteps) * 100);
 
@@ -16,14 +16,14 @@ export default function ServiceStepIndicator({
     <div className="mb-xl">
       <div className="flex justify-between items-end mb-xs">
         <div>
-          <span className="font-label-lg text-label-lg text-primary uppercase font-bold">
+          <span className="text-label-md text-primary uppercase font-bold tracking-wider">
             Step {step} of {totalSteps}
           </span>
-          <h1 className=" font-headline-lg text-headline-lg text-on-background mt-1">
+          <h1 className="text-headline-lg font-bold text-text mt-1">
             {label}
           </h1>
         </div>
-        <span className="font-body-sm text-body-sm text-on-surface-variant mb-1">
+        <span className="text-body-sm text-muted mb-1 font-medium">
           {percent}% Complete
         </span>
       </div>

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 import {
-  ServiceStepIndicator,
   StepBasicInfo,
   StepLocation,
   StepPricingSkills,
   StepReview,
 } from '@/features/services/';
+import StepIndicator from '@/components/ui/StepIndicator';
 import { useCreateServiceMutation } from '@/features/services/serviceApi';
 import {
   type ServiceFormValues,
@@ -91,7 +91,7 @@ export default function CreateService() {
   return (
     <main className="grow pt-10 pb-xl px-margin-mobile md:px-margin-desktop">
       <div className="max-w-3xl mx-auto">
-        <ServiceStepIndicator
+        <StepIndicator
           step={step}
           totalSteps={TOTAL_STEPS}
           label={STEP_LABELS[step - 1]}

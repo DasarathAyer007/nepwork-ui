@@ -1,4 +1,4 @@
-import TrustSection from '../features/home/componenets/TrustSection';
+import TrustSection from '../features/home/components/TrustSection';
 import {
   EntryCard,
   HeroSection,
