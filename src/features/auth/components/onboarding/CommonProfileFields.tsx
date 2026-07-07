@@ -6,7 +6,7 @@ import type {
 import { useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { Input, Label, TextArea } from '@/components/ui/forms';
+import { Input, Label, TextArea, FormSection } from '@/components/ui/forms';
 
 import type { LoginUser } from '../../types';
 import SocialLinksEditor from '../SocialLinksEditor';
@@ -30,56 +30,67 @@ export function CommonProfileFields<T extends FieldValues>({
   );
 
   return (
-    <>
-      {/* ── Profile & Cover Photos ─────────────────────────────────────────── */}
-      <div className="space-y-2">
-        <Label>Profile &amp; Cover Photos</Label>
-        <ProfileImageForm<T> setValue={setValue} watch={watch} />
-      </div>
+    <div className="space-y-6">
+      {/* Section 1: Account Profile & Photos */}
+      <FormSection title="Account Profile" description="Your avatar, cover photos, and core account details.">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Profile &amp; Cover Photos</Label>
+            <ProfileImageForm<T> setValue={setValue} watch={watch} />
+          </div>
 
-      {/* ── Read-only account info ─────────────────────────────────────────── */}
-      <div className="space-y-1">
-        <Label>Full Name</Label>
-        <Input
-          variant="profile"
-          type="text"
-          value={user?.full_name ?? ''}
-          disabled
-          className="cursor-not-allowed"
-        />
-      </div>
-      <div className="space-y-1">
-        <Label>Email</Label>
-        <Input
-          variant="profile"
-          type="email"
-          value={user?.email ?? ''}
-          disabled
-          className="cursor-not-allowed"
-        />
-      </div>
-      <div className="space-y-1">
-        <Label>Username</Label>
-        <Input
-          variant="profile"
-          type="text"
-          value={user?.username ?? ''}
-          disabled
-          className="cursor-not-allowed"
-        />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-outline-variant/20">
+            <div className="space-y-2">
+              <Label>Full Name</Label>
+              <Input
+                type="text"
+                value={user?.full_name ?? ''}
+                disabled
+                className="cursor-not-allowed bg-surface-container-low"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={user?.email ?? ''}
+                disabled
+                className="cursor-not-allowed bg-surface-container-low"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Username</Label>
+              <Input
+                type="text"
+                value={user?.username ?? ''}
+                disabled
+                className="cursor-not-allowed bg-surface-container-low"
+              />
+            </div>
+          </div>
+        </div>
+      </FormSection>
 
-      {/* ── Bio ───────────────────────────────────────────────────────────── */}
-      <div className="space-y-2">
-        <Label>Bio</Label>
-        <TextArea {...register('bio')} rows={4} placeholder={bioPlaceholder} />
-      </div>
+      {/* Section 2: Bio */}
+      <FormSection title="About You" description="Write a short summary about your background, experience, or skills.">
+        <div className="space-y-2">
+          <Label>Bio</Label>
+          <TextArea
+            {...register('bio')}
+            rows={4}
+            placeholder={bioPlaceholder}
+            className="w-full"
+          />
+        </div>
+      </FormSection>
 
-      {/* ── Social Profiles ───────────────────────────────────────────────── */}
-      <div className="border-t border-outline-variant pt-6 space-y-3">
-        <Label>Social Profiles</Label>
-        <SocialLinksEditor name="socialLinks" />
-      </div>
-    </>
+      {/* Section 3: Social Profiles */}
+      <FormSection title="Social Connections" description="Add your personal or professional social links.">
+        <div className="space-y-2">
+          <Label>Social Profiles</Label>
+          <SocialLinksEditor name="socialLinks" />
+        </div>
+      </FormSection>
+    </div>
   );
 }

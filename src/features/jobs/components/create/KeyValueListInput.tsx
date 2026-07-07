@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Plus, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/forms';
 
 export interface KeyValueEntry {
   key: string;
@@ -8,8 +9,6 @@ export interface KeyValueEntry {
 }
 
 interface Props {
-  label: string;
-  helperText?: string;
   value: KeyValueEntry[];
   onChange: (entries: KeyValueEntry[]) => void;
   keyPlaceholder?: string;
@@ -18,8 +17,6 @@ interface Props {
 }
 
 export default function KeyValueListInput({
-  label,
-  helperText,
   value,
   onChange,
   keyPlaceholder = 'e.g., Experience',
@@ -41,48 +38,39 @@ export default function KeyValueListInput({
   }
 
   return (
-    <div className="space-y-xs">
-      <label className="font-headline-sm text-headline-sm block text-on-surface">
-        {label}
-      </label>
-      {helperText && (
-        <p className="font-body-sm text-body-sm text-on-surface-variant">
-          {helperText}
-        </p>
-      )}
-
+    <div className="space-y-3">
       {value.length > 0 && (
         <div className="space-y-2">
           {value.map((entry, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm">
-              <span className="font-medium text-body-sm text-on-surface shrink-0 min-w-30">
+              className="flex items-center gap-3 bg-surface-container-low/50 border border-outline-variant/30 rounded-lg px-4 py-2.5 hover:bg-surface-container-low transition-colors shadow-sm group">
+              <span className="font-semibold text-xs text-on-surface shrink-0 min-w-[120px] max-w-[200px] truncate">
                 {entry.key}
               </span>
-              <span className="text-body-sm text-on-surface-variant flex-1 truncate">
+              <span className="text-sm text-on-surface-variant flex-1 truncate">
                 {entry.value}
               </span>
               <button
                 type="button"
                 onClick={() => removeEntry(i)}
                 aria-label={`Remove ${entry.key}`}
-                className="p-1 rounded-md hover:bg-surface-container-high transition-colors shrink-0">
-                <Trash2 size={14} className="text-on-surface-variant" />
+                className="p-1.5 rounded-lg text-on-surface-variant hover:bg-error/10 hover:text-error transition-all shrink-0 cursor-pointer">
+                <Trash2 size={16} />
               </button>
             </div>
           ))}
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <input
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-2">
+        <Input
           value={draftKey}
           onChange={(e) => setDraftKey(e.target.value)}
           placeholder={keyPlaceholder}
-          className="sm:w-40 px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
+          className="sm:col-span-3"
         />
-        <input
+        <Input
           value={draftValue}
           onChange={(e) => setDraftValue(e.target.value)}
           onKeyDown={(e) => {
@@ -92,18 +80,18 @@ export default function KeyValueListInput({
             }
           }}
           placeholder={valuePlaceholder}
-          className="flex-1 px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
+          className="sm:col-span-7"
         />
         <button
           type="button"
           onClick={addEntry}
-          className="px-md py-sm rounded-lg bg-primary text-on-primary font-label-md flex items-center justify-center gap-1 hover:shadow transition">
+          className="sm:col-span-2 px-4 py-2.5 rounded-lg bg-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-1.5 hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer">
           <Plus size={16} />
           Add
         </button>
       </div>
 
-      {error && <p className="text-body-sm text-error">{error}</p>}
+      {error && <p className="text-xs text-error font-medium">{error}</p>}
     </div>
   );
 }

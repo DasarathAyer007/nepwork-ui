@@ -27,18 +27,18 @@ export function DropDown({
     <div className="relative w-full">
       <select
         className={clsx(
-          'w-full rounded-md text-text outline-none transition cursor-pointer appearance-none pr-10',
+          'w-full rounded-lg text-sm text-on-surface outline-none transition cursor-pointer appearance-none pr-10 duration-150 ease-in-out',
 
           variant === 'default' && [
-            'bg-surface-container border border-border px-md py-base focus-ring',
+            'bg-surface-container-low border border-outline-variant px-4 py-2.5 focus-ring',
           ],
 
           variant === 'filled' && [
-            'bg-surface-container border border-transparent px-md py-base focus-ring',
+            'bg-surface-container-low border border-transparent px-4 py-2.5 focus-ring',
           ],
 
           variant === 'ghost' && [
-            'bg-transparent border border-transparent hover:bg-surface-container-low focus-ring',
+            'bg-transparent border border-transparent hover:bg-surface-container-low focus-ring px-4 py-2.5',
           ],
 
           error && ['border-error', 'focus:ring-error/20', 'focus:border-error'],
@@ -52,7 +52,7 @@ export function DropDown({
           </option>
         ))}
       </select>
-      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted">
+      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-outline">
         <ChevronDown className="w-4 h-4" />
       </div>
     </div>

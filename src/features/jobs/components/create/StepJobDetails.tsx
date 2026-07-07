@@ -10,6 +10,7 @@ import {
 import { useFormContext } from 'react-hook-form';
 
 import type { JobFormValues } from '../../jobSchema';
+import { Label, Input, DropDown, FormSection } from '@/components/ui/forms';
 
 const JOB_TYPE_OPTIONS = [
   { value: 'full_time', label: 'Full Time', Icon: Briefcase },
@@ -39,23 +40,24 @@ export default function StepJobDetails() {
   } = useFormContext<JobFormValues>();
 
   return (
-    <section className="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm space-y-lg">
-      <div className="space-y-xs">
-        <label className="font-headline-sm text-headline-sm block text-on-surface">
-          Job Type
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-sm">
+    <FormSection
+      title="Job Details"
+      description="Specify the job type, remote/onsite flexibility, and minimum experience requirements."
+    >
+      <div className="space-y-2">
+        <Label>Job Type</Label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {JOB_TYPE_OPTIONS.map(({ value, label, Icon }) => (
-            <label key={value} className="relative cursor-pointer group">
+            <label key={value} className="relative cursor-pointer group flex">
               <input
                 {...register('job_type')}
                 className="peer sr-only"
                 type="radio"
                 value={value}
               />
-              <div className="h-full p-md border-2 border-outline-variant rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 flex flex-col items-center text-center gap-xs">
-                <Icon size={20} className="text-primary" />
-                <span className="font-body-sm text-body-sm text-on-surface">
+              <div className="w-full p-4 border-2 border-outline-variant/50 rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/40 flex flex-col items-center justify-center text-center gap-2 group-hover:shadow-sm">
+                <Icon size={20} className="text-primary group-hover:scale-110 transition-transform" />
+                <span className="font-semibold text-xs text-on-surface">
                   {label}
                 </span>
               </div>
@@ -63,26 +65,24 @@ export default function StepJobDetails() {
           ))}
         </div>
         {errors.job_type && (
-          <p className="text-body-sm text-error">{errors.job_type.message}</p>
+          <p className="text-xs text-error font-medium">{errors.job_type.message}</p>
         )}
       </div>
 
-      <div className="space-y-xs">
-        <label className="font-headline-sm text-headline-sm block text-on-surface">
-          Work Mode
-        </label>
-        <div className="grid grid-cols-3 gap-sm">
+      <div className="space-y-2">
+        <Label>Work Mode</Label>
+        <div className="grid grid-cols-3 gap-3">
           {WORK_MODE_OPTIONS.map(({ value, label, Icon }) => (
-            <label key={value} className="relative cursor-pointer group">
+            <label key={value} className="relative cursor-pointer group flex">
               <input
                 {...register('work_mode')}
                 className="peer sr-only"
                 type="radio"
                 value={value}
               />
-              <div className="h-full p-md border-2 border-outline-variant rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 flex flex-col items-center text-center gap-xs">
-                <Icon size={20} className="text-primary" />
-                <span className="font-body-sm text-body-sm text-on-surface">
+              <div className="w-full p-4 border-2 border-outline-variant/50 rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/40 flex flex-col items-center justify-center text-center gap-2 group-hover:shadow-sm">
+                <Icon size={20} className="text-primary group-hover:scale-110 transition-transform" />
+                <span className="font-semibold text-xs text-on-surface">
                   {label}
                 </span>
               </div>
@@ -90,50 +90,43 @@ export default function StepJobDetails() {
           ))}
         </div>
         {errors.work_mode && (
-          <p className="text-body-sm text-error">{errors.work_mode.message}</p>
+          <p className="text-xs text-error font-medium">{errors.work_mode.message}</p>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        <div className="space-y-xs">
-          <label className="font-label-md text-label-md text-on-surface-variant block uppercase">
-            Experience Level
-          </label>
-          <select
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-outline-variant/20">
+        <div className="space-y-2">
+          <Label>Experience Level</Label>
+          <DropDown
             {...register('experience_level')}
-            className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-low font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-            {EXPERIENCE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={EXPERIENCE_OPTIONS.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+            }))}
+          />
           {errors.experience_level && (
-            <p className="text-body-sm text-error">
+            <p className="text-xs text-error font-medium">
               {errors.experience_level.message}
             </p>
           )}
         </div>
 
-        <div className="space-y-xs">
-          <label className="font-label-md text-label-md text-on-surface-variant block uppercase">
-            Experience (Years)
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label>Experience (Years)</Label>
+          <Input
             {...register('experience_years')}
             type="number"
             min={0}
             max={50}
             placeholder="e.g., 3"
-            className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-low font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
           />
           {errors.experience_years && (
-            <p className="text-body-sm text-error">
+            <p className="text-xs text-error font-medium">
               {errors.experience_years.message}
             </p>
           )}
         </div>
       </div>
-    </section>
+    </FormSection>
   );
 }

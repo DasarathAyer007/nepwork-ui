@@ -111,7 +111,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>Latitude</Label>
           <Input
-            variant="profile"
             {...register(n('lat'), { required: 'Select a point on the map' })}
             readOnly
             placeholder="—"
@@ -121,7 +120,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>Longitude</Label>
           <Input
-            variant="profile"
             {...register(n('lng'), { required: 'Select a point on the map' })}
             readOnly
             placeholder="—"
@@ -144,7 +142,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>City</Label>
           <Input
-            variant="profile"
             {...register(n('city'))}
             placeholder="Nepalgunj"
           />
@@ -152,7 +149,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>State</Label>
           <Input
-            variant="profile"
             {...register(n('state'))}
             placeholder="Lumbini"
           />
@@ -160,7 +156,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>Postal code</Label>
           <Input
-            variant="profile"
             {...register(n('postal_code'))}
             placeholder="21900"
           />
@@ -172,7 +167,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>Country</Label>
           <Input
-            variant="profile"
             {...register(n('country'))}
             placeholder="Nepal"
           />
@@ -180,7 +174,6 @@ export default function LocationSection({ namePrefix = '' }: Props) {
         <div className="space-y-1">
           <Label>Label</Label>
           <Input
-            variant="profile"
             {...register(n('label'))}
             placeholder="Home, Office..."
           />

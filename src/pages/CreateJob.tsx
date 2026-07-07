@@ -15,8 +15,9 @@ import {
   jobStepFields,
 } from '@/features/jobs/jobSchema';
 import StepIndicator from '@/components/ui/StepIndicator';
+import { WizardActions } from '@/components/ui/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, ArrowRight, Rocket } from 'lucide-react';
+import { Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -136,57 +137,36 @@ export default function CreateJob() {
   });
 
   return (
-    <main className="flex-grow pt-24 pb-xl px-margin-mobile md:px-margin-desktop">
+    <main className="flex-grow pt-28 pb-16 px-margin-mobile md:px-margin-desktop bg-background/50">
       <div className="max-w-3xl mx-auto">
         <StepIndicator
           step={step}
           totalSteps={TOTAL_STEPS}
           label={STEP_LABELS[step - 1]}
+          stepLabels={STEP_LABELS}
         />
 
         <FormProvider {...methods}>
-          <form onSubmit={submitForm} className="space-y-gutter">
-            {step === 1 && <StepJobBasicInfo />}
-            {step === 2 && <StepJobDetails />}
-            {step === 3 && <StepJobSkillsCompensation />}
-            {step === 4 && <StepJobLocationStatus />}
-            {step === 5 && <StepJobReview />}
-
-            <div className="mt-xl flex justify-between items-center gap-md">
-              <button
-                type="button"
-                onClick={goBack}
-                disabled={step === 1}
-                className="px-lg py-sm rounded-lg border border-primary text-primary font-label-md hover:bg-primary/10 transition-all flex items-center gap-xs active:scale-95 disabled:opacity-40 disabled:pointer-events-none">
-                <ArrowLeft size={18} />
-                Back
-              </button>
-
-              {step < TOTAL_STEPS ? (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    void goNext();
-                  }}
-                  className="px-xl py-sm rounded-lg bg-primary text-on-primary font-label-md shadow-lg shadow-primary/20 hover:shadow-xl hover:translate-y-[-1px] transition-all flex items-center gap-xs active:scale-95">
-                  Next Step
-                  <ArrowRight size={18} />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    void submitForm();
-                  }}
-                  disabled={isLoading}
-                  className="px-xl py-sm rounded-lg bg-primary text-on-primary font-label-md shadow-lg shadow-primary/20 hover:shadow-xl hover:translate-y-[-1px] transition-all flex items-center gap-sm active:scale-95 disabled:opacity-60 disabled:pointer-events-none">
-                  {isLoading ? 'Posting…' : 'Post Job'}
-                  <Rocket size={18} />
-                </button>
-              )}
+          <form onSubmit={submitForm} className="space-y-6">
+            <div className="transition-all duration-300 ">
+              {step === 1 && <StepJobBasicInfo />}
+              {step === 2 && <StepJobDetails />}
+              {step === 3 && <StepJobSkillsCompensation />}
+              {step === 4 && <StepJobLocationStatus />}
+              {step === 5 && <StepJobReview />}
             </div>
+
+            <WizardActions
+              step={step}
+              totalSteps={TOTAL_STEPS}
+              onBack={goBack}
+              onNext={() => void goNext()}
+              onSubmit={() => void submitForm()}
+              isSubmitting={isLoading}
+              submitLabel="Post Job"
+              submitLoadingLabel="Posting…"
+              submitIcon={Rocket}
+            />
           </form>
         </FormProvider>
       </div>

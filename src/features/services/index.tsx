@@ -22,6 +22,6 @@ export { default as StepReview } from './components/create/StepReview';
 
 export { default as CategorySelector } from './components/create/CategorySelector';
 
-export { default as SkillsInput } from './components/create/SkillsInput';
+export { default as SkillsInput } from '../../components/SkillsInput';
 
-export { default as LocationPicker } from './components/create/LocationPicker';
+// export { default as LocationPicker } from './components/create/LocationPicker';

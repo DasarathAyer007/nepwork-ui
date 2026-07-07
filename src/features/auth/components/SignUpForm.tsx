@@ -15,7 +15,7 @@ import {
 import { useForm, useWatch } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
@@ -212,7 +212,7 @@ function SignUpForm() {
               <User />
             </span>
 
-            <span className="font-label-md text-label-md">Personal</span>
+            <span className="font-label-md text-label-xl ">Personal</span>
           </label>
 
           {/* Organization */}
@@ -235,7 +235,7 @@ function SignUpForm() {
               <Building2 />
             </span>
 
-            <span className="font-label-md text-label-md">Organization</span>
+            <span className="font-label-md text-label-xl">Organization</span>
           </label>
         </div>
 

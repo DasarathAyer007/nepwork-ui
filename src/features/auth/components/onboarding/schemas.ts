@@ -8,8 +8,10 @@ const CURRENT_YEAR = new Date().getFullYear();
 const optionalText = z.string().trim().optional();
 
 const optionalImageFile = z
-  .instanceof(File)
-  .optional()
+  .custom<File | null | undefined>(
+    (val) => val === undefined || val === null || val instanceof File,
+    { message: 'Expected an image file' }
+  )
   .refine(
     (file) => !file || file.size <= MAX_IMAGE_SIZE,
     'Image must be less than 2MB'
@@ -17,7 +19,8 @@ const optionalImageFile = z
   .refine(
     (file) => !file || ALLOWED_IMAGE_TYPES.includes(file.type),
     'Only JPEG, PNG or SVG images are allowed'
-  );
+  )
+  .transform((val) => val || undefined);
 
 const socialLinkSchema = z.object({
   platform: z.string().trim().min(1),

@@ -3,7 +3,7 @@ import EmployerCard from './EmployerCard';
 import JobApplyCard from './JobApplyCard';
 import JobDescription from './JobDescription';
 import JobHeader from './JobHeader';
-import JobLocationMap from './JobLocationMap';
+import MapComponent from '@/components/ui/MapComponent';
 import JobRequirementsBenefits from './JobRequirementsBenefits';
 import JobSkills from './JobSkills';
 
@@ -36,13 +36,16 @@ function JobDetails({ job }: Props) {
           <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
             <h3 className="text-headline-sm font-bold text-on-surface mb-4">Location</h3>
             {location?.point?.lat && location?.point?.lng ? (
-            <JobLocationMap
-              latitude={location.point?.lat ?? null}
-              longitude={location.point?.lng ?? null}
-              address={location.address}
-              label={location.label ?? job.title}
-            />) : (
-              <div className="h-[220px] flex flex-col items-center justify-center gap-2 bg-surface-container rounded-lg text-on-surface-variant">
+              <MapComponent
+                latitude={location.point?.lat ?? null}
+                longitude={location.point?.lng ?? null}
+                address={location.address}
+                label={location.label ?? job.title}
+                height={220}
+                showExpandButton
+              />
+            ) : (
+              <div className="h-[220px] flex flex-col items-center justify-center gap-2 bg-surface-container rounded-lg text-on-surface-variant border border-outline-variant">
                 <p className="text-body-sm">Location not available</p>
               </div>
             )}

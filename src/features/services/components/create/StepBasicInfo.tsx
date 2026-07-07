@@ -1,10 +1,11 @@
 import { useRef } from 'react';
 
-import { ImagePlus, X } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import type { ServiceFormValues } from '../../serviceSchema';
 import CategorySelector from './CategorySelector';
+import { Label, Input, TextArea, FormSection } from '@/components/ui/forms';
 
 export default function StepBasicInfo() {
   const {
@@ -19,71 +20,70 @@ export default function StepBasicInfo() {
   const thumbnail = watch('thumbnail');
 
   return (
-    <section className="bg-surface-container-lowest border border-outline-variant rounded-md p-md md:p-lg shadow-sm">
-      <div className="grid grid-cols-1 gap-md">
-        <div className="space-y-xs">
-          <label className="font-headline-sm text-headline-sm block text-on-surface">
-            Service Title
-          </label>
-          <input
+    <FormSection
+      title="Service Information"
+      description="Provide the title, description, category, and an optional thumbnail image for the service."
+    >
+      <div className="grid grid-cols-1 gap-6">
+        <div className="space-y-2">
+          <Label>Service Title</Label>
+          <Input
             {...register('title')}
-            className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             placeholder="e.g., Custom logo design in 48 hours"
             type="text"
           />
-          <p className="font-body-sm text-body-sm text-on-surface-variant">
+          <p className="text-xs text-on-surface-variant leading-relaxed">
             Keep it short and specific. This is the first thing clients see.
           </p>
           {errors.title && (
-            <p className="text-body-sm text-error">{errors.title.message}</p>
+            <p className="text-xs text-error font-medium">{errors.title.message}</p>
           )}
         </div>
 
-        <div className="space-y-xs">
-          <label className="font-headline-sm text-headline-sm block text-on-surface">
-            Description
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label>Description</Label>
+          <TextArea
             {...register('description')}
-            rows={5}
-            className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low resize-none"
+            rows={6}
             placeholder="Describe exactly what you offer, your process, and what clients get..."
           />
           {errors.description && (
-            <p className="text-body-sm text-error">
+            <p className="text-xs text-error font-medium">
               {errors.description.message}
             </p>
           )}
         </div>
 
-        <Controller
-          control={control}
-          name="category"
-          render={({ field }) => (
-            <CategorySelector
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.category?.message}
-            />
-          )}
-        />
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Controller
+            control={control}
+            name="category"
+            render={({ field }) => (
+              <CategorySelector
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.category?.message}
+              />
+            )}
+          />
+        </div>
 
-        <div className="space-y-xs">
-          <label className="font-headline-sm text-headline-sm block text-on-surface">
-            Thumbnail (Optional)
-          </label>
+        <div className="space-y-2">
+          <Label>Thumbnail (Optional)</Label>
 
           {!thumbnail ? (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer group">
-              <div className="w-16 h-16 bg-primary-container flex items-center justify-center rounded-full mb-md group-hover:scale-110 transition-transform">
-                <ImagePlus size={28} className="text-primary" />
+              className="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container/35 hover:bg-surface-container transition-colors cursor-pointer group"
+            >
+              <div className="w-14 h-14 bg-primary-container flex items-center justify-center rounded-full mb-3 group-hover:scale-105 transition-transform text-primary shadow-sm">
+                <Upload size={24} />
               </div>
-              <p className="font-headline-sm text-headline-sm text-on-surface">
-                Click or drag a photo here
+              <p className="font-semibold text-sm text-on-surface">
+                Click to upload or drag & drop image
               </p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant text-center mt-xs">
+              <p className="text-xs text-on-surface-variant text-center mt-1">
                 One clear photo that represents your service. PNG or JPG.
               </p>
               <input
@@ -97,22 +97,26 @@ export default function StepBasicInfo() {
               />
             </div>
           ) : (
-            <div className="relative rounded-lg overflow-hidden border border-outline-variant h-48">
+            <div className="relative rounded-xl overflow-hidden border border-outline-variant/30 h-48 shadow-sm group">
               <img
                 src={URL.createObjectURL(thumbnail)}
                 alt="Service thumbnail preview"
                 className="w-full h-full object-cover"
               />
-              <button
-                type="button"
-                onClick={() => setValue('thumbnail', null)}
-                className="absolute top-2 right-2 p-1.5 rounded-full bg-surface-container-lowest shadow-md hover:bg-surface-container transition-colors">
-                <X size={16} className="text-on-surface-variant" />
-              </button>
+              <div className="absolute inset-0 bg-on-background/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => setValue('thumbnail', null)}
+                  className="p-2 rounded-full bg-surface-container-lowest shadow-md hover:bg-error/10 hover:text-error transition-colors text-on-surface cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
           )}
         </div>
       </div>
-    </section>
+    </FormSection>
   );
 }
+

@@ -1,8 +1,8 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
 import type { JobFormValues } from '../../jobSchema';
-import LocationMapDialog from './LocationMapDialog';
-import LocationPicker from './LocationPicker';
+import MapComponent from '@/components/ui/MapComponent';
+import { Label, Input, FormSection } from '@/components/ui/forms';
 
 const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft' },
@@ -33,162 +33,122 @@ export default function StepJobLocationStatus() {
   }
 
   return (
-    <div className="space-y-md">
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">
-          Where is this job based?
-        </h2>
-
-        <div className="relative">
-          <LocationPicker
+    <div className="space-y-6">
+      <FormSection title="Job Location" description="Click on the map to drop a marker, or expand it for a bigger view. Skip this for fully remote roles.">
+        <div className="relative rounded-xl overflow-hidden border border-outline-variant/30 shadow-inner bg-surface-container-low">
+          <MapComponent
             latitude={latitude}
             longitude={longitude}
             onSelect={handleMapSelect}
             height={280}
-          />
-          <LocationMapDialog
-            latitude={latitude}
-            longitude={longitude}
-            onSelect={handleMapSelect}
+            showExpandButton
           />
         </div>
-        <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-          Click on the map to drop a marker, or expand it for a bigger view.
-          Skip this for fully remote roles.
-        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Latitude
-            </span>
-            <input
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label>Latitude</Label>
+            <Input
               value={latitude ?? ''}
               readOnly
               placeholder="Select on map"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
+              className="cursor-not-allowed bg-surface-container-low text-on-surface-variant font-mono"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Longitude
-            </span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label>Longitude</Label>
+            <Input
               value={longitude ?? ''}
               readOnly
               placeholder="Select on map"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
+              className="cursor-not-allowed bg-surface-container-low text-on-surface-variant font-mono"
             />
-          </label>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              City
-            </span>
-            <input
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-outline-variant/20">
+          <div className="space-y-1.5">
+            <Label>City</Label>
+            <Input
               {...register('location.city')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Nepalgunj"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              State / Province
-            </span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label>State / Province</Label>
+            <Input
               {...register('location.state')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Lumbini"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Country
-            </span>
-            <input
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label>Country</Label>
+            <Input
               {...register('location.country')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., Nepal"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Postal Code
-            </span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label>Postal Code</Label>
+            <Input
               {...register('location.postal_code')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
               placeholder="e.g., 21900"
             />
-          </label>
+          </div>
         </div>
-      </section>
+      </FormSection>
 
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">
-          Deadline & contact
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Application Deadline
-            </span>
-            <input
+      <FormSection title="Deadline & Contact" description="Specify application deadline and hiring contact details for potential applicants.">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
+            <Label>Application Deadline</Label>
+            <Input
               {...register('deadline')}
               type="date"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Contact Email
-            </span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label>Contact Email</Label>
+            <Input
               {...register('contact_email')}
               type="email"
               placeholder="hiring@company.com"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             />
             {errors.contact_email && (
-              <p className="text-body-sm text-error mt-1">
+              <p className="text-xs text-error font-medium mt-1">
                 {errors.contact_email.message}
               </p>
             )}
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Contact Phone
-            </span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label>Contact Phone</Label>
+            <Input
               {...register('contact_phone')}
               type="tel"
               placeholder="+977 98XXXXXXXX"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
             />
-          </label>
+          </div>
         </div>
-      </section>
+      </FormSection>
 
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">
-          Status
-        </h2>
+      <FormSection title="Status" description="Jobs start as a draft by default. Set to Open when you're ready for applicants.">
         <Controller
           control={control}
           name="status"
           render={({ field }) => (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {STATUS_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => field.onChange(opt.value)}
-                  className={`px-md py-sm rounded-lg border font-label-md transition-all ${
+                  className={`px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all duration-150 ease-in-out cursor-pointer flex items-center justify-center ${
                     field.value === opt.value
-                      ? 'border-primary bg-primary text-on-primary shadow-sm'
-                      : 'border-outline-variant bg-surface-container-lowest text-on-surface hover:border-primary/50'
+                      ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                      : 'border-outline-variant/60 bg-surface-container-low text-on-surface hover:border-primary/45'
                   }`}>
                   {opt.label}
                 </button>
@@ -196,11 +156,7 @@ export default function StepJobLocationStatus() {
             </div>
           )}
         />
-        <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-          Jobs start as a draft by default — set to Open when you're ready for
-          applicants.
-        </p>
-      </section>
+      </FormSection>
     </div>
   );
 }

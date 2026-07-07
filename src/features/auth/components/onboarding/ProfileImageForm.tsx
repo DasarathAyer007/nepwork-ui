@@ -15,6 +15,7 @@ import type {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 interface ProfileImageFormProps<TFieldValues extends FieldValues> {
   setValue: UseFormSetValue<TFieldValues>;
@@ -42,6 +43,11 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
 
   const profileUrlRef = useRef<string | null>(null);
   const coverUrlRef = useRef<string | null>(null);
+
+  const { formState: { errors } } = useFormContext();
+
+  const profileError = errors[resolvedProfileField]?.message as string | undefined;
+  const coverError = errors[resolvedCoverField]?.message as string | undefined;
 
   // Helper to update preview and revoke old URL
   const updatePreview = (
@@ -92,7 +98,6 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
     setValue(resolvedProfileField, file as TFieldValues[Path<TFieldValues>], {
       shouldValidate: true,
     });
-    // Preview will be updated by the effect watching profilePicFile
   };
 
   const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,60 +105,91 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
     setValue(resolvedCoverField, file as TFieldValues[Path<TFieldValues>], {
       shouldValidate: true,
     });
-    // Preview will be updated by the effect watching coverPicFile
   };
 
   return (
-    <div className="relative mb-12">
-      {/* Cover Photo */}
-      <label
-        htmlFor="cover-upload"
-        className="w-full h-40 bg-surface-container rounded-md border-2 border-dashed border-outline-variant flex items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors group overflow-hidden">
-        {coverPreview ? (
-          <img
-            src={coverPreview}
-            alt="Cover"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="flex flex-col items-center gap-1">
-            <Camera className="text-3xl text-outline group-hover:text-primary" />
-            <span className="text-xs font-semibold text-on-surface-variant">
-              Upload Cover Photo
-            </span>
-          </div>
-        )}
-        <input
-          id="cover-upload"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleCoverChange}
-        />
-      </label>
-
-      {/* Profile Picture */}
-      <div className="absolute -bottom-8 left-6 w-24 h-24 bg-surface-container-lowest rounded-full p-1 shadow-sm">
-        <label
-          htmlFor="profile-upload"
-          className="w-full h-full bg-surface-container rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors group overflow-hidden">
-          {profilePreview ? (
+    <div className="space-y-4">
+      <div className="relative">
+        {/* Cover Photo */}
+        <div className="relative h-44 w-full rounded-2xl overflow-hidden group border border-outline-variant/30 bg-surface-container shadow-inner">
+          {coverPreview ? (
             <img
-              src={profilePreview}
-              alt="Profile"
-              className="w-full h-full object-cover rounded-full"
+              src={coverPreview}
+              alt="Cover"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <User className="text-2xl text-outline group-hover:text-primary" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-outline group-hover:text-primary transition-colors">
+              <Camera className="w-8 h-8 mb-2 animate-pulse" />
+              <span className="text-xs font-semibold uppercase tracking-wider">
+                Upload Cover Image
+              </span>
+            </div>
           )}
+          {/* Cover Edit Overlay */}
+          <label
+            htmlFor="cover-upload"
+            className="absolute inset-0 bg-on-background/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer text-white font-semibold text-sm transition-opacity duration-200"
+          >
+            <Camera className="w-5 h-5 mr-2" />
+            Change Cover Photo
+          </label>
           <input
-            id="profile-upload"
+            id="cover-upload"
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleProfileChange}
+            onChange={handleCoverChange}
           />
-        </label>
+        </div>
+
+        {/* Profile Picture */}
+        <div className="absolute -bottom-10 left-8 w-28 h-28 rounded-full bg-surface-container-lowest p-1 shadow-md border border-outline-variant/20 z-10 group/profile">
+          <div className="relative w-full h-full rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+            {profilePreview ? (
+              <img
+                src={profilePreview}
+                alt="Profile"
+                className="w-full h-full object-cover group-hover/profile:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <User className="w-12 h-12 text-outline" />
+            )}
+            {/* Profile Edit Overlay */}
+            <label
+              htmlFor="profile-upload"
+              className="absolute inset-0 bg-on-background/40 opacity-0 group-hover/profile:opacity-100 flex items-center justify-center cursor-pointer text-white transition-opacity duration-200"
+            >
+              <Camera className="w-6 h-6" />
+            </label>
+            <input
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleProfileChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Spacing for absolute elements */}
+      <div className="h-10" />
+
+      {/* Error messages */}
+      <div className="flex flex-col gap-1.5 mt-2">
+        {coverError && (
+          <div className="flex items-center gap-1.5 text-error text-xs font-semibold bg-error/5 px-3 py-1.5 rounded-lg border border-error/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-error animate-ping" />
+            Cover Image: {coverError}
+          </div>
+        )}
+        {profileError && (
+          <div className="flex items-center gap-1.5 text-error text-xs font-semibold bg-error/5 px-3 py-1.5 rounded-lg border border-error/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-error animate-ping" />
+            Profile Picture: {profileError}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Toaster } from 'sonner';
+import { Toaster } from 'react-hot-toast';
 
 import './App.css';
 import WebSocketLifecycle from './app/AppRoot';

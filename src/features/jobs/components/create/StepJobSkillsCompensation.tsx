@@ -4,6 +4,7 @@ import SkillsInput from '@/components/SkillsInput';
 
 import type { JobFormValues } from '../../jobSchema';
 import KeyValueListInput from './KeyValueListInput';
+import { Label, Input, DropDown, FormSection } from '@/components/ui/forms';
 
 const CURRENCIES = ['USD', 'NPR', 'INR', 'EUR', 'GBP'];
 
@@ -15,111 +16,106 @@ export default function StepJobSkillsCompensation() {
   } = useFormContext<JobFormValues>();
 
   return (
-    <section className="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm space-y-lg">
-      <Controller
-        control={control}
-        name="skills_required"
-        render={({ field }) => (
-          <SkillsInput
-            value={field.value}
-            onChange={field.onChange}
-            error={errors.skills_required?.message as string | undefined}
-          />
-        )}
-      />
+    <div className="space-y-6">
+      <FormSection title="Skills Required" description="Add the skills a candidate should have for this role.">
+        <Controller
+          control={control}
+          name="skills_required"
+          render={({ field }) => (
+            <SkillsInput
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.skills_required?.message as string | undefined}
+            />
+          )}
+        />
+      </FormSection>
 
-      <Controller
-        control={control}
-        name="requirements"
-        render={({ field }) => (
-          <KeyValueListInput
-            label="Requirements"
-            helperText="Add each requirement as a short label and detail, e.g. 'Education' → 'Bachelor's in CS or equivalent'."
-            value={field.value}
-            onChange={field.onChange}
-            keyPlaceholder="e.g., Education"
-            valuePlaceholder="e.g., Bachelor's degree or equivalent experience"
-          />
-        )}
-      />
+      <FormSection title="Requirements" description="Add each requirement as a short label and detail, e.g. 'Education' → 'Bachelor's in CS or equivalent'.">
+        <Controller
+          control={control}
+          name="requirements"
+          render={({ field }) => (
+            <KeyValueListInput
+              label="Requirements"
+              value={field.value}
+              onChange={field.onChange}
+              keyPlaceholder="e.g., Education"
+              valuePlaceholder="e.g., Bachelor's degree or equivalent experience"
+            />
+          )}
+        />
+      </FormSection>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-        <label className="block">
-          <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-            Salary Min
-          </span>
-          <div className="relative flex items-center">
-            <span className="absolute left-md font-headline-md text-on-surface-variant">
-              $
-            </span>
-            <input
-              {...register('salary_min')}
-              className="w-full pl-xl pr-md py-md rounded-lg border border-outline font-headline-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              placeholder="0.00"
-              type="number"
-              step="0.01"
+      <FormSection title="Compensation" description="Set the salary range and currency for this role.">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label>Salary Min</Label>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 text-sm font-semibold text-on-surface-variant">
+                $
+              </span>
+              <Input
+                {...register('salary_min')}
+                className="pl-8"
+                placeholder="0.00"
+                type="number"
+                step="0.01"
+              />
+            </div>
+            {errors.salary_min && (
+              <p className="text-xs text-error font-medium mt-1">
+                {errors.salary_min.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Salary Max</Label>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 text-sm font-semibold text-on-surface-variant">
+                $
+              </span>
+              <Input
+                {...register('salary_max')}
+                className="pl-8"
+                placeholder="0.00"
+                type="number"
+                step="0.01"
+              />
+            </div>
+            {errors.salary_max && (
+              <p className="text-xs text-error font-medium mt-1">
+                {errors.salary_max.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Currency</Label>
+            <DropDown
+              {...register('currency')}
+              options={CURRENCIES.map((c) => ({ label: c, value: c }))}
             />
           </div>
-          {errors.salary_min && (
-            <p className="text-body-sm text-error mt-1">
-              {errors.salary_min.message}
-            </p>
-          )}
-        </label>
+        </div>
+      </FormSection>
 
-        <label className="block">
-          <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-            Salary Max
-          </span>
-          <div className="relative flex items-center">
-            <span className="absolute left-md font-headline-md text-on-surface-variant">
-              $
-            </span>
-            <input
-              {...register('salary_max')}
-              className="w-full pl-xl pr-md py-md rounded-lg border border-outline font-headline-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              placeholder="0.00"
-              type="number"
-              step="0.01"
+      <FormSection title="Benefits" description="List perks as a label and detail, e.g. 'Health' → 'Full medical, dental, and vision'.">
+        <Controller
+          control={control}
+          name="benefits"
+          render={({ field }) => (
+            <KeyValueListInput
+              label="Benefits"
+              value={field.value}
+              onChange={field.onChange}
+              keyPlaceholder="e.g., Health"
+              valuePlaceholder="e.g., Full medical, dental, and vision"
             />
-          </div>
-          {errors.salary_max && (
-            <p className="text-body-sm text-error mt-1">
-              {errors.salary_max.message}
-            </p>
           )}
-        </label>
-
-        <label className="block">
-          <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-            Currency
-          </span>
-          <select
-            {...register('currency')}
-            className="w-full px-md py-md rounded-lg border border-outline-variant bg-surface-container-low font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-            {CURRENCIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <Controller
-        control={control}
-        name="benefits"
-        render={({ field }) => (
-          <KeyValueListInput
-            label="Benefits"
-            helperText="List perks as a label and detail, e.g. 'Health' → 'Full medical, dental, and vision'."
-            value={field.value}
-            onChange={field.onChange}
-            keyPlaceholder="e.g., Health"
-            valuePlaceholder="e.g., Full medical, dental, and vision"
-          />
-        )}
-      />
-    </section>
+        />
+      </FormSection>
+    </div>
   );
 }

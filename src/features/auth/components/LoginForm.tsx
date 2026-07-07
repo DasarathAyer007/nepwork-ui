@@ -5,7 +5,7 @@ import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
@@ -120,9 +120,9 @@ function LoginForm() {
         </div>
         <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <label className="form-label" htmlFor="password">
+            <Label htmlFor="password">
               Password
-            </label>
+            </Label>
             <a
               className="text-xs font-bold text-primary hover:text-primary-dim transition-colors"
               href="#">

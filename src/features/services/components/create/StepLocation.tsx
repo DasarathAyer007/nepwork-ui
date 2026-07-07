@@ -1,8 +1,8 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
 import type { ServiceFormValues } from '../../serviceSchema';
-import LocationMapDialog from './LocationMapDialog';
-import LocationPicker from './LocationPicker';
+import MapComponent from '@/components/ui/MapComponent';
+import { Label, Input, FormSection } from '@/components/ui/forms';
 
 export default function StepLocation() {
   const {
@@ -27,210 +27,153 @@ export default function StepLocation() {
   }
 
   return (
-    <div className="space-y-md">
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">
-          Where do you offer this service?
-        </h2>
-
-        <div className="relative">
-          <LocationPicker
+    <div className="space-y-6">
+      <FormSection
+        title="Where you work"
+        description="Click on the map to drop a marker, or expand it for a bigger view.">
+        <div className="relative rounded-lg overflow-hidden border border-outline-variant/30 shadow-inner bg-surface-container-low">
+          <MapComponent
             latitude={latitude}
             longitude={longitude}
             radiusKm={radiusKm}
             onSelect={handleMapSelect}
             height={280}
-          />
-          <LocationMapDialog
-            latitude={latitude}
-            longitude={longitude}
-            radiusKm={radiusKm}
-            onSelect={handleMapSelect}
+            showExpandButton
           />
         </div>
-        <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-          Click on the map to drop a marker, or expand it for a bigger view.
-        </p>
         {errors.location?.latitude && (
-          <p className="text-body-sm text-error mt-1">
+          <p className="text-xs text-error font-medium">
             {errors.location.latitude.message}
           </p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Latitude
-            </span>
-            <input
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Latitude</Label>
+            <Input
               value={latitude ?? ''}
               readOnly
               placeholder="Select on map"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
+              className="cursor-not-allowed bg-surface-container-low text-on-surface-variant font-mono"
             />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Longitude
-            </span>
-            <input
+          </div>
+          <div className="space-y-2">
+            <Label>Longitude</Label>
+            <Input
               value={longitude ?? ''}
               readOnly
               placeholder="Select on map"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-container-high font-body-md text-on-surface-variant"
+              className="cursor-not-allowed bg-surface-container-low text-on-surface-variant font-mono"
             />
-          </label>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              City
-            </span>
-            <input
-              {...register('location.city')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-              placeholder="e.g., Nepalgunj"
-            />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              State / Province
-            </span>
-            <input
-              {...register('location.state')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-              placeholder="e.g., Lumbini"
-            />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Country
-            </span>
-            <input
-              {...register('location.country')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-              placeholder="e.g., Nepal"
-            />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Postal Code
-            </span>
-            <input
-              {...register('location.postal_code')}
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-              placeholder="e.g., 21900"
-            />
-          </label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-outline-variant/20">
+          <div className="space-y-2">
+            <Label>City</Label>
+            <Input {...register('location.city')} placeholder="e.g., Nepalgunj" />
+          </div>
+          <div className="space-y-2">
+            <Label>State / Province</Label>
+            <Input {...register('location.state')} placeholder="e.g., Lumbini" />
+          </div>
         </div>
-      </section>
 
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <div className="flex items-center justify-between mb-xs">
-          <label className="font-headline-sm text-headline-sm text-on-surface">
-            Service radius
-          </label>
-          <span className="font-body-md font-medium text-primary">
-            {radiusKm} km
-          </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Country</Label>
+            <Input {...register('location.country')} placeholder="e.g., Nepal" />
+          </div>
+          <div className="space-y-2">
+            <Label>Postal Code</Label>
+            <Input {...register('location.postal_code')} placeholder="e.g., 21900" />
+          </div>
+        </div>
+      </FormSection>
+
+      <FormSection
+        title="Service radius"
+        description="Clients within this distance from your pin can find and book this service.">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold text-on-surface">Radius</span>
+          <span className="text-sm font-bold text-primary">{radiusKm} km</span>
         </div>
         <Controller
           control={control}
           name="radius_km"
           render={({ field }) => (
-            <div className="flex items-center gap-md">
+            <div className="flex items-center gap-4">
               <input
                 type="range"
                 min={1}
                 max={200}
                 value={field.value}
                 onChange={(e) => field.onChange(Number(e.target.value))}
-                className="flex-1 accent-[color:var(--color-primary)]"
+                className="flex-1 accent-primary"
               />
-              <input
+              <Input
                 type="number"
                 min={1}
                 max={200}
                 value={field.value}
                 onChange={(e) => field.onChange(Number(e.target.value))}
-                className="w-20 px-sm py-sm rounded-lg border border-outline-variant text-center font-body-md bg-surface-container-low"
+                className="w-20 text-center"
               />
             </div>
           )}
         />
-        <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-          Clients within this distance from your pin can find and book this
-          service.
-        </p>
         {errors.radius_km && (
-          <p className="text-body-sm text-error mt-1">
+          <p className="text-xs text-error font-medium">
             {errors.radius_km.message}
           </p>
         )}
-      </section>
+      </FormSection>
 
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">
-          Available hours (optional)
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Available From
-            </span>
-            <input
-              {...register('available_from')}
-              type="time"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-            />
-          </label>
-          <label className="block">
-            <span className="font-label-md text-label-md text-on-surface-variant block mb-xs uppercase">
-              Available To
-            </span>
-            <input
-              {...register('available_to')}
-              type="time"
-              className="w-full px-md py-sm rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md bg-surface-container-low"
-            />
-          </label>
+      <FormSection
+        title="Available hours"
+        description="Optional — let clients know when they can reach you.">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Available From</Label>
+            <Input {...register('available_from')} type="time" />
+          </div>
+          <div className="space-y-2">
+            <Label>Available To</Label>
+            <Input {...register('available_to')} type="time" />
+          </div>
         </div>
-      </section>
+      </FormSection>
 
-      <section className="bg-surface-container-lowest p-md md:p-lg rounded-lg border border-outline-variant shadow-sm flex items-center justify-between">
-        <div>
-          <h2 className="font-headline-sm text-headline-sm text-on-surface">
-            Status
-          </h2>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">
-            Active services are visible to clients right away.
-          </p>
-        </div>
+      <FormSection
+        title="Status"
+        description="Active services are visible to clients right away.">
         <Controller
           control={control}
           name="status"
           render={({ field }) => (
-            <button
-              type="button"
-              onClick={() =>
-                field.onChange(field.value === 'active' ? 'inactive' : 'active')
-              }
-              className={`relative w-14 h-8 rounded-full transition-colors ${
-                field.value === 'active'
-                  ? 'bg-primary'
-                  : 'bg-surface-container-highest'
-              }`}
-              aria-pressed={field.value === 'active'}>
-              <span
-                className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-surface-container-lowest shadow-md transition-transform ${
-                  field.value === 'active' ? 'translate-x-6' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              {(
+                [
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => field.onChange(opt.value)}
+                  className={`px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all duration-150 ease-in-out cursor-pointer flex items-center justify-center ${
+                    field.value === opt.value
+                      ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                      : 'border-outline-variant/60 bg-surface-container-low text-on-surface hover:border-primary/45'
+                  }`}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           )}
         />
-      </section>
+      </FormSection>
     </div>
   );
 }
