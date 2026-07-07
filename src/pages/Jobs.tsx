@@ -210,8 +210,6 @@ export default function Jobs() {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
           />
@@ -238,8 +236,6 @@ export default function Jobs() {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
           />
@@ -259,11 +255,11 @@ export default function Jobs() {
           </div>
 
           <div className="lg:col-span-3 space-y-4">
-            {!isLoading && !isError && (
+            {/* {!isLoading && !isError && (
               <div className="text-body-md text-on-surface-variant">
                 Showing {data?.results?.length || 0} of {totalCount} jobs
               </div>
-            )}
+            )} */}
 
             {isLoading && (
               <div className="flex items-center justify-center py-12">
@@ -283,6 +279,8 @@ export default function Jobs() {
               jobs={data?.results ?? EMPTY_JOBS}
               currentPage={currentPage}
               totalPages={totalPages}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
               onPageChange={handlePageChange}
             />
           </div>

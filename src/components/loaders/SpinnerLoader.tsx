@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
 interface LoaderProps {
-  visible?: boolean;
+  show?: boolean;
   size?: number;
   color?: string;
   message?: string;
@@ -13,14 +13,14 @@ interface LoaderProps {
 let idCounter = 0;
 
 export const SpinnerLoader: React.FC<LoaderProps> = ({
-  visible = true,
+  show = true,
   size = 48,
   color = 'var(--color-primary, #25b09b)',
   message,
   className,
   style,
 }) => {
-  if (!visible) return null;
+  if (!show) return null;
 
   const id = useRef(`loader-${++idCounter}`).current;
   const animationName = `spin-${id}`;
@@ -54,7 +54,7 @@ export const SpinnerLoader: React.FC<LoaderProps> = ({
         role="alert"
         aria-busy="true"
         aria-label={message || 'Loading'}
-        className={className}
+        className={` fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-xs${className}`}
         style={{
           position: 'fixed',
           inset: 0,
@@ -63,7 +63,7 @@ export const SpinnerLoader: React.FC<LoaderProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 999,
-          background: 'rgba(219, 228, 232, 0.5)',
+          background: 'rgba(219, 228, 232, 0.5)', 
           backdropFilter: 'blur(3px)',
           WebkitBackdropFilter: 'blur(3px)',
           ...style,

@@ -20,7 +20,6 @@ import { z } from 'zod';
 
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
 
-import BlurLoader from '../../../components/loaders/BlurLoader';
 import { handleApiErrors } from '../../../utils/handleApiErrors';
 import { useLoginMutation, useSignupMutation } from '../api/authApi';
 import { setCredentials } from '../authSlice';
@@ -31,14 +30,15 @@ import {
 } from '../utils/passwordStrength';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsAndConditions from './TermsConditions';
+import { SpinnerLoader } from '@/components/loaders/SpinnerLoader';
 
 const signUpSchema = z
   .object({
-    accountType: z.enum(['personal', 'organization'], {
+    account_type: z.enum(['personal', 'organization'], {
       message: 'Please select an account type',
     }),
 
-    fullName: z
+    full_name: z
       .string()
       .trim()
       .min(2, 'Full name must be at least 2 characters')
@@ -69,15 +69,15 @@ const signUpSchema = z
         message: 'Password cannot be empty or spaces only',
       }),
 
-    confirmPassword: z.string(),
+    confirm_password: z.string(),
 
     terms: z.literal(true, {
       message: 'You must accept the Terms and Conditions',
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match',
-    path: ['confirmPassword'],
+    path: ['confirm_password'],
   });
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
@@ -99,12 +99,12 @@ function SignUpForm() {
   } = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      fullName: '',
+      full_name: '',
       email: '',
       username: '',
       password: '',
-      confirmPassword: '',
-      accountType: 'personal',
+      confirm_password: '',
+      account_type: 'personal',
     },
   });
 
@@ -119,12 +119,12 @@ function SignUpForm() {
     console.log('Sign up data:', data);
 
     const payload = {
-      full_name: data.fullName,
+      full_name: data.full_name,
       email: data.email,
       username: data.username,
       password: data.password,
-      account_type: data.accountType,
-      confirm_password: data.confirmPassword,
+      account_type: data.account_type,
+      confirm_password: data.confirm_password,
     };
 
     try {
@@ -174,7 +174,7 @@ function SignUpForm() {
 
   const selectedAccountType = useWatch({
     control,
-    name: 'accountType',
+    name: 'account_type',
   });
 
   const score = getPasswordStrength(password);
@@ -204,7 +204,7 @@ function SignUpForm() {
             <input
               type="radio"
               value="personal"
-              {...register('accountType')}
+              {...register('account_type')}
               className="hidden"
             />
 
@@ -227,7 +227,7 @@ function SignUpForm() {
             <input
               type="radio"
               value="organization"
-              {...register('accountType')}
+              {...register('account_type')}
               className="hidden"
             />
 
@@ -239,12 +239,12 @@ function SignUpForm() {
           </label>
         </div>
 
-        {errors.accountType && (
-          <p className="text-error text-sm">{errors.accountType.message}</p>
+        {errors.account_type && (
+          <p className="text-error text-sm">{errors.account_type.message}</p>
         )}
         {/* Full Name */}
         <div className="space-y-1.5">
-          <Label htmlFor="fullName">
+          <Label htmlFor="full_name">
             {selectedAccountType === 'personal'
               ? 'Full Name'
               : 'Organization Name'}
@@ -253,14 +253,14 @@ function SignUpForm() {
             <UserRound className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
             <Input
               variant="auth"
-              id="fullName"
+              id="full_name"
               placeholder="John Doe"
               type="text"
-              {...register('fullName')}
+              {...register('full_name')}
             />
           </div>
-          {errors.fullName && (
-            <p className="text-error text-sm">{errors.fullName.message}</p>
+          {errors.full_name && (
+            <p className="text-error text-sm">{errors.full_name.message}</p>
           )}
         </div>
 
@@ -346,7 +346,7 @@ function SignUpForm() {
               id="confirmPassword"
               placeholder="••••••••"
               type={showConfirmPassword ? 'text' : 'password'}
-              {...register('confirmPassword')}
+              {...register('confirm_password')}
             />
             <button
               className="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-primary transition-colors"
@@ -359,9 +359,9 @@ function SignUpForm() {
               )}
             </button>
           </div>
-          {errors.confirmPassword && (
+          {errors.confirm_password && (
             <p className="text-error text-sm">
-              {errors.confirmPassword.message}
+              {errors.confirm_password.message}
             </p>
           )}
         </div>
@@ -406,8 +406,7 @@ function SignUpForm() {
           <UserRoundPlus strokeWidth={2.75} />
         </SubmitButton>
       </form>
-
-      <BlurLoader show={isSigningUp} />
+      <SpinnerLoader show={isSigningUp || isLoggingIn} />
     </>
   );
 }

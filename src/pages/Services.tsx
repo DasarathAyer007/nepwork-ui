@@ -195,8 +195,6 @@ export default function Services() {
             serviceName={serviceName}
             onSearchChange={setServiceName}
             onSearch={handleSearch}
-            onSortChange={setSortBy}
-            sortBy={sortBy}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
           />
@@ -222,8 +220,6 @@ export default function Services() {
           serviceName={serviceName}
           onSearchChange={setServiceName}
           onSearch={handleSearch}
-          onSortChange={setSortBy}
-          sortBy={sortBy}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
@@ -258,6 +254,8 @@ export default function Services() {
               services={data?.results ?? EMPTY_SERVICES}
               currentPage={currentPage}
               totalPages={totalPages}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
               onPageChange={setCurrentPage}
             />
           )}

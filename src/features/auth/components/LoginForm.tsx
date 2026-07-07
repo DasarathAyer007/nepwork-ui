@@ -13,11 +13,11 @@ import { Input, Label, SubmitButton } from '@/components/ui/forms';
 import { handleApiErrors } from '../../../utils/handleApiErrors';
 import { useLoginMutation } from '../api/authApi';
 import { setCredentials } from '../authSlice';
-import {
-  getPasswordStrength,
-  getStrengthLabel,
-  getStrengthPercent,
-} from '../utils/passwordStrength';
+// import {
+//   getPasswordStrength,
+//   getStrengthLabel,
+//   getStrengthPercent,
+// } from '../utils/passwordStrength';
 
 const loginSchema = z.object({
   username: z
@@ -52,7 +52,7 @@ function LoginForm() {
     register,
     handleSubmit,
     setError,
-    control,
+    // control,
     formState: { errors, isSubmitting },
   } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
@@ -62,11 +62,11 @@ function LoginForm() {
     },
   });
 
-  const password = useWatch({
-    control,
-    name: 'password',
-    defaultValue: '',
-  });
+  // const password = useWatch({
+  //   control,
+  //   name: 'password',
+  //   defaultValue: '',
+  // });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -92,9 +92,9 @@ function LoginForm() {
     }
   };
 
-  const score = getPasswordStrength(password);
-  const strength = getStrengthLabel(score);
-  const percent = getStrengthPercent(score);
+  // const score = getPasswordStrength(password);
+  // const strength = getStrengthLabel(score);
+  // const percent = getStrengthPercent(score);
 
   return (
     <>
@@ -152,12 +152,12 @@ function LoginForm() {
             </button>
           </div>
 
-          <div className="h-2 w-full bg-surface-container rounded overflow-hidden">
+          {/* <div className="h-2 w-full bg-surface-container rounded overflow-hidden">
             <div
               className={`h-full transition-all ${strength.color}`}
               style={{ width: `${percent}%` }}
             />
-          </div>
+          </div> */}
 
           {errors.password && (
             <p className="text-error text-sm">{errors.password.message}</p>
