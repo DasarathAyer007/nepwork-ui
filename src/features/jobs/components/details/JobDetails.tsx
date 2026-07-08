@@ -25,6 +25,7 @@ function JobDetails({ job }: Props) {
             <JobSkills skills={job.skills_required} />
           </div>
 
+
           <JobRequirementsBenefits requirements={job.requirements} benefits={job.benefits} />
 
           <EmployerCard employer={job.employer} thumbnail={job.thumbnail} />

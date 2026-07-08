@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import {
   Briefcase,
   CheckCircle,
@@ -10,6 +9,7 @@ import {
   Upload,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 interface JobApplicationFormProps {
   jobTitle: string;
@@ -30,7 +30,7 @@ function JobApplicationForm({
   postedAt,
 }: JobApplicationFormProps) {
   const [resumeUploaded, setResumeUploaded] = useState(false);
-
+  const user = useSelector((state: any) => state.auth.user);  
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
       {/* Top Section - Job Info Header */}
@@ -64,25 +64,38 @@ function JobApplicationForm({
           </div>
 
           {/* Applicant Info (Right side) - Simplified for this view */}
+                  {/* Applicant Info */}
           <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
             <p className="text-label-md font-medium text-on-surface-variant mb-2">
               APPLICANT INFO
             </p>
+
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-                JD
+                {(user?.full_name || user?.username || 'U')
+                  .split(' ')
+                  .map((name: string) => name[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()}
               </div>
+
               <div>
                 <p className="text-body-md font-bold text-on-surface">
-                  Jane Doe
+                  {user?.full_name ||
+                    `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim() ||
+                    user?.username ||
+                    'Unknown User'}
                 </p>
+
                 <p className="text-label-md text-on-surface-variant">
-                  j.doe@example.com
+                  {user?.email || 'No email available'}
                 </p>
               </div>
             </div>
+
             <Link
-              to="/profile"
+              to={user?.username ? `/profile/${user.username}` : '#'}
               className="block mt-3 text-body-md text-primary hover:underline">
               Edit Profile Details ↗
             </Link>
