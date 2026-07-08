@@ -4,7 +4,6 @@ import CreateService from '@/pages/CreateService.tsx';
 import MessagePage from '@/pages/MessagePage.tsx';
 import Services from '@/pages/Services.tsx';
 import { Route, Routes } from 'react-router-dom';
-
 import MainLayout from '../layouts/User/MainLayout';
 import CreatePostType from '../pages/ChoosePostType';
 import Home from '../pages/Home';
@@ -14,6 +13,7 @@ import LogIn from '../pages/LogIn';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
+import JobApplicationPage from '@/pages/JobApplicationPage.tsx';
 
 function route() {
   return (
@@ -23,6 +23,7 @@ function route() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetailsPage />} />
+        <Route path="jobs/:id/apply" element={<JobApplicationPage />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/services" element={<Services />} />

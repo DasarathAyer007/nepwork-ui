@@ -13,10 +13,11 @@ function JobApplyCard({ job }: Props) {
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
-      <Link to={`/jobs/${id}/apply`}>
-        <button className="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95">
-          Apply Now
-        </button>
+     <Link
+        to={`/jobs/${id}/apply`}
+        className="block w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-center"
+      >
+        Apply Now
       </Link>
 
       {/* <div className="mt-4 border-2 border-dashed border-outline-variant rounded-lg p-6 text-center">

@@ -20,11 +20,11 @@ function LoginIntro() {
           <div className="mb-xl">
             <Link to="/">
               <div className="flex items-center gap-sm">
-                <img
+                {/* <img
                   alt="NepWork Logo"
                   className="h-14 w-auto drop-shadow-md"
                   src="favicon.svg"
-                />
+                /> */}
                 <span className="text-on-primary font-bold text-2xl tracking-tight">
                   NepWork
                 </span>
