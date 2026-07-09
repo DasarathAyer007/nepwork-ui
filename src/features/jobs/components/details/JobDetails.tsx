@@ -3,7 +3,7 @@ import EmployerCard from './EmployerCard';
 import JobApplyCard from './JobApplyCard';
 import JobDescription from './JobDescription';
 import JobHeader from './JobHeader';
-import MapComponent from '@/components/ui/MapComponent';
+import MapComponent from '@/components/map/MapComponent';
 import JobRequirementsBenefits from './JobRequirementsBenefits';
 import JobSkills from './JobSkills';
 

@@ -1,8 +1,8 @@
 import { CheckCircle2, Gift } from 'lucide-react';
 
 interface Props {
-  requirements: Record<string, string>;
-  benefits: Record<string, string>;
+  requirements: Record<string, string>[];
+  benefits: Record<string, string>[];
 }
 
 function JobRequirementsBenefits({ requirements, benefits }: Props) {
