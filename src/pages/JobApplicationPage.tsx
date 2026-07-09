@@ -40,7 +40,7 @@ function JobApplicationPage() {
     <div className="bg-background min-h-screen pt-20 pb-16">
       <JobApplicationForm
         jobTitle={job.title}
-        company={job.employer?.id ?? 'Unknown Company'}
+        company={job.category?.name ?? 'General'}
         location={
           [
             job.location?.address,
@@ -60,6 +60,9 @@ function JobApplicationPage() {
         }
         jobType={job.job_type}
         postedAt={job.created_at}
+        employerName={job.employer?.full_name}
+        employerEmail={job.employer?.email}
+        employerUsername={job.employer?.username} 
       />
     </div>
   );

@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import {
   Briefcase,
-  CheckCircle,
-  ChevronDown,
+  // CheckCircle,
+  // ChevronDown,
   Clock,
   FileText,
   MapPin,
   Upload,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 interface JobApplicationFormProps {
   jobTitle: string;
@@ -18,6 +18,10 @@ interface JobApplicationFormProps {
   salary: string;
   jobType: string;
   postedAt: string;
+  
+  employerName?: string;
+  employerEmail?: string;
+  employerUsername?: string;
   onCancel?: () => void;
 }
 
@@ -28,9 +32,11 @@ function JobApplicationForm({
   salary,
   jobType,
   postedAt,
+  employerName,
+  employerEmail,
+  employerUsername,
 }: JobApplicationFormProps) {
   const [resumeUploaded, setResumeUploaded] = useState(false);
-  const user = useSelector((state: any) => state.auth.user);  
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
       {/* Top Section - Job Info Header */}
@@ -55,51 +61,59 @@ function JobApplicationForm({
                 <Briefcase size={16} /> {jobType}
               </div>
               <div className="flex items-center gap-1">
-                <span className="font-medium text-on-surface">${salary}</span>
+                <span className="font-medium text-on-surface">{salary}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock size={16} /> Posted {postedAt}
+                <Clock size={16} />
+                Posted{' '}
+                {new Date(postedAt).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                })}
               </div>
             </div>
           </div>
 
-          {/* Applicant Info (Right side) - Simplified for this view */}
-                  {/* Applicant Info */}
-          <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
-            <p className="text-label-md font-medium text-on-surface-variant mb-2">
-              APPLICANT INFO
-            </p>
+       
+          {/* Employer Info */}
+        <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
+          <p className="text-label-md font-medium text-on-surface-variant mb-2">
+            EMPLOYER INFO
+          </p>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-                {(user?.full_name || user?.username || 'U')
-                  .split(' ')
-                  .map((name: string) => name[0])
-                  .join('')
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-
-              <div>
-                <p className="text-body-md font-bold text-on-surface">
-                  {user?.full_name ||
-                    `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim() ||
-                    user?.username ||
-                    'Unknown User'}
-                </p>
-
-                <p className="text-label-md text-on-surface-variant">
-                  {user?.email || 'No email available'}
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+              {(employerName || company || 'E')
+                .split(' ')
+                .map((name) => name[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase()}
             </div>
 
+            <div>
+              <p className="text-body-md font-bold text-on-surface">
+                {employerName || company || 'Unknown Employer'}
+              </p>
+
+              <p className="text-label-md text-on-surface-variant">
+                {employerEmail || 'Employer'}
+              </p>
+            </div>
+          </div>
+
+          {employerUsername && (
             <Link
-              to={user?.username ? `/profile/${user.username}` : '#'}
-              className="block mt-3 text-body-md text-primary hover:underline">
-              Edit Profile Details ↗
+              to={`/profile/${employerUsername}`}
+              className="block mt-3 text-body-md text-primary hover:underline"
+            >
+              View Employer Profile ↗
             </Link>
-          </div>
+          )}
+        </div>
         </div>
       </div>
 
@@ -111,34 +125,23 @@ function JobApplicationForm({
         <p className="text-body-md text-on-surface-variant mb-6">
           Please upload your most recent resume or professional certifications.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Resume Upload */}
-          <div className="border-2 border-dashed border-outline-variant rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer group">
+        <div className="border-2 border-dashed border-outline-variant rounded-lg p-8
+                flex flex-col items-center justify-center
+                text-center hover:border-primary/50 transition-colors
+                cursor-pointer group">
             <Upload
-              className="mx-auto text-on-surface-variant group-hover:text-primary transition-colors mb-2"
+              className="text-on-surface-variant group-hover:text-primary transition-colors mb-2"
               size={32}
             />
+
             <p className="text-body-md font-medium text-on-surface">
               Resume / CV
             </p>
+
             <p className="text-label-md text-on-surface-variant">
               PDF, DOCX up to 10MB
             </p>
           </div>
-          {/* Certifications Upload */}
-          <div className="border-2 border-dashed border-outline-variant rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer group">
-            <CheckCircle
-              className="mx-auto text-on-surface-variant group-hover:text-primary transition-colors mb-2"
-              size={32}
-            />
-            <p className="text-body-md font-medium text-on-surface">
-              Certifications / Licenses
-            </p>
-            <p className="text-label-md text-on-surface-variant">
-              Add up to 3 documents
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Experience & Availability */}
@@ -165,19 +168,17 @@ function JobApplicationForm({
           </div>
           <div>
             <label className="block text-body-md font-medium text-on-surface mb-2">
-              Earliest Start Date
+              Expected Salary
             </label>
-            <div className="relative">
-              <select className="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none">
-                <option>Immediate</option>
-                <option>1 Week</option>
-                <option>2 Weeks</option>
-                <option>1 Month</option>
-              </select>
-              <ChevronDown
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none"
-                size={20}
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="e.g. 5000"
+                className="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
               />
+              <span className="absolute right-4 text-on-surface-variant text-body-md">
+                NPR
+              </span>
             </div>
           </div>
         </div>
@@ -186,7 +187,7 @@ function JobApplicationForm({
       {/* Professional Statement */}
       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
         <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
-          <FileText className="text-primary" size={24} /> Professional Statement
+          <FileText className="text-primary" size={24} /> Cover Letter
         </h2>
         <p className="text-body-md text-on-surface-variant mb-4">
           Why are you a good fit for this role?
@@ -196,7 +197,7 @@ function JobApplicationForm({
           placeholder="Highlight your skills, relevant projects, or service philosophy..."
         />
         <div className="text-right text-label-md text-on-surface-variant mt-2">
-          Min 200 characters recommended
+          Min 250 characters recommended
         </div>
       </div>
 
