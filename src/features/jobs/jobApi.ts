@@ -44,6 +44,13 @@ export const JobApi = createApi({
       }),
       providesTags: (_result, _error, jobId) => [{ type: 'Job', id: jobId }],
     }),
+    applyJob: builder.mutation({
+    query: (formData) => ({
+      url: '/jobs/applications/',
+      method: 'POST',
+      body: formData,
+    }),
+  }),
   }),
 });
 
@@ -52,4 +59,5 @@ export const {
   useCreateJobMutation,
   useGetJobsListQuery,
   useGetJobDetailQuery,
+  useApplyJobMutation,
 } = JobApi;

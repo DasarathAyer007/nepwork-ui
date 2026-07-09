@@ -1,4 +1,7 @@
+import toast from 'react-hot-toast';
+import { useApplyJobMutation } from '../jobApi';
 import { useState } from 'react';
+
 import {
   Briefcase,
   // CheckCircle,
@@ -12,6 +15,7 @@ import { Link } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
 interface JobApplicationFormProps {
+  jobId: string;
   jobTitle: string;
   company: string;
   location: string;
@@ -26,6 +30,7 @@ interface JobApplicationFormProps {
 }
 
 function JobApplicationForm({
+  jobId,
   jobTitle,
   company,
   location,
@@ -36,7 +41,56 @@ function JobApplicationForm({
   employerEmail,
   employerUsername,
 }: JobApplicationFormProps) {
-  const [resumeUploaded, setResumeUploaded] = useState(false);
+  const [resume, setResume] = useState<File | null>(null);
+  const [yearsOfExperience, setYearsOfExperience] = useState('');
+  const [expectedSalary, setExpectedSalary] = useState('');
+  const [coverLetter, setCoverLetter] = useState('');
+  const [applyJob, { isLoading }] = useApplyJobMutation();
+ const handleSubmitApplication = async () => {
+    if (!resume) {
+      toast.error('Please upload your resume.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('job', jobId);
+      formData.append('resume', resume);
+      formData.append(
+        'years_of_experience',
+        yearsOfExperience
+      );
+      formData.append(
+        'expected_salary',
+        expectedSalary
+      );
+      formData.append(
+        'cover_letter',
+        coverLetter
+      );
+
+      // await applyJob({
+      //   id: jobId,
+      //   formData,
+      // }).unwrap();
+      await applyJob(formData).unwrap();
+
+      toast.success(
+        'Application submitted successfully!'
+      );
+
+      setResume(null);
+      setYearsOfExperience('');
+      setExpectedSalary('');
+      setCoverLetter('');
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        'Failed to submit application.'
+      );
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
       {/* Top Section - Job Info Header */}
@@ -118,32 +172,54 @@ function JobApplicationForm({
       </div>
 
       {/* Application Documents */}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
-        <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
-          <FileText className="text-primary" size={24} /> Application Documents
-        </h2>
-        <p className="text-body-md text-on-surface-variant mb-6">
-          Please upload your most recent resume or professional certifications.
-        </p>
-        <div className="border-2 border-dashed border-outline-variant rounded-lg p-8
-                flex flex-col items-center justify-center
-                text-center hover:border-primary/50 transition-colors
-                cursor-pointer group">
-            <Upload
-              className="text-on-surface-variant group-hover:text-primary transition-colors mb-2"
-              size={32}
-            />
+       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
 
-            <p className="text-body-md font-medium text-on-surface">
-              Resume / CV
-            </p>
+          <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
 
-            <p className="text-label-md text-on-surface-variant">
-              PDF, DOCX up to 10MB
-            </p>
-          </div>
+            <FileText className="text-primary" size={24} /> Application Documents
+
+          </h2>
+
+          <p className="text-body-md text-on-surface-variant mb-6">
+
+            Please upload your most recent resume or professional certifications.
+
+          </p>
+        <label
+          className="
+            border-2 border-dashed border-outline-variant rounded-lg p-8
+            flex flex-col items-center justify-center
+            text-center hover:border-primary/50 transition-colors
+            cursor-pointer group
+          "
+        >
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+
+              if (file) {
+                setResume(file);
+              }
+            }}
+          />
+
+          <Upload
+            className="text-on-surface-variant group-hover:text-primary transition-colors mb-2"
+            size={32}
+          />
+
+          <p className="text-body-md font-medium text-on-surface">
+            {resume ? resume.name : 'Resume / CV'}
+          </p>
+
+          <p className="text-label-md text-on-surface-variant">
+            PDF, DOCX up to 10MB
+          </p>
+        </label>
       </div>
-
       {/* Experience & Availability */}
       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
         <h2 className="text-headline-md font-bold text-on-surface mb-6 flex items-center gap-2">
@@ -157,8 +233,10 @@ function JobApplicationForm({
             </label>
             <div className="relative flex items-center">
               <input
-                type="text"
+                type="number"
                 placeholder="e.g. 5"
+                value={yearsOfExperience}
+                onChange={(e) => setYearsOfExperience(e.target.value)}
                 className="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
               />
               <span className="absolute right-4 text-on-surface-variant text-body-md">
@@ -172,8 +250,10 @@ function JobApplicationForm({
             </label>
             <div className="relative flex items-center">
               <input
-                type="text"
+                type="number"
                 placeholder="e.g. 5000"
+                value={expectedSalary}
+                onChange={(e) => setExpectedSalary(e.target.value)}
                 className="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
               />
               <span className="absolute right-4 text-on-surface-variant text-body-md">
@@ -193,6 +273,8 @@ function JobApplicationForm({
           Why are you a good fit for this role?
         </p>
         <textarea
+          value={coverLetter}
+          onChange={(e) => setCoverLetter(e.target.value)}
           className="w-full h-40 bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none placeholder:text-on-surface-variant/50"
           placeholder="Highlight your skills, relevant projects, or service philosophy..."
         />
@@ -203,9 +285,16 @@ function JobApplicationForm({
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 pt-2 pb-6">
-        <button className="flex-1 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-body-md">
-          Submit Application
-        </button>
+        <button
+        type="button"
+        onClick={handleSubmitApplication}
+        disabled={isLoading}
+        className="flex-1 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-body-md disabled:opacity-50"
+      >
+        {isLoading
+          ? 'Submitting...'
+          : 'Submit Application'}
+      </button>
         <button className="flex-1 sm:flex-none sm:w-48 py-3 border border-outline-variant text-on-surface rounded-lg font-medium hover:bg-surface-container transition-all duration-200 text-body-md">
           Save as Draft
         </button>

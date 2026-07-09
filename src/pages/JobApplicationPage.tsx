@@ -39,6 +39,7 @@ function JobApplicationPage() {
   return (
     <div className="bg-background min-h-screen pt-20 pb-16">
       <JobApplicationForm
+        jobId={job.id}
         jobTitle={job.title}
         company={job.category?.name ?? 'General'}
         location={
