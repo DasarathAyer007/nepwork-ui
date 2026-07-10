@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
 import type { ServiceFormValues } from '../../serviceSchema';
-import MapComponent from '@/components/ui/MapComponent';
+import MapComponent from '@/components/map/MapComponent';
 import { Label, Input, FormSection } from '@/components/ui/forms';
 
 export default function StepLocation() {
