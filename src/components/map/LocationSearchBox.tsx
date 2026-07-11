@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import clsx from 'clsx';
 import { Loader2, MapPin, Search, X } from 'lucide-react';
 
@@ -24,7 +25,10 @@ export default function LocationSearchBox({
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -44,7 +48,9 @@ export default function LocationSearchBox({
   };
 
   const showDropdown =
-    isOpen && query.trim().length >= 3 && (loading || results.length > 0 || !!error);
+    isOpen &&
+    query.trim().length >= 3 &&
+    (loading || results.length > 0 || !!error);
 
   return (
     <div ref={containerRef} className={clsx('relative w-full', className)}>
@@ -65,7 +71,10 @@ export default function LocationSearchBox({
           className="flex-1 bg-transparent outline-none text-body-sm text-on-surface placeholder:text-on-surface-variant min-w-0"
         />
         {loading && (
-          <Loader2 size={16} className="animate-spin text-on-surface-variant shrink-0" />
+          <Loader2
+            size={16}
+            className="animate-spin text-on-surface-variant shrink-0"
+          />
         )}
         {!loading && query.length > 0 && (
           <button
@@ -80,9 +89,13 @@ export default function LocationSearchBox({
 
       {showDropdown && (
         <div className="absolute left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded-md shadow-lg max-h-64 overflow-y-auto z-[500]">
-          {error && <p className="px-3 py-2 text-body-sm text-error">{error}</p>}
+          {error && (
+            <p className="px-3 py-2 text-body-sm text-error">{error}</p>
+          )}
           {!error && !loading && results.length === 0 && (
-            <p className="px-3 py-2 text-body-sm text-on-surface-variant">No matches found.</p>
+            <p className="px-3 py-2 text-body-sm text-on-surface-variant">
+              No matches found.
+            </p>
           )}
           {results.map((result) => (
             <button
@@ -90,7 +103,10 @@ export default function LocationSearchBox({
               type="button"
               onClick={() => handleSelect(result)}
               className="w-full flex items-start gap-2 text-left px-3 py-2 hover:bg-surface-container transition-colors cursor-pointer border-b border-outline-variant last:border-b-0">
-              <MapPin size={14} className="text-on-surface-variant mt-0.5 shrink-0" />
+              <MapPin
+                size={14}
+                className="text-on-surface-variant mt-0.5 shrink-0"
+              />
               <span className="text-body-sm text-on-surface line-clamp-2">
                 {result.displayName}
               </span>

@@ -63,14 +63,20 @@ export default function DirectionsPanel({
           <p className="text-body-sm text-error">{error}</p>
         )}
 
-        {mode === 'route' && !loading && !error && distanceKm != null && durationMin != null && (
-          <>
-            <p className="text-body-sm text-on-surface font-medium">
-              {formatDistance(distanceKm)} · {formatDuration(durationMin)}
-            </p>
-            <p className="text-label-sm text-on-surface-variant truncate">From {pointLabel}</p>
-          </>
-        )}
+        {mode === 'route' &&
+          !loading &&
+          !error &&
+          distanceKm != null &&
+          durationMin != null && (
+            <>
+              <p className="text-body-sm text-on-surface font-medium">
+                {formatDistance(distanceKm)} · {formatDuration(durationMin)}
+              </p>
+              <p className="text-label-sm text-on-surface-variant truncate">
+                From {pointLabel}
+              </p>
+            </>
+          )}
       </div>
 
       {mode === 'confirm' && (

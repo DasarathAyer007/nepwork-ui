@@ -1,9 +1,10 @@
 import { Clock, Wallet } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import type { ServiceFormValues } from '../../serviceSchema';
 import SkillsInput from '@/components/SkillsInput';
-import { Label, Input, DropDown, FormSection } from '@/components/ui/forms';
+import { DropDown, FormSection, Input, Label } from '@/components/ui/forms';
+
+import type { ServiceFormValues } from '../../serviceSchema';
 
 const CURRENCIES = ['USD', 'NPR', 'INR', 'EUR', 'GBP'];
 
@@ -20,7 +21,9 @@ export default function StepPricingSkills() {
   return (
     <div className="space-y-6">
       {/* Pricing Form Section */}
-      <FormSection title="Pricing Model" description="Select how you want to bill your clients: fixed-price or hourly rates.">
+      <FormSection
+        title="Pricing Model"
+        description="Select how you want to bill your clients: fixed-price or hourly rates.">
         <div className="space-y-4">
           <Label>Pricing Type</Label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -62,7 +65,9 @@ export default function StepPricingSkills() {
             ))}
           </div>
           {errors.price_type && (
-            <p className="text-xs text-error font-medium">{errors.price_type.message}</p>
+            <p className="text-xs text-error font-medium">
+              {errors.price_type.message}
+            </p>
           )}
         </div>
 
@@ -101,7 +106,9 @@ export default function StepPricingSkills() {
       </FormSection>
 
       {/* Skills Form Section */}
-      <FormSection title="Skills &amp; tags" description="Add up to 10 tags representing what this service covers.">
+      <FormSection
+        title="Skills &amp; tags"
+        description="Add up to 10 tags representing what this service covers.">
         <Controller
           control={control}
           name="skills"

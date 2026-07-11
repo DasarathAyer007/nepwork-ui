@@ -44,9 +44,13 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
   const profileUrlRef = useRef<string | null>(null);
   const coverUrlRef = useRef<string | null>(null);
 
-  const { formState: { errors } } = useFormContext();
+  const {
+    formState: { errors },
+  } = useFormContext();
 
-  const profileError = errors[resolvedProfileField]?.message as string | undefined;
+  const profileError = errors[resolvedProfileField]?.message as
+    | string
+    | undefined;
   const coverError = errors[resolvedCoverField]?.message as string | undefined;
 
   // Helper to update preview and revoke old URL
@@ -129,8 +133,7 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
           {/* Cover Edit Overlay */}
           <label
             htmlFor="cover-upload"
-            className="absolute inset-0 bg-on-background/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer text-white font-semibold text-sm transition-opacity duration-200"
-          >
+            className="absolute inset-0 bg-on-background/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer text-white font-semibold text-sm transition-opacity duration-200">
             <Camera className="w-5 h-5 mr-2" />
             Change Cover Photo
           </label>
@@ -158,8 +161,7 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
             {/* Profile Edit Overlay */}
             <label
               htmlFor="profile-upload"
-              className="absolute inset-0 bg-on-background/40 opacity-0 group-hover/profile:opacity-100 flex items-center justify-center cursor-pointer text-white transition-opacity duration-200"
-            >
+              className="absolute inset-0 bg-on-background/40 opacity-0 group-hover/profile:opacity-100 flex items-center justify-center cursor-pointer text-white transition-opacity duration-200">
               <Camera className="w-6 h-6" />
             </label>
             <input

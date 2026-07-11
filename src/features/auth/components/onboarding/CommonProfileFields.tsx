@@ -6,7 +6,7 @@ import type {
 import { useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { Input, Label, TextArea, FormSection } from '@/components/ui/forms';
+import { FormSection, Input, Label, TextArea } from '@/components/ui/forms';
 
 import type { LoginUser } from '../../types';
 import SocialLinksEditor from '../SocialLinksEditor';
@@ -32,7 +32,9 @@ export function CommonProfileFields<T extends FieldValues>({
   return (
     <div className="space-y-6">
       {/* Section 1: Account Profile & Photos */}
-      <FormSection title="Account Profile" description="Your avatar, cover photos, and core account details.">
+      <FormSection
+        title="Account Profile"
+        description="Your avatar, cover photos, and core account details.">
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>Profile &amp; Cover Photos</Label>
@@ -72,7 +74,9 @@ export function CommonProfileFields<T extends FieldValues>({
       </FormSection>
 
       {/* Section 2: Bio */}
-      <FormSection title="About You" description="Write a short summary about your background, experience, or skills.">
+      <FormSection
+        title="About You"
+        description="Write a short summary about your background, experience, or skills.">
         <div className="space-y-2">
           <Label>Bio</Label>
           <TextArea
@@ -85,7 +89,9 @@ export function CommonProfileFields<T extends FieldValues>({
       </FormSection>
 
       {/* Section 3: Social Profiles */}
-      <FormSection title="Social Connections" description="Add your personal or professional social links.">
+      <FormSection
+        title="Social Connections"
+        description="Add your personal or professional social links.">
         <div className="space-y-2">
           <Label>Social Profiles</Label>
           <SocialLinksEditor name="socialLinks" />

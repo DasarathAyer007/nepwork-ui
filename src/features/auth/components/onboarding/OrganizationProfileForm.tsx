@@ -5,7 +5,13 @@ import { ArrowRight, Upload } from 'lucide-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { DropDown, Input, Label, SubmitButton, FormSection } from '@/components/ui/forms';
+import {
+  DropDown,
+  FormSection,
+  Input,
+  Label,
+  SubmitButton,
+} from '@/components/ui/forms';
 
 import { handleApiErrors } from '../../../../utils/handleApiErrors';
 import { useCompleteOnboardingMutation } from '../../api/authApi';
@@ -105,7 +111,9 @@ export default function OrganizationProfileForm() {
         />
 
         {/* Section 4: Company Info */}
-        <FormSection title="Company Info" description="Key registration and details about your organization.">
+        <FormSection
+          title="Company Info"
+          description="Key registration and details about your organization.">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Founded Year</Label>
@@ -163,10 +171,7 @@ export default function OrganizationProfileForm() {
             </div>
             <div className="space-y-2">
               <Label>Tax ID / Registration Number</Label>
-              <Input
-                {...register('taxId')}
-                placeholder="TX-99201-XX"
-              />
+              <Input {...register('taxId')} placeholder="TX-99201-XX" />
             </div>
           </div>
 
@@ -180,7 +185,9 @@ export default function OrganizationProfileForm() {
         </FormSection>
 
         {/* Section 5: Company Identity Logo */}
-        <FormSection title="Company Identity" description="Upload your corporate logo representing the organization.">
+        <FormSection
+          title="Company Identity"
+          description="Upload your corporate logo representing the organization.">
           <div className="space-y-2">
             <Label>Company Logo</Label>
             <div
@@ -194,7 +201,9 @@ export default function OrganizationProfileForm() {
                     className="max-h-28 rounded-lg shadow-sm border border-outline-variant/30"
                   />
                   <div className="absolute inset-0 bg-on-background/20 opacity-0 group-hover/logo-thumb:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                    <span className="text-white text-xs font-semibold">Change Logo</span>
+                    <span className="text-white text-xs font-semibold">
+                      Change Logo
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -217,7 +226,9 @@ export default function OrganizationProfileForm() {
               />
             </div>
             {errors.logo && (
-              <p className="text-xs text-error font-medium">{errors.logo.message}</p>
+              <p className="text-xs text-error font-medium">
+                {errors.logo.message}
+              </p>
             )}
           </div>
         </FormSection>
@@ -229,7 +240,9 @@ export default function OrganizationProfileForm() {
               {errors.root.serverError.message}
             </p>
           )}
-          <SubmitButton disabled={isSubmitting} className="w-full sm:w-auto px-8">
+          <SubmitButton
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-8">
             {isSubmitting ? 'Submitting…' : 'Complete Onboarding'}
             <ArrowRight className="w-4 h-4" />
           </SubmitButton>

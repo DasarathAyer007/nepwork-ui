@@ -1,8 +1,9 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
-import type { ServiceFormValues } from '../../serviceSchema';
 import MapComponent from '@/components/map/MapComponent';
-import { Label, Input, FormSection } from '@/components/ui/forms';
+import { FormSection, Input, Label } from '@/components/ui/forms';
+
+import type { ServiceFormValues } from '../../serviceSchema';
 
 export default function StepLocation() {
   const {
@@ -71,22 +72,34 @@ export default function StepLocation() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-outline-variant/20">
           <div className="space-y-2">
             <Label>City</Label>
-            <Input {...register('location.city')} placeholder="e.g., Nepalgunj" />
+            <Input
+              {...register('location.city')}
+              placeholder="e.g., Nepalgunj"
+            />
           </div>
           <div className="space-y-2">
             <Label>State / Province</Label>
-            <Input {...register('location.state')} placeholder="e.g., Lumbini" />
+            <Input
+              {...register('location.state')}
+              placeholder="e.g., Lumbini"
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Country</Label>
-            <Input {...register('location.country')} placeholder="e.g., Nepal" />
+            <Input
+              {...register('location.country')}
+              placeholder="e.g., Nepal"
+            />
           </div>
           <div className="space-y-2">
             <Label>Postal Code</Label>
-            <Input {...register('location.postal_code')} placeholder="e.g., 21900" />
+            <Input
+              {...register('location.postal_code')}
+              placeholder="e.g., 21900"
+            />
           </div>
         </div>
       </FormSection>

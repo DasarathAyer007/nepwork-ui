@@ -1,8 +1,7 @@
-import { Link, useParams } from 'react-router-dom';
-
-import JobApplicationForm from '@/features/jobs/components/JobApplicationForm';
 import { JobDetailsSkeleton } from '@/features/jobs';
+import JobApplicationForm from '@/features/jobs/components/JobApplicationForm';
 import { useGetJobDetailQuery } from '@/features/jobs/jobApi';
+import { Link, useParams } from 'react-router-dom';
 
 function NotFound() {
   return (
@@ -63,7 +62,7 @@ function JobApplicationPage() {
         postedAt={job.created_at}
         employerName={job.employer?.full_name}
         employerEmail={job.employer?.email}
-        employerUsername={job.employer?.username} 
+        employerUsername={job.employer?.username}
       />
     </div>
   );

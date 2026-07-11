@@ -13,11 +13,12 @@ export default function StepIndicator({
   label,
   stepLabels = [],
 }: StepIndicatorProps) {
-  const percent = totalSteps > 1 ? Math.round(((step - 1) / (totalSteps - 1)) * 100) : 0;
+  const percent =
+    totalSteps > 1 ? Math.round(((step - 1) / (totalSteps - 1)) * 100) : 0;
   const barPercent = Math.round(((step - 1) / totalSteps) * 100);
 
   const leftPercent = 100 / (totalSteps * 2);
-  const activeWidthPercent = (percent / 100) * (100 - (100 / totalSteps));
+  const activeWidthPercent = (percent / 100) * (100 - 100 / totalSteps);
 
   return (
     <div className="mb-xl space-y-6">
@@ -47,7 +48,9 @@ export default function StepIndicator({
             const isActive = stepNum === step;
 
             return (
-              <div key={idx} className="relative z-10 flex flex-col items-center flex-1">
+              <div
+                key={idx}
+                className="relative z-10 flex flex-col items-center flex-1">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 border-2 ${
                     isCompleted
@@ -55,15 +58,17 @@ export default function StepIndicator({
                       : isActive
                         ? 'bg-surface-container-lowest border-primary text-primary shadow-md'
                         : 'bg-surface-container border-outline-variant text-muted'
-                  }`}
-                >
+                  }`}>
                   {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
                 </div>
                 <span
                   className={`mt-2 text-xs font-semibold text-center max-w-[120px] transition-colors duration-300 ${
-                    isActive ? 'text-primary' : isCompleted ? 'text-on-surface font-medium' : 'text-muted'
-                  }`}
-                >
+                    isActive
+                      ? 'text-primary'
+                      : isCompleted
+                        ? 'text-on-surface font-medium'
+                        : 'text-muted'
+                  }`}>
                   {lbl}
                 </span>
               </div>
@@ -78,12 +83,12 @@ export default function StepIndicator({
           <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
             Step {step} of {totalSteps}
           </span>
-          <h1 className="text-2xl font-bold text-on-surface mt-3">
-            {label}
-          </h1>
+          <h1 className="text-2xl font-bold text-on-surface mt-3">{label}</h1>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <span className="text-sm font-semibold text-primary">{barPercent}% Complete</span>
+          <span className="text-sm font-semibold text-primary">
+            {barPercent}% Complete
+          </span>
           {/* Progress bar for mobile / general */}
           <div className="w-32 bg-surface-container-high h-2 rounded-full overflow-hidden">
             <div

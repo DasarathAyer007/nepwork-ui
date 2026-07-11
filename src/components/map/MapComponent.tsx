@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import * as Dialog from '@radix-ui/react-dialog';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Maximize2, MapPin, X } from 'lucide-react';
+import { MapPin, Maximize2, X } from 'lucide-react';
 import {
   Circle,
   MapContainer,
@@ -14,13 +15,22 @@ import {
   useMapEvents,
 } from 'react-leaflet';
 
-import { useGeolocation } from '@/hooks/useGeolocation';
 import type { GeocodeResult } from '@/hooks/useGeoSearch';
-import { type RoutePoint, type RoutingProfile, useRoute } from '@/hooks/useRoute';
+import { useGeolocation } from '@/hooks/useGeolocation';
+import {
+  type RoutePoint,
+  type RoutingProfile,
+  useRoute,
+} from '@/hooks/useRoute';
+
 import CurrentLocationButton from './CurrentLocationButton';
 import DirectionsPanel from './DirectionsPanel';
 import LocationSearchBox from './LocationSearchBox';
-import { currentLocationIcon, destinationIcon, startPointIcon } from './MapIcons';
+import {
+  currentLocationIcon,
+  destinationIcon,
+  startPointIcon,
+} from './MapIcons';
 
 const FALLBACK_CENTER: [number, number] = [27.7, 85.3]; // Kathmandu
 const ROUTE_LINE_COLOR = 'var(--color-primary)';
@@ -70,7 +80,11 @@ export interface MapComponentProps {
 // Leaflet-context helper components (must live inside <MapContainer>)
 // ---------------------------------------------------------------------------
 
-function ClickHandler({ onSelect }: { onSelect: (lat: number, lng: number) => void }) {
+function ClickHandler({
+  onSelect,
+}: {
+  onSelect: (lat: number, lng: number) => void;
+}) {
   useMapEvents({
     click(e) {
       onSelect(e.latlng.lat, e.latlng.lng);
@@ -121,7 +135,13 @@ function FitRouteBounds({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routeCoordinates, startPoint?.lat, startPoint?.lng, destination?.lat, destination?.lng]);
+  }, [
+    routeCoordinates,
+    startPoint?.lat,
+    startPoint?.lng,
+    destination?.lat,
+    destination?.lng,
+  ]);
 
   return null;
 }
@@ -156,10 +176,14 @@ function MapViewInner({
   routeCoordinates,
 }: MapViewInnerProps) {
   const center: [number, number] =
-    latitude != null && longitude != null ? [latitude, longitude] : FALLBACK_CENTER;
+    latitude != null && longitude != null
+      ? [latitude, longitude]
+      : FALLBACK_CENTER;
 
   const destination: RoutePoint | null =
-    latitude != null && longitude != null ? { lat: latitude, lng: longitude } : null;
+    latitude != null && longitude != null
+      ? { lat: latitude, lng: longitude }
+      : null;
 
   return (
     <MapContainer
@@ -175,7 +199,12 @@ function MapViewInner({
       // is top-right, current-location is bottom-right, expand button is
       // bottom-left, so top-left is free for Leaflet's native zoom control.
       zoomControl
-      style={{ height, width: '100%', borderRadius: 'var(--radius)', zIndex: 0 }}>
+      style={{
+        height,
+        width: '100%',
+        borderRadius: 'var(--radius)',
+        zIndex: 0,
+      }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -185,7 +214,9 @@ function MapViewInner({
           in non-interactive mode a click sets/updates the start point. */}
       <ClickHandler onSelect={onMapClick} />
 
-      {isInteractive && <RecenterOnChange latitude={latitude} longitude={longitude} />}
+      {isInteractive && (
+        <RecenterOnChange latitude={latitude} longitude={longitude} />
+      )}
       {!isInteractive && (
         <FitRouteBounds
           startPoint={pendingStart}
@@ -230,7 +261,11 @@ function MapViewInner({
       {!isInteractive && pendingStart && (
         <Marker
           position={[pendingStart.lat, pendingStart.lng]}
-          icon={pendingStart.source === 'current-location' ? currentLocationIcon : startPointIcon}>
+          icon={
+            pendingStart.source === 'current-location'
+              ? currentLocationIcon
+              : startPointIcon
+          }>
           <Popup>{pendingStart.label}</Popup>
         </Marker>
       )}
@@ -301,7 +336,8 @@ function MapOverlayControls({
   const showSearch = enableSearch && showLocationControls;
   const showCurrentLocation = enableCurrentLocation && showLocationControls;
 
-  const showDirectionsPanel = !isInteractive && enableRouting && pendingStart != null;
+  const showDirectionsPanel =
+    !isInteractive && enableRouting && pendingStart != null;
 
   return (
     <>
@@ -344,7 +380,11 @@ function MapOverlayControls({
               loading={geoLoading}
               disabled={geoUnsupported}
               errored={!!geoError}
-              label={isInteractive ? 'Use current location' : 'Use current location as start'}
+              label={
+                isInteractive
+                  ? 'Use current location'
+                  : 'Use current location as start'
+              }
               className="shrink-0"
             />
           )}
@@ -377,14 +417,18 @@ export default function MapComponent({
   const isInteractive = interactive ?? !!onSelect;
 
   const [pendingStart, setPendingStart] = useState<StartPoint | null>(null);
-  const [confirmedOrigin, setConfirmedOrigin] = useState<RoutePoint | null>(null);
+  const [confirmedOrigin, setConfirmedOrigin] = useState<RoutePoint | null>(
+    null
+  );
 
   const geolocation = useGeolocation();
   const geoIntentRef = useRef<'destination' | 'start' | null>(null);
   const [geoRequestId, setGeoRequestId] = useState(0);
 
   const destination: RoutePoint | null =
-    latitude != null && longitude != null ? { lat: latitude, lng: longitude } : null;
+    latitude != null && longitude != null
+      ? { lat: latitude, lng: longitude }
+      : null;
 
   const {
     route,
@@ -483,7 +527,10 @@ export default function MapComponent({
   }, []);
 
   const routeSummary = useMemo(
-    () => (route ? { distanceKm: route.distanceKm, durationMin: route.durationMin } : null),
+    () =>
+      route
+        ? { distanceKm: route.distanceKm, durationMin: route.durationMin }
+        : null,
     [route]
   );
 
@@ -583,12 +630,15 @@ export default function MapComponent({
 
               {isInteractive ? (
                 <p className="text-body-sm text-on-surface-variant mt-sm">
-                  Click anywhere on the map, drag the marker, search, or use your current
-                  location to pick a spot. Close this dialog when you're done.
+                  Click anywhere on the map, drag the marker, search, or use
+                  your current location to pick a spot. Close this dialog when
+                  you're done.
                 </p>
               ) : (
                 address && (
-                  <p className="text-body-sm text-on-surface-variant mt-sm">{address}</p>
+                  <p className="text-body-sm text-on-surface-variant mt-sm">
+                    {address}
+                  </p>
                 )
               )}
             </Dialog.Content>

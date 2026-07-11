@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import L from 'leaflet';
 // Side-effect import: attaches the `L.Routing` namespace to the shared
 // leaflet module. We only ever use the headless L.Routing.osrmv1 router
@@ -79,14 +80,19 @@ export function useRoute(
       if (thisRequestId !== requestIdRef.current) return;
 
       if (err || !routes?.length) {
-        setError(err?.message ?? 'No route could be found between these points.');
+        setError(
+          err?.message ?? 'No route could be found between these points.'
+        );
         setRoute(null);
         setLoading(false);
         return;
       }
 
       const best = routes[0];
-      const coordinates: [number, number][] = best.coordinates.map((ll) => [ll.lat, ll.lng]);
+      const coordinates: [number, number][] = best.coordinates.map((ll) => [
+        ll.lat,
+        ll.lng,
+      ]);
 
       setRoute({
         coordinates,

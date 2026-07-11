@@ -41,7 +41,11 @@ export function DropDown({
             'bg-transparent border border-transparent hover:bg-surface-container-low focus-ring px-4 py-2.5',
           ],
 
-          error && ['border-error', 'focus:ring-error/20', 'focus:border-error'],
+          error && [
+            'border-error',
+            'focus:ring-error/20',
+            'focus:border-error',
+          ],
 
           className
         )}

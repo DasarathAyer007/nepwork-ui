@@ -2,11 +2,13 @@ import clsx from 'clsx';
 
 type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 
-export function Label({ className,  variant = 'default',...props }: LabelProps) {
+export function Label({
+  className,
+  variant = 'default',
+  ...props
+}: LabelProps) {
   return (
     <label
-
-
       className={clsx(
         'block',
         variant === 'default' &&

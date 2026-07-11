@@ -14,12 +14,13 @@ import {
   jobFormSchema,
   jobStepFields,
 } from '@/features/jobs/jobSchema';
-import StepIndicator from '@/components/ui/StepIndicator';
-import { WizardActions } from '@/components/ui/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+
+import StepIndicator from '@/components/ui/StepIndicator';
+import { WizardActions } from '@/components/ui/forms';
 
 const STEP_LABELS = [
   'Tell us about the role',
@@ -76,8 +77,8 @@ export default function CreateJob() {
     formData.append('skills_required', JSON.stringify(values.skills_required));
 
     const requirements = Object.fromEntries(
-    values.requirements?.map((item) => [item.key, item.value])
-  );
+      values.requirements?.map((item) => [item.key, item.value])
+    );
     formData.append('requirements', JSON.stringify(requirements));
     formData.append(
       'salary_min',

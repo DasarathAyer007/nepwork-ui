@@ -6,8 +6,6 @@ import {
   StepPricingSkills,
   StepReview,
 } from '@/features/services/';
-import StepIndicator from '@/components/ui/StepIndicator';
-import { WizardActions } from '@/components/ui/forms';
 import { useCreateServiceMutation } from '@/features/services/serviceApi';
 import {
   type ServiceFormValues,
@@ -19,6 +17,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+
+import StepIndicator from '@/components/ui/StepIndicator';
+import { WizardActions } from '@/components/ui/forms';
 
 const STEP_LABELS = [
   'Tell us about the task',

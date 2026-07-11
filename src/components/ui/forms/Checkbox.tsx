@@ -1,4 +1,5 @@
 import React from 'react';
+
 import clsx from 'clsx';
 
 type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -27,8 +28,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           {label && (
             <label
               htmlFor={checkboxId}
-              className="text-sm text-on-surface-variant cursor-pointer select-none font-medium"
-            >
+              className="text-sm text-on-surface-variant cursor-pointer select-none font-medium">
               {label}
             </label>
           )}

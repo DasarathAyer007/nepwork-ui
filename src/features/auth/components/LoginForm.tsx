@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
@@ -13,6 +13,7 @@ import { Input, Label, SubmitButton } from '@/components/ui/forms';
 import { handleApiErrors } from '../../../utils/handleApiErrors';
 import { useLoginMutation } from '../api/authApi';
 import { setCredentials } from '../authSlice';
+
 // import {
 //   getPasswordStrength,
 //   getStrengthLabel,
@@ -120,9 +121,7 @@ function LoginForm() {
         </div>
         <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <Label htmlFor="password">
-              Password
-            </Label>
+            <Label htmlFor="password">Password</Label>
             <a
               className="text-xs font-bold text-primary hover:text-primary-dim transition-colors"
               href="#">

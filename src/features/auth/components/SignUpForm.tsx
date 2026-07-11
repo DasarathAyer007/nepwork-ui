@@ -13,11 +13,12 @@ import {
   UserRoundPlus,
 } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
+import { SpinnerLoader } from '@/components/loaders/SpinnerLoader';
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
 
 import { handleApiErrors } from '../../../utils/handleApiErrors';
@@ -30,7 +31,6 @@ import {
 } from '../utils/passwordStrength';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsAndConditions from './TermsConditions';
-import { SpinnerLoader } from '@/components/loaders/SpinnerLoader';
 
 const signUpSchema = z
   .object({

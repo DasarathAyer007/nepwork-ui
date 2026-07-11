@@ -1,4 +1,5 @@
 import React from 'react';
+
 import clsx from 'clsx';
 
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -15,11 +16,11 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
           variant === 'default' && 'shadow-sm',
           variant === 'elevated' && 'shadow-md bg-surface-container-lowest',
           variant === 'flat' && 'shadow-none border-border/50',
-          variant === 'interactive' && 'shadow-sm hover:shadow-md hover:border-primary/30 cursor-pointer',
+          variant === 'interactive' &&
+            'shadow-sm hover:shadow-md hover:border-primary/30 cursor-pointer',
           className
         )}
-        {...props}
-      >
+        {...props}>
         {children}
       </div>
     );

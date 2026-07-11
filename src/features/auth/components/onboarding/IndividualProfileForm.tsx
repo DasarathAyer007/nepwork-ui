@@ -5,7 +5,13 @@ import { ArrowRight, Plus, X } from 'lucide-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { DropDown, Input, Label, SubmitButton, FormSection } from '@/components/ui/forms';
+import {
+  DropDown,
+  FormSection,
+  Input,
+  Label,
+  SubmitButton,
+} from '@/components/ui/forms';
 
 import { useDebounce } from '../../../../hooks/useDebounce';
 import { handleApiErrors } from '../../../../utils/handleApiErrors';
@@ -125,7 +131,9 @@ export default function IndividualProfileForm() {
         />
 
         {/* Section 4: Personal Details */}
-        <FormSection title="Personal Details" description="Information regarding date of birth and gender.">
+        <FormSection
+          title="Personal Details"
+          description="Information regarding date of birth and gender.">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Date of Birth</Label>
@@ -149,14 +157,18 @@ export default function IndividualProfileForm() {
                 ]}
               />
               {errors.gender && (
-                <p className="text-xs text-error font-medium mt-1">{errors.gender.message}</p>
+                <p className="text-xs text-error font-medium mt-1">
+                  {errors.gender.message}
+                </p>
               )}
             </div>
           </div>
         </FormSection>
 
         {/* Section 5: Professional Skills */}
-        <FormSection title="Skills &amp; Expertise" description="Add key professional skills and adjust your profile visibility.">
+        <FormSection
+          title="Skills &amp; Expertise"
+          description="Add key professional skills and adjust your profile visibility.">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Skills (Select multiple)</Label>
@@ -166,7 +178,10 @@ export default function IndividualProfileForm() {
                     key={skill}
                     className="bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
                     {skill}
-                    <button type="button" onClick={() => removeSkill(skill)} className="hover:text-error transition-colors cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => removeSkill(skill)}
+                      className="hover:text-error transition-colors cursor-pointer">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </span>
@@ -179,7 +194,9 @@ export default function IndividualProfileForm() {
                 </button>
               </div>
               {errors.skills && (
-                <p className="text-xs text-error font-medium">{errors.skills.message}</p>
+                <p className="text-xs text-error font-medium">
+                  {errors.skills.message}
+                </p>
               )}
 
               {skillInputOpen && (
@@ -242,7 +259,9 @@ export default function IndividualProfileForm() {
               {errors.root.serverError.message}
             </p>
           )}
-          <SubmitButton disabled={isSubmitting} className="w-full sm:w-auto px-8">
+          <SubmitButton
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-8">
             {isSubmitting ? 'Submitting…' : 'Complete Onboarding'}
             <ArrowRight className="w-4 h-4" />
           </SubmitButton>

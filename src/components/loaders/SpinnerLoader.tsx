@@ -63,7 +63,7 @@ export const SpinnerLoader: React.FC<LoaderProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 999,
-          background: 'rgba(219, 228, 232, 0.5)', 
+          background: 'rgba(219, 228, 232, 0.5)',
           backdropFilter: 'blur(3px)',
           WebkitBackdropFilter: 'blur(3px)',
           ...style,

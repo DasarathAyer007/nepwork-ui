@@ -45,6 +45,16 @@ export const AuthApi = createApi({
     getSkills: builder.query<Skill[], { search: string }>({
       query: ({ search }) => `/skills/?search=${search}`,
     }),
+
+    getPopularSkills: builder.query<
+      Skill[],
+      { limit?: number; type?: 'job' | 'service' | 'personal' | 'all' } | void
+    >({
+      query: (params) => ({
+        url: '/skills/popular/',
+        params: params ?? undefined,
+      }),
+    }),
   }),
 });
 
@@ -53,4 +63,5 @@ export const {
   useSignupMutation,
   useCompleteOnboardingMutation,
   useGetSkillsQuery,
+  useGetPopularSkillsQuery,
 } = AuthApi;

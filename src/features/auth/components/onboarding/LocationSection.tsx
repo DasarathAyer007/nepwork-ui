@@ -141,24 +141,15 @@ export default function LocationSection({ namePrefix = '' }: Props) {
       <div className="grid grid-cols-3 gap-3">
         <div className="space-y-1">
           <Label>City</Label>
-          <Input
-            {...register(n('city'))}
-            placeholder="Nepalgunj"
-          />
+          <Input {...register(n('city'))} placeholder="Nepalgunj" />
         </div>
         <div className="space-y-1">
           <Label>State</Label>
-          <Input
-            {...register(n('state'))}
-            placeholder="Lumbini"
-          />
+          <Input {...register(n('state'))} placeholder="Lumbini" />
         </div>
         <div className="space-y-1">
           <Label>Postal code</Label>
-          <Input
-            {...register(n('postal_code'))}
-            placeholder="21900"
-          />
+          <Input {...register(n('postal_code'))} placeholder="21900" />
         </div>
       </div>
 
@@ -166,17 +157,11 @@ export default function LocationSection({ namePrefix = '' }: Props) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label>Country</Label>
-          <Input
-            {...register(n('country'))}
-            placeholder="Nepal"
-          />
+          <Input {...register(n('country'))} placeholder="Nepal" />
         </div>
         <div className="space-y-1">
           <Label>Label</Label>
-          <Input
-            {...register(n('label'))}
-            placeholder="Home, Office..."
-          />
+          <Input {...register(n('label'))} placeholder="Home, Office..." />
         </div>
       </div>
 
