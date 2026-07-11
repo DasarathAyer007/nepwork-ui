@@ -2,7 +2,6 @@ import toast from 'react-hot-toast';
 import { useApplyJobMutation } from '../jobApi';
 import { useState } from 'react';
 
-
 import {
   Briefcase,
   // CheckCircle,
@@ -13,7 +12,6 @@ import {
   Upload,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 // import { useSelector } from 'react-redux';
 
 interface JobApplicationFormProps {
@@ -24,7 +22,7 @@ interface JobApplicationFormProps {
   salary: string;
   jobType: string;
   postedAt: string;
-
+  
   employerName?: string;
   employerEmail?: string;
   employerUsername?: string;
@@ -133,61 +131,47 @@ function JobApplicationForm({
             </div>
           </div>
 
+       
           {/* Employer Info */}
-          <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
-            <p className="text-label-md font-medium text-on-surface-variant mb-2">
-              EMPLOYER INFO
-            </p>
+        <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
+          <p className="text-label-md font-medium text-on-surface-variant mb-2">
+            EMPLOYER INFO
+          </p>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-                {(employerName || company || 'E')
-                  .split(' ')
-                  .map((name) => name[0])
-                  .join('')
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-
-              <div>
-                <p className="text-body-md font-bold text-on-surface">
-                  {employerName || company || 'Unknown Employer'}
-                </p>
-
-                <p className="text-label-md text-on-surface-variant">
-                  {employerEmail || 'Employer'}
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+              {(employerName || company || 'E')
+                .split(' ')
+                .map((name) => name[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase()}
             </div>
 
-            {employerUsername && (
-              <Link
-                to={`/profile/${employerUsername}`}
-                className="block mt-3 text-body-md text-primary hover:underline">
-                View Employer Profile ↗
-              </Link>
-            )}
+            <div>
+              <p className="text-body-md font-bold text-on-surface">
+                {employerName || company || 'Unknown Employer'}
+              </p>
+
+              <p className="text-label-md text-on-surface-variant">
+                {employerEmail || 'Employer'}
+              </p>
+            </div>
           </div>
+
+          {employerUsername && (
+            <Link
+              to={`/profile/${employerUsername}`}
+              className="block mt-3 text-body-md text-primary hover:underline"
+            >
+              View Employer Profile ↗
+            </Link>
+          )}
+        </div>
         </div>
       </div>
 
       {/* Application Documents */}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
-        <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
-          <FileText className="text-primary" size={24} /> Application Documents
-        </h2>
-        <p className="text-body-md text-on-surface-variant mb-6">
-          Please upload your most recent resume or professional certifications.
-        </p>
-        <div
-          className="border-2 border-dashed border-outline-variant rounded-lg p-8
-                flex flex-col items-center justify-center
-                text-center hover:border-primary/50 transition-colors
-                cursor-pointer group">
-          <Upload
-            className="text-on-surface-variant group-hover:text-primary transition-colors mb-2"
-            size={32}
-          />
        <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
 
           <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
