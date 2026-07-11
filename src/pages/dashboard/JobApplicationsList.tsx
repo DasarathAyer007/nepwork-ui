@@ -14,10 +14,11 @@ import type {
   JobApplicationQueryParams,
   JobApplicationResult,
 } from '@/features/jobs/jobTypes';
-import { AlertTriangle, ArrowLeft, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, ShieldAlert } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 import Pagination from '@/components/Pagination';
+import NotFound from '@/components/ui/NotFound';
 import { DropDown } from '@/components/ui/forms';
 
 import { useAppSelector } from '@/hooks/useSelectore';
@@ -49,25 +50,6 @@ function AccessDenied() {
       <p className="text-body-md text-on-surface-variant mt-2 max-w-sm">
         Only the owner of this job can view its applicants.
       </p>
-      <Link
-        to="/dashboard/jobs"
-        className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
-        <ArrowLeft size={16} />
-        Back to My Jobs
-      </Link>
-    </div>
-  );
-}
-
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-24">
-      <div className="size-14 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
-        <AlertTriangle size={26} />
-      </div>
-      <h1 className="text-headline-sm font-bold text-on-surface">
-        Job not found
-      </h1>
       <Link
         to="/dashboard/jobs"
         className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
@@ -119,7 +101,15 @@ export default function JobApplicationsList() {
     );
   }
 
-  if (isJobError || !job) return <NotFound />;
+  if (isJobError || !job) {
+    return (
+      <NotFound
+        title="Job not found"
+        actionLabel="Back to My Jobs"
+        actionTo="/dashboard/jobs"
+      />
+    );
+  }
 
   if (currentUser && job.employer.id !== currentUser.id) {
     return <AccessDenied />;

@@ -1,4 +1,5 @@
-import { Building2, Link as LinkIcon, Mail } from 'lucide-react';
+import { ArrowUpRight, Building2, Link as LinkIcon, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import type { JobEmployer } from '../../jobTypes';
 import { employerDisplayName, employerLogo } from '../../utils/formatJob';
@@ -33,9 +34,17 @@ function EmployerCard({ employer, thumbnail }: Props) {
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
-      <h2 className="text-headline-md font-bold text-on-surface mb-4">
-        About the Employer
-      </h2>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <h2 className="text-headline-md font-bold text-on-surface">
+          About the Employer
+        </h2>
+
+        <Link
+          to={`/profile/${employer.username}`}
+          className="inline-flex items-center gap-1 text-body-md font-medium text-primary hover:underline shrink-0">
+          View Profile <ArrowUpRight size={16} />
+        </Link>
+      </div>
 
       <div className="flex items-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant/50 shrink-0">

@@ -3,6 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from '@/services/baseQuery';
 
 import type {
+  ApplicationStatus,
   JobApplicationListResponse,
   JobApplicationQueryParams,
   JobApplicationResult,
@@ -118,77 +119,24 @@ export const JobApi = createApi({
       ],
     }),
 
-    // Employer-side status transitions.
-    shortlistJobApplication: builder.mutation<JobApplicationResult, string>({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/shortlist/`,
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: 'JobApplication', id },
-        'JobApplication',
-      ],
-    }),
-
-    markUnderReviewJobApplication: builder.mutation<
+    // Employer-side status change: move an application to any non-terminal
+    // status, optionally notifying the applicant via chat and/or email.
+    changeJobApplicationStatus: builder.mutation<
       JobApplicationResult,
-      string
+      {
+        id: string;
+        status: ApplicationStatus;
+        message?: string;
+        send_message?: boolean;
+        send_email?: boolean;
+      }
     >({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/under_review/`,
+      query: ({ id, ...body }) => ({
+        url: `/jobs/applications/${id}/change_status/`,
         method: 'POST',
+        body,
       }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: 'JobApplication', id },
-        'JobApplication',
-      ],
-    }),
-
-    scheduleInterviewJobApplication: builder.mutation<
-      JobApplicationResult,
-      string
-    >({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/schedule_interview/`,
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: 'JobApplication', id },
-        'JobApplication',
-      ],
-    }),
-
-    markInterviewedJobApplication: builder.mutation<
-      JobApplicationResult,
-      string
-    >({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/mark_interviewed/`,
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: 'JobApplication', id },
-        'JobApplication',
-      ],
-    }),
-
-    offerJobApplication: builder.mutation<JobApplicationResult, string>({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/offer/`,
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: 'JobApplication', id },
-        'JobApplication',
-      ],
-    }),
-
-    rejectJobApplication: builder.mutation<JobApplicationResult, string>({
-      query: (id) => ({
-        url: `/jobs/applications/${id}/reject/`,
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, id) => [
+      invalidatesTags: (_result, _error, { id }) => [
         { type: 'JobApplication', id },
         'JobApplication',
       ],
@@ -204,12 +152,13 @@ export const JobApi = createApi({
         'JobApplication',
       ],
     }),
-    applyJob: builder.mutation({
+    applyJob: builder.mutation<JobApplicationResult, FormData>({
       query: (formData) => ({
         url: '/jobs/applications/',
         method: 'POST',
         body: formData,
       }),
+      invalidatesTags: ['JobApplication'],
     }),
   }),
 });
@@ -226,12 +175,7 @@ export const {
   useGetJobApplicationsQuery,
   useGetJobApplicationDetailQuery,
   useWithdrawJobApplicationMutation,
-  useShortlistJobApplicationMutation,
-  useMarkUnderReviewJobApplicationMutation,
-  useScheduleInterviewJobApplicationMutation,
-  useMarkInterviewedJobApplicationMutation,
-  useOfferJobApplicationMutation,
-  useRejectJobApplicationMutation,
+  useChangeJobApplicationStatusMutation,
   useDeleteJobApplicationMutation,
   useApplyJobMutation,
 } = JobApi;

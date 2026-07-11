@@ -11,7 +11,6 @@ import {
   useRejectServiceRequestMutation,
 } from '@/features/services/serviceApi';
 import {
-  AlertTriangle,
   ArrowLeft,
   Check,
   ShieldAlert,
@@ -22,29 +21,9 @@ import {
 import toast from 'react-hot-toast';
 import { Link, useParams } from 'react-router-dom';
 
-import { useAppSelector } from '@/hooks/useSelectore';
+import NotFound from '@/components/ui/NotFound';
 
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-24">
-      <div className="size-14 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
-        <AlertTriangle size={26} />
-      </div>
-      <h1 className="text-headline-sm font-bold text-on-surface">
-        Request not found
-      </h1>
-      <p className="text-body-md text-on-surface-variant mt-2">
-        This request doesn't exist or has been removed.
-      </p>
-      <Link
-        to="/dashboard/requests-received"
-        className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
-        <ArrowLeft size={16} />
-        Back to Requests Received
-      </Link>
-    </div>
-  );
-}
+import { useAppSelector } from '@/hooks/useSelectore';
 
 function AccessDenied() {
   return (
@@ -122,7 +101,12 @@ export default function ManageRequestReceivedDetails() {
         onRetry={refetch}
       />
     ) : (
-      <NotFound />
+      <NotFound
+        title="Request not found"
+        message="This request doesn't exist or has been removed."
+        actionLabel="Back to Requests Received"
+        actionTo="/dashboard/requests-received"
+      />
     );
   }
 

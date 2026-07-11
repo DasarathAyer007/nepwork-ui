@@ -5,16 +5,16 @@ import ConfirmDialog from '@/features/dashboard/components/ConfirmDialog';
 import ErrorState from '@/features/dashboard/components/ErrorState';
 import ApplicationStatusBadge from '@/features/dashboard/components/myApplications/ApplicationStatusBadge';
 import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
+import CoverLetterPreview from '@/features/jobs/components/CoverLetterPreview';
+import ResumeField from '@/features/jobs/components/ResumeField';
 import {
   useDeleteJobApplicationMutation,
   useGetJobApplicationDetailQuery,
   useWithdrawJobApplicationMutation,
 } from '@/features/jobs/jobApi';
 import {
-  AlertTriangle,
   ArrowLeft,
   Briefcase,
-  Download,
   ShieldAlert,
   Trash2,
   Undo2,
@@ -22,31 +22,11 @@ import {
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import NotFound from '@/components/ui/NotFound';
+
 import { useAppSelector } from '@/hooks/useSelectore';
 
 const NON_WITHDRAWABLE_STATUSES = new Set(['rejected', 'withdrawn']);
-
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-24">
-      <div className="size-14 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
-        <AlertTriangle size={26} />
-      </div>
-      <h1 className="text-headline-sm font-bold text-on-surface">
-        Application not found
-      </h1>
-      <p className="text-body-md text-on-surface-variant mt-2">
-        This application doesn't exist or has been removed.
-      </p>
-      <Link
-        to="/dashboard/my-applications"
-        className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
-        <ArrowLeft size={16} />
-        Back to My Applications
-      </Link>
-    </div>
-  );
-}
 
 function AccessDenied() {
   return (
@@ -125,7 +105,12 @@ export default function ManageApplicationDetails() {
         onRetry={refetch}
       />
     ) : (
-      <NotFound />
+      <NotFound
+        title="Application not found"
+        message="This application doesn't exist or has been removed."
+        actionLabel="Back to My Applications"
+        actionTo="/dashboard/my-applications"
+      />
     );
   }
 
@@ -222,35 +207,14 @@ export default function ManageApplicationDetails() {
           />
           <Field
             label="Resume"
-            value={
-              application.resume ? (
-                <a
-                  href={application.resume}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-primary font-medium hover:underline">
-                  <Download size={15} />
-                  Download resume
-                </a>
-              ) : (
-                'Not attached'
-              )
-            }
+            value={<ResumeField resumeUrl={application.resume} />}
           />
         </div>
 
         <div className="border-t border-outline-variant/40 pt-4">
           <Field
             label="Cover Letter"
-            value={
-              application.cover_letter ? (
-                <p className="whitespace-pre-line text-on-surface-variant">
-                  {application.cover_letter}
-                </p>
-              ) : (
-                'No cover letter added'
-              )
-            }
+            value={<CoverLetterPreview html={application.cover_letter} />}
           />
         </div>
       </Card>

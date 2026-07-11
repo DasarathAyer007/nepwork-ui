@@ -1,26 +1,7 @@
+import NotFound from '@/components/ui/NotFound';
 import { JobDetails, JobDetailsSkeleton } from '@/features/jobs/';
 import { useGetJobDetailQuery } from '@/features/jobs/jobApi';
-import { Link, useParams } from 'react-router-dom';
-
-function NotFound() {
-  return (
-    <div className="bg-background min-h-screen pb-16">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 text-center py-20">
-        <h1 className="text-headline-lg font-bold text-on-surface">
-          Job not found
-        </h1>
-        <p className="text-body-md text-on-surface-variant mt-2">
-          The job you're looking for doesn't exist or has been removed.
-        </p>
-        <Link
-          to="/jobs"
-          className="mt-4 inline-block px-6 py-2 bg-primary text-on-primary rounded-lg font-medium">
-          Back to Jobs
-        </Link>
-      </div>
-    </div>
-  );
-}
+import { useParams } from 'react-router-dom';
 
 function JobDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +14,17 @@ function JobDetailsPage() {
   });
 
   if (isLoading) return <JobDetailsSkeleton />;
-  if (isError || !job) return <NotFound />;
+  if (isError || !job) {
+    return (
+      <NotFound
+        fullScreen
+        title="Job not found"
+        message="The job you're looking for doesn't exist or has been removed."
+        actionLabel="Back to Jobs"
+        actionTo="/jobs"
+      />
+    );
+  }
 
   return (
     <div className="bg-background min-h-screen pt-20 pb-16">

@@ -10,6 +10,7 @@ type ConfirmDialogProps = {
   confirmLabel?: string;
   cancelLabel?: string;
   isConfirming?: boolean;
+  variant?: 'error' | 'primary';
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -20,6 +21,7 @@ export default function ConfirmDialog({
   confirmLabel = 'Delete',
   cancelLabel = 'Cancel',
   isConfirming = false,
+  variant = 'error',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -53,7 +55,12 @@ export default function ConfirmDialog({
       <div
         ref={dialogRef}
         className="bg-surface-container-lowest rounded-xl max-w-3xl w-full shadow-lg border border-outline-variant p-6">
-        <div className="size-12 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
+        <div
+          className={`size-12 rounded-full flex items-center justify-center mb-4 ${
+            variant === 'primary'
+              ? 'bg-primary/10 text-primary'
+              : 'bg-error/10 text-error'
+          }`}>
           <AlertTriangle size={22} />
         </div>
 
@@ -78,7 +85,11 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isConfirming}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-error text-on-error font-semibold text-sm hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer">
+            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-sm hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer ${
+              variant === 'primary'
+                ? 'bg-primary text-on-primary'
+                : 'bg-error text-on-error'
+            }`}>
             {isConfirming && <Loader2 size={14} className="animate-spin" />}
             {confirmLabel}
           </button>

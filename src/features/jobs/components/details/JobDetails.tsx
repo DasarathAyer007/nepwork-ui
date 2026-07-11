@@ -21,10 +21,9 @@ function JobDetails({ job }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8 space-y-6">
-            <JobDescription job={job} />
-            <JobSkills skills={job.skills_required} />
-          </div>
+          <JobDescription job={job} />
+
+          <JobSkills skills={job.skills_required} />
 
           <JobRequirementsBenefits
             requirements={job.requirements}
@@ -51,7 +50,9 @@ function JobDetails({ job }: Props) {
                 showExpandButton
               />
             ) : (
-              <div className="h-[220px] flex flex-col items-center justify-center gap-2 bg-surface-container rounded-lg text-on-surface-variant border border-outline-variant">
+              <div
+                className="flex flex-col items-center justify-center gap-2 bg-surface-container rounded-lg text-on-surface-variant border border-outline-variant"
+                style={{ height: 220 }}>
                 <p className="text-body-sm">Location not available</p>
               </div>
             )}

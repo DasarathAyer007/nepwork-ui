@@ -26,6 +26,7 @@ import Home from '../pages/Home';
 import JobDetailsPage from '../pages/JobDetailsPage.tsx';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
+import NotFoundPage from '../pages/NotFoundPage.tsx';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
@@ -79,6 +80,7 @@ function route() {
         <Route path="my-requests/:id" element={<ManageMyRequestDetails />} />
       </Route>
       {/* <Route path="/chat/:currentUserId" element={<ChatWindow />} /> */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
