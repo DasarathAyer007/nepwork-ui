@@ -138,7 +138,7 @@ export default function CreateJob() {
   });
 
   return (
-    <main className="flex-grow pt-28 pb-16 px-margin-mobile md:px-margin-desktop bg-background/50">
+    <main className="grow pt-28 pb-16 px-margin-mobile md:px-margin-desktop bg-background/50">
       <div className="max-w-3xl mx-auto">
         <StepIndicator
           step={step}

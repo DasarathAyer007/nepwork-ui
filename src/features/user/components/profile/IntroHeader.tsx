@@ -23,12 +23,14 @@ function IntroHeader({ profileDetails }: IntroHeaderProps) {
   return (
     <header className="relative mb-xl bg-surface-container-lowest rounded-md overflow-hidden shadow-sm border border-outline-variant">
       {/* Cover photo */}
-      <div className="h-64 md:h-80 w-full relative">
-        <img
-          className="w-full h-full object-cover"
-          src={profileDetails.cover_photo || ''}
-          alt="Cover photo"
-        />
+      <div className="h-64 md:h-80 w-full relative bg-surface-container-high">
+        {profileDetails.cover_photo && (
+          <img
+            className="w-full h-full object-cover"
+            src={profileDetails.cover_photo}
+            alt="Cover photo"
+          />
+        )}
         <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
       </div>
 
@@ -36,12 +38,16 @@ function IntroHeader({ profileDetails }: IntroHeaderProps) {
       <div className="px-lg pb-lg flex flex-col md:flex-row items-end gap-md relative z-10">
         {/* Avatar — pulled upward with negative margin */}
         <div className="relative -mt-16">
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl border-4 border-surface-container-lowest bg-surface-container-high overflow-hidden shadow-md">
-            <img
-              src={profileDetails.profile_picture || ''}
-              alt={`${profileDetails.full_name}'s profile`}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl border-4 border-surface-container-lowest bg-surface-container-high overflow-hidden shadow-md flex items-center justify-center">
+            {profileDetails.profile_picture ? (
+              <img
+                src={profileDetails.profile_picture}
+                alt={`${profileDetails.full_name}'s profile`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <UserRound size={48} className="text-on-surface-variant" />
+            )}
           </div>
           {/* Verified badge */}
           <div className="absolute bottom-2 right-2 bg-secondary text-on-secondary p-1 rounded-full border-2 border-surface-container-lowest flex items-center justify-center">

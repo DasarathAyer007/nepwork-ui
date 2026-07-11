@@ -16,12 +16,17 @@ export interface SignupResponse {
   message: string;
   user_id: string;
   username: string;
+  email: string;
 }
 
 export interface AuthResponse {
   access_token: string;
   refresh_token: string;
   user: LoginUser;
+}
+
+export interface OtpVerificationResponse extends AuthResponse {
+  message: string;
 }
 
 export interface LoginUser {

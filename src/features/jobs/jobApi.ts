@@ -205,12 +205,12 @@ export const JobApi = createApi({
       ],
     }),
     applyJob: builder.mutation({
-    query: (formData) => ({
-      url: '/jobs/applications/',
-      method: 'POST',
-      body: formData,
+      query: (formData) => ({
+        url: '/jobs/applications/',
+        method: 'POST',
+        body: formData,
+      }),
     }),
-  }),
   }),
 });
 

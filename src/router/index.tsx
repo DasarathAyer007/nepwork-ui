@@ -29,6 +29,7 @@ import LogIn from '../pages/LogIn';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
+import SignUpOTP from '../pages/SignUpOTP';
 
 function route() {
   return (
@@ -47,6 +48,7 @@ function route() {
         <Route path="/create/service" element={<CreateService />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/verify-otp" element={<SignUpOTP />} />
       <Route path="/login" element={<LogIn />} />
 
       <Route path="/dashboard" element={<UserDashboard />}>

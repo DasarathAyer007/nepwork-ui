@@ -1,5 +1,3 @@
-import toast from 'react-hot-toast';
-import { useApplyJobMutation } from '../jobApi';
 import { useState } from 'react';
 
 import {
@@ -11,7 +9,11 @@ import {
   MapPin,
   Upload,
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+
+import { useApplyJobMutation } from '../jobApi';
+
 // import { useSelector } from 'react-redux';
 
 interface JobApplicationFormProps {
@@ -22,7 +24,7 @@ interface JobApplicationFormProps {
   salary: string;
   jobType: string;
   postedAt: string;
-  
+
   employerName?: string;
   employerEmail?: string;
   employerUsername?: string;
@@ -46,7 +48,7 @@ function JobApplicationForm({
   const [expectedSalary, setExpectedSalary] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
   const [applyJob, { isLoading }] = useApplyJobMutation();
- const handleSubmitApplication = async () => {
+  const handleSubmitApplication = async () => {
     if (!resume) {
       toast.error('Please upload your resume.');
       return;
@@ -56,18 +58,9 @@ function JobApplicationForm({
       const formData = new FormData();
       formData.append('job', jobId);
       formData.append('resume', resume);
-      formData.append(
-        'years_of_experience',
-        yearsOfExperience
-      );
-      formData.append(
-        'expected_salary',
-        expectedSalary
-      );
-      formData.append(
-        'cover_letter',
-        coverLetter
-      );
+      formData.append('years_of_experience', yearsOfExperience);
+      formData.append('expected_salary', expectedSalary);
+      formData.append('cover_letter', coverLetter);
 
       // await applyJob({
       //   id: jobId,
@@ -75,9 +68,7 @@ function JobApplicationForm({
       // }).unwrap();
       await applyJob(formData).unwrap();
 
-      toast.success(
-        'Application submitted successfully!'
-      );
+      toast.success('Application submitted successfully!');
 
       setResume(null);
       setYearsOfExperience('');
@@ -85,9 +76,7 @@ function JobApplicationForm({
       setCoverLetter('');
     } catch (error) {
       console.error(error);
-      toast.error(
-        'Failed to submit application.'
-      );
+      toast.error('Failed to submit application.');
     }
   };
 
@@ -131,68 +120,60 @@ function JobApplicationForm({
             </div>
           </div>
 
-       
           {/* Employer Info */}
-        <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
-          <p className="text-label-md font-medium text-on-surface-variant mb-2">
-            EMPLOYER INFO
-          </p>
+          <div className="bg-surface-container rounded-lg p-4 w-full md:w-64 border border-outline-variant/30">
+            <p className="text-label-md font-medium text-on-surface-variant mb-2">
+              EMPLOYER INFO
+            </p>
 
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-              {(employerName || company || 'E')
-                .split(' ')
-                .map((name) => name[0])
-                .join('')
-                .slice(0, 2)
-                .toUpperCase()}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+                {(employerName || company || 'E')
+                  .split(' ')
+                  .map((name) => name[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()}
+              </div>
+
+              <div>
+                <p className="text-body-md font-bold text-on-surface">
+                  {employerName || company || 'Unknown Employer'}
+                </p>
+
+                <p className="text-label-md text-on-surface-variant">
+                  {employerEmail || 'Employer'}
+                </p>
+              </div>
             </div>
 
-            <div>
-              <p className="text-body-md font-bold text-on-surface">
-                {employerName || company || 'Unknown Employer'}
-              </p>
-
-              <p className="text-label-md text-on-surface-variant">
-                {employerEmail || 'Employer'}
-              </p>
-            </div>
+            {employerUsername && (
+              <Link
+                to={`/profile/${employerUsername}`}
+                className="block mt-3 text-body-md text-primary hover:underline">
+                View Employer Profile ↗
+              </Link>
+            )}
           </div>
-
-          {employerUsername && (
-            <Link
-              to={`/profile/${employerUsername}`}
-              className="block mt-3 text-body-md text-primary hover:underline"
-            >
-              View Employer Profile ↗
-            </Link>
-          )}
-        </div>
         </div>
       </div>
 
       {/* Application Documents */}
-       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
+        <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
+          <FileText className="text-primary" size={24} /> Application Documents
+        </h2>
 
-          <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
-
-            <FileText className="text-primary" size={24} /> Application Documents
-
-          </h2>
-
-          <p className="text-body-md text-on-surface-variant mb-6">
-
-            Please upload your most recent resume or professional certifications.
-
-          </p>
+        <p className="text-body-md text-on-surface-variant mb-6">
+          Please upload your most recent resume or professional certifications.
+        </p>
         <label
           className="
             border-2 border-dashed border-outline-variant rounded-lg p-8
             flex flex-col items-center justify-center
             text-center hover:border-primary/50 transition-colors
             cursor-pointer group
-          "
-        >
+          ">
           <input
             type="file"
             accept=".pdf,.doc,.docx"
@@ -286,15 +267,12 @@ function JobApplicationForm({
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 pt-2 pb-6">
         <button
-        type="button"
-        onClick={handleSubmitApplication}
-        disabled={isLoading}
-        className="flex-1 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-body-md disabled:opacity-50"
-      >
-        {isLoading
-          ? 'Submitting...'
-          : 'Submit Application'}
-      </button>
+          type="button"
+          onClick={handleSubmitApplication}
+          disabled={isLoading}
+          className="flex-1 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-body-md disabled:opacity-50">
+          {isLoading ? 'Submitting...' : 'Submit Application'}
+        </button>
         <button className="flex-1 sm:flex-none sm:w-48 py-3 border border-outline-variant text-on-surface rounded-lg font-medium hover:bg-surface-container transition-all duration-200 text-body-md">
           Save as Draft
         </button>

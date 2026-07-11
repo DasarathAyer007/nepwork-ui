@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -22,8 +21,7 @@ import { SpinnerLoader } from '@/components/loaders/SpinnerLoader';
 import { Input, Label, SubmitButton } from '@/components/ui/forms';
 
 import { handleApiErrors } from '../../../utils/handleApiErrors';
-import { useLoginMutation, useSignupMutation } from '../api/authApi';
-import { setCredentials } from '../authSlice';
+import { useSignupMutation } from '../api/authApi';
 import {
   getPasswordStrength,
   getStrengthLabel,
@@ -108,12 +106,9 @@ function SignUpForm() {
     },
   });
 
-  const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const [signup, { isLoading: isSigningUp }] = useSignupMutation();
-  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
 
   const onSubmit = async (data: SignUpSchemaType) => {
     console.log('Sign up data:', data);
@@ -128,24 +123,20 @@ function SignUpForm() {
     };
 
     try {
-      await signup(payload).unwrap();
+      const response = await signup(payload).unwrap();
 
-      const loginPayload = {
-        username: data.username,
-        password: data.password,
-      };
-
-      const loginRes = await login(loginPayload).unwrap();
-
-      dispatch(
-        setCredentials({
-          accessToken: loginRes.access_token,
-          refreshToken: loginRes.refresh_token,
-          user: loginRes.user,
-        })
+      sessionStorage.setItem('otpEmail', data.email);
+      sessionStorage.setItem(
+        'otpMessage',
+        response.message || 'Registration successful. Please verify your email.'
       );
 
-      navigate('/onboarding');
+      navigate('/verify-otp', {
+        state: {
+          email: data.email,
+          message: response.message,
+        },
+      });
     } catch (err: unknown) {
       handleApiErrors(err, setError, toast);
 
@@ -406,7 +397,7 @@ function SignUpForm() {
           <UserRoundPlus strokeWidth={2.75} />
         </SubmitButton>
       </form>
-      <SpinnerLoader show={isSigningUp || isLoggingIn} />
+      <SpinnerLoader show={isSigningUp} />
     </>
   );
 }

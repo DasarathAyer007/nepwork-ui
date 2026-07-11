@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Bell, Menu, MessageCircle, X } from 'lucide-react';
+import { Bell, Menu, MessageCircle, UserRound, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
@@ -98,11 +98,17 @@ function Header() {
                 <button
                   onClick={() => setShowProfile((prev) => !prev)}
                   className="p-1 text-on-surface-variant hover:scale-105 transition">
-                  <img
-                    className="size-10 rounded-full object-cover border border-border"
-                    src={user?.profile_picture ?? ''}
-                    alt=""
-                  />
+                  {user?.profile_picture ? (
+                    <img
+                      className="size-10 rounded-full object-cover border border-border"
+                      src={user.profile_picture}
+                      alt=""
+                    />
+                  ) : (
+                    <span className="flex size-10 items-center justify-center rounded-full bg-surface-container-high border border-border text-on-surface-variant">
+                      <UserRound size={20} />
+                    </span>
+                  )}
                 </button>
 
                 {showProfile && user && (

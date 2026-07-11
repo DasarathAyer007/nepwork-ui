@@ -114,7 +114,7 @@ export default function Onboarding() {
           <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1000]" />
 
           {/* modal */}
-          <Dialog.Content className="fixed left-1/2 top-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-container-lowest p-6 shadow-xl border border-outline-variant z-[1001]">
+          <Dialog.Content className="fixed left-1/2 top-1/2 w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-container-lowest p-6 shadow-xl border border-outline-variant z-[1001]">
             <Dialog.Title className="text-lg font-bold text-on-surface">
               Switch profile type?
             </Dialog.Title>
