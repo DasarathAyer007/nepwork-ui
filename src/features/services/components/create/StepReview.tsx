@@ -66,7 +66,9 @@ export default function StepReview() {
                   </span>
                 ))
               ) : (
-                <span className="text-sm text-on-surface-variant">None added</span>
+                <span className="text-sm text-on-surface-variant">
+                  None added
+                </span>
               )}
             </div>
           </div>

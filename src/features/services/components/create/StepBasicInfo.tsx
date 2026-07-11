@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 
-import { X, Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
+
+import { FormSection, Input, Label, TextArea } from '@/components/ui/forms';
 
 import type { ServiceFormValues } from '../../serviceSchema';
 import CategorySelector from './CategorySelector';
-import { Label, Input, TextArea, FormSection } from '@/components/ui/forms';
 
 export default function StepBasicInfo() {
   const {
@@ -22,8 +23,7 @@ export default function StepBasicInfo() {
   return (
     <FormSection
       title="Service Information"
-      description="Provide the title, description, category, and an optional thumbnail image for the service."
-    >
+      description="Provide the title, description, category, and an optional thumbnail image for the service.">
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-2">
           <Label>Service Title</Label>
@@ -36,7 +36,9 @@ export default function StepBasicInfo() {
             Keep it short and specific. This is the first thing clients see.
           </p>
           {errors.title && (
-            <p className="text-xs text-error font-medium">{errors.title.message}</p>
+            <p className="text-xs text-error font-medium">
+              {errors.title.message}
+            </p>
           )}
         </div>
 
@@ -75,8 +77,7 @@ export default function StepBasicInfo() {
           {!thumbnail ? (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container/35 hover:bg-surface-container transition-colors cursor-pointer group"
-            >
+              className="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container/35 hover:bg-surface-container transition-colors cursor-pointer group">
               <div className="w-14 h-14 bg-primary-container flex items-center justify-center rounded-full mb-3 group-hover:scale-105 transition-transform text-primary shadow-sm">
                 <Upload size={24} />
               </div>
@@ -107,8 +108,7 @@ export default function StepBasicInfo() {
                 <button
                   type="button"
                   onClick={() => setValue('thumbnail', null)}
-                  className="p-2 rounded-full bg-surface-container-lowest shadow-md hover:bg-error/10 hover:text-error transition-colors text-on-surface cursor-pointer"
-                >
+                  className="p-2 rounded-full bg-surface-container-lowest shadow-md hover:bg-error/10 hover:text-error transition-colors text-on-surface cursor-pointer">
                   <X size={18} />
                 </button>
               </div>
@@ -119,4 +119,3 @@ export default function StepBasicInfo() {
     </FormSection>
   );
 }
-

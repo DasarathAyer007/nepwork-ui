@@ -12,10 +12,9 @@ export type ExperienceLevel = 'entry' | 'mid' | 'senior' | 'lead';
 export type JobStatus = 'draft' | 'open' | 'paused' | 'closed';
 export type ProfileAccessLevel = 'full' | 'public' | 'limited' | 'private';
 
-
 export interface JobLocationPayload {
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   address?: string;
   city?: string;
   state?: string;
@@ -214,6 +213,7 @@ export interface JobFilters {
   workMode: WorkMode | '';
   experienceLevel: ExperienceLevel | '';
   experienceYears: number | null;
+  /** Skill names — the backend filters jobs by `skills_required__name__in`. */
   skills: string[];
   salaryMin: string;
   salaryMax: string;
@@ -223,5 +223,70 @@ export interface JobFilters {
   country: string;
   postalCode: string;
   hasLocation: boolean | null;
+  deadlineBefore: string;
+  deadlineAfter: string;
   status?: JobStatus | '';
+}
+
+// ── Job Applications ─────────────────────────────────────────
+
+export type ApplicationStatus =
+  | 'applied'
+  | 'shortlisted'
+  | 'under_review'
+  | 'interview_scheduled'
+  | 'interviewed'
+  | 'offered'
+  | 'rejected'
+  | 'withdrawn';
+
+export interface JobApplicationJob {
+  id: string;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  status: JobStatus;
+  posted_by: string | null;
+  posted_by_name: string | null;
+}
+
+export interface JobApplicationUser {
+  id: string;
+  username: string;
+  full_name: string;
+  profile_picture: string | null;
+}
+
+export interface JobApplicationResult {
+  id: string;
+  job: JobApplicationJob;
+  applicant: JobApplicationUser;
+  resume: string | null;
+  cover_letter: string;
+  status: ApplicationStatus;
+  expected_salary: string | null;
+  years_of_experience: number | null;
+  reviewed_by: JobApplicationUser | null;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface JobApplicationListResponse {
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  next: string | null;
+  previous: string | null;
+  results: JobApplicationResult[];
+}
+
+export interface JobApplicationQueryParams {
+  scope?: 'applied' | 'received';
+  job_id?: string;
+  status?: string;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
 }

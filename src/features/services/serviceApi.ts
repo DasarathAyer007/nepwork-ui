@@ -2,9 +2,12 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '@/services/baseQuery';
 
-import type { Service, ServiceCreatePayload } from './types';
+import type { Service, ServiceDetail } from './types';
 import type {
   Category,
+  ServiceRequestListResponse,
+  ServiceRequestQueryParams,
+  ServiceRequestResult,
   ServicesListResponse,
   ServicesQueryParams,
 } from './types';
@@ -12,7 +15,7 @@ import type {
 export const ServiceApi = createApi({
   reducerPath: 'serviceApi',
   baseQuery,
-  tagTypes: ['User', 'Service'],
+  tagTypes: ['User', 'Service', 'ServiceRequest'],
 
   endpoints: (builder) => ({
     getServicesList: builder.query<ServicesListResponse, ServicesQueryParams>({
@@ -37,6 +40,124 @@ export const ServiceApi = createApi({
       }),
       invalidatesTags: ['Service'],
     }),
+
+    getServiceDetail: builder.query<ServiceDetail, string>({
+      query: (serviceId) => ({
+        url: `/services/${serviceId}/`,
+      }),
+      providesTags: (_result, _error, serviceId) => [
+        { type: 'Service', id: serviceId },
+      ],
+    }),
+
+    getMyServices: builder.query<ServicesListResponse, ServicesQueryParams>({
+      query: (params) => ({
+        url: '/services/my/',
+        params,
+      }),
+      providesTags: ['Service'],
+    }),
+
+    getServiceRecommendations: builder.query<
+      ServicesListResponse,
+      ServicesQueryParams
+    >({
+      query: (params) => ({
+        url: '/services/recommendations/',
+        params,
+      }),
+      providesTags: ['Service'],
+    }),
+
+    // Body is a loosely-typed partial payload since this single endpoint
+    // backs many independently-shaped section edits (see ManageServiceDetails).
+    updateService: builder.mutation<
+      ServiceDetail,
+      { id: string; body: Record<string, unknown> | FormData }
+    >({
+      query: ({ id, body }) => ({
+        url: `/services/${id}/`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Service', id },
+        'Service',
+      ],
+    }),
+
+    deleteService: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/services/${id}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'Service', id },
+        'Service',
+      ],
+    }),
+
+    getServiceRequests: builder.query<
+      ServiceRequestListResponse,
+      ServiceRequestQueryParams
+    >({
+      query: (params) => ({
+        url: '/services/requests/',
+        params,
+      }),
+      providesTags: ['ServiceRequest'],
+    }),
+
+    getServiceRequestDetail: builder.query<ServiceRequestResult, string>({
+      query: (id) => ({
+        url: `/services/requests/${id}/`,
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'ServiceRequest', id }],
+    }),
+
+    acceptServiceRequest: builder.mutation<ServiceRequestResult, string>({
+      query: (id) => ({
+        url: `/services/requests/${id}/accept/`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'ServiceRequest', id },
+        'ServiceRequest',
+      ],
+    }),
+
+    rejectServiceRequest: builder.mutation<ServiceRequestResult, string>({
+      query: (id) => ({
+        url: `/services/requests/${id}/reject/`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'ServiceRequest', id },
+        'ServiceRequest',
+      ],
+    }),
+
+    cancelServiceRequest: builder.mutation<ServiceRequestResult, string>({
+      query: (id) => ({
+        url: `/services/requests/${id}/cancel/`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'ServiceRequest', id },
+        'ServiceRequest',
+      ],
+    }),
+
+    deleteServiceRequest: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/services/requests/${id}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'ServiceRequest', id },
+        'ServiceRequest',
+      ],
+    }),
   }),
 });
 
@@ -44,4 +165,15 @@ export const {
   useGetServicesListQuery,
   useGetCategoryQuery,
   useCreateServiceMutation,
+  useGetServiceDetailQuery,
+  useGetMyServicesQuery,
+  useGetServiceRecommendationsQuery,
+  useUpdateServiceMutation,
+  useDeleteServiceMutation,
+  useGetServiceRequestsQuery,
+  useGetServiceRequestDetailQuery,
+  useAcceptServiceRequestMutation,
+  useRejectServiceRequestMutation,
+  useCancelServiceRequestMutation,
+  useDeleteServiceRequestMutation,
 } = ServiceApi;

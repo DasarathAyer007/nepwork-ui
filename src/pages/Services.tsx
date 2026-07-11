@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
 import {
   SearchBar,
   ServiceFilter,
@@ -48,8 +49,12 @@ export default function Services() {
     availabilityStatus: '',
     availableNow: false,
     hasLocation: null,
+    radiusMin: '',
+    radiusMax: '',
+    availableFrom: '',
+    availableTo: '',
   });
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('-created_at');
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: categories } = useGetCategoryQuery(null);
@@ -63,7 +68,7 @@ export default function Services() {
       ...(serviceName.trim() && { search: serviceName.trim() }),
       ...(locationQuery.trim() && { city: locationQuery.trim() }),
       ...(filters.category && { category: filters.category }),
-      ...(filters.skills.length > 0 && { skill: filters.skills }),
+      ...(filters.skills.length > 0 && { skills: filters.skills }),
       ...(filters.priceMin && { price_min: filters.priceMin }),
       ...(filters.priceMax && { price_max: filters.priceMax }),
       ...(filters.priceType && { price_type: filters.priceType }),
@@ -74,6 +79,10 @@ export default function Services() {
       ...(filters.hasLocation !== null && {
         has_location: filters.hasLocation ? 'true' : 'false',
       }),
+      ...(filters.radiusMin && { radius_min: filters.radiusMin }),
+      ...(filters.radiusMax && { radius_max: filters.radiusMax }),
+      ...(filters.availableFrom && { available_from: filters.availableFrom }),
+      ...(filters.availableTo && { available_to: filters.availableTo }),
       ...(viewMode === 'map' &&
         geoParams && {
           lat: geoParams.lat,
@@ -112,9 +121,14 @@ export default function Services() {
       availabilityStatus: '',
       availableNow: false,
       hasLocation: null,
+      radiusMin: '',
+      radiusMax: '',
+      availableFrom: '',
+      availableTo: '',
     });
     setServiceName('');
     setLocationQuery('');
+    setSortBy('-created_at');
     setCurrentPage(1);
   }, []);
 
@@ -188,6 +202,8 @@ export default function Services() {
           isLoading={isLoading}
           permissionStatus={geolocation.permissionStatus}
           onRequestLocation={geolocation.requestLocation}
+          geoLoading={geolocation.loading}
+          geoError={geolocation.error}
         />
 
         <div className="absolute top-4 left-4 right-4 z-999">
@@ -246,12 +262,18 @@ export default function Services() {
           )}
           {isError && (
             <div className="grow flex items-center justify-center">
-              <p className="text-error">Error: {(error as any)?.message}</p>
+              <p className="text-error">
+                {getApiErrorMessage({
+                  error: error,
+                  fallbackMessage: 'An error occurred while fetching services.',
+                })}
+              </p>
             </div>
           )}
           {!isLoading && !isError && (
             <ServiceList
               services={data?.results ?? EMPTY_SERVICES}
+              totalCount={totalCount}
               currentPage={currentPage}
               totalPages={totalPages}
               sortBy={sortBy}

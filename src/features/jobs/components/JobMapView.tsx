@@ -1,21 +1,37 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { JobResult } from '@/features/jobs/jobTypes';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LocateFixed } from 'lucide-react';
+import {
+  Briefcase,
+  Calendar,
+  Clock,
+  LocateFixed,
+  MapPin,
+  X,
+} from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
   MapContainer,
   Marker,
+  Polyline,
   TileLayer,
   Tooltip,
   ZoomControl,
   useMap,
   useMapEvents,
 } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 
 import CategoryIcon from '@/components/CategoryIcon';
+import CurrentLocationButton from '@/components/map/CurrentLocationButton';
+import DirectionsPanel from '@/components/map/DirectionsPanel';
+import LocationSearchBox from '@/components/map/LocationSearchBox';
+import { currentLocationIcon, startPointIcon } from '@/components/map/MapIcons';
+
+import type { GeocodeResult } from '@/hooks/useGeoSearch';
+import { type RoutePoint, useRoute } from '@/hooks/useRoute';
 
 interface JobMapViewProps {
   jobs: JobResult[];
@@ -31,7 +47,21 @@ interface JobMapViewProps {
     | 'denied'
     | 'unsupported';
   onRequestLocation: () => void;
+  /** Whether a current-location request is in flight (for the directions "use current location" control). */
+  geoLoading?: boolean;
+  geoError?: string | null;
 }
+
+type StartPointSource = 'search' | 'map-click' | 'current-location';
+
+interface StartPoint {
+  lat: number;
+  lng: number;
+  label: string;
+  source: StartPointSource;
+}
+
+const ROUTE_LINE_COLOR = 'var(--color-primary)';
 
 const PIN_COLORS = [
   '#3b82f6',
@@ -50,6 +80,13 @@ function getPinColor(categoryId?: string) {
     : PIN_COLORS[id % PIN_COLORS.length];
 }
 
+const PIN_WIDTH = 30;
+const PIN_HEIGHT = 40;
+// Classic teardrop marker: a circular head that tapers to a sharp point at
+// the bottom tip (where it touches the map), rather than a rotated-square.
+const PIN_PATH =
+  'M15 0C6.716 0 0 6.716 0 15c0 10.5 12.7 23.7 14.25 25.32a1 1 0 0 0 1.5 0C17.3 38.7 30 25.5 30 15 30 6.716 23.284 0 15 0z';
+
 const iconCache = new Map<string, L.DivIcon>();
 
 function getPinDivIcon(
@@ -63,21 +100,30 @@ function getPinDivIcon(
   const color = getPinColor(categoryId);
 
   const html = renderToStaticMarkup(
-    <div
-      style={{
-        width: 32,
-        height: 32,
-        borderRadius: '50% 50% 50% 0',
-        transform: 'rotate(-45deg)',
-        background: color,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        border: '2px solid white',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.35)',
-      }}>
-      <div style={{ transform: 'rotate(45deg)', display: 'flex' }}>
-        <CategoryIcon iconname={iconName} size={15} color="white" />
+    <div style={{ position: 'relative', width: PIN_WIDTH, height: PIN_HEIGHT }}>
+      <svg
+        width={PIN_WIDTH}
+        height={PIN_HEIGHT}
+        viewBox={`0 0 ${PIN_WIDTH} ${PIN_HEIGHT}`}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))',
+        }}>
+        <path d={PIN_PATH} fill={color} stroke="white" strokeWidth={1.5} />
+      </svg>
+      <div
+        style={{
+          position: 'absolute',
+          top: 6,
+          left: 0,
+          width: PIN_WIDTH,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <CategoryIcon iconname={iconName} size={13} color="white" />
       </div>
     </div>
   );
@@ -85,8 +131,8 @@ function getPinDivIcon(
   const divIcon = L.divIcon({
     html,
     className: '',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
+    iconSize: [PIN_WIDTH, PIN_HEIGHT],
+    iconAnchor: [PIN_WIDTH / 2, PIN_HEIGHT],
   });
   iconCache.set(cacheKey, divIcon);
   return divIcon;
@@ -271,12 +317,410 @@ function LocateControl({
   return null;
 }
 
+/** Lets the user drop a custom directions start-point by clicking the map,
+ * but only while a destination (selected job) is open. */
+function StartPointClickHandler({
+  enabled,
+  onPick,
+}: {
+  enabled: boolean;
+  onPick: (lat: number, lng: number) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      if (!enabled) return;
+      onPick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
+}
+
+/** Fits the map to the computed route once available, otherwise flies to a
+ * freshly-picked start point. */
+function FitRouteBounds({
+  startPoint,
+  routeCoordinates,
+}: {
+  startPoint: RoutePoint | null;
+  routeCoordinates: [number, number][] | null;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (routeCoordinates && routeCoordinates.length > 1) {
+      map.fitBounds(L.latLngBounds(routeCoordinates), { padding: [64, 64] });
+    } else if (startPoint) {
+      map.flyTo([startPoint.lat, startPoint.lng], Math.max(map.getZoom(), 13), {
+        animate: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeCoordinates, startPoint?.lat, startPoint?.lng]);
+
+  return null;
+}
+
+const JOB_TYPE_LABELS: Record<string, string> = {
+  full_time: 'Full Time',
+  part_time: 'Part Time',
+  contract: 'Contract',
+  internship: 'Internship',
+  freelance: 'Freelance',
+};
+
+const WORK_MODE_LABELS: Record<string, string> = {
+  remote: 'Remote',
+  onsite: 'On-site',
+  hybrid: 'Hybrid',
+};
+
+const EXPERIENCE_LABELS: Record<string, string> = {
+  entry: 'Entry Level',
+  mid: 'Mid Level',
+  senior: 'Senior',
+  lead: 'Lead',
+};
+
+const STATUS_BADGES: Record<string, { color: string; label: string }> = {
+  open: { color: 'bg-green-500/90 text-white', label: 'Open' },
+  closed: { color: 'bg-error/90 text-white', label: 'Closed' },
+  draft: {
+    color: 'bg-surface-container-high text-on-surface-variant',
+    label: 'Draft',
+  },
+  paused: { color: 'bg-warning/90 text-white', label: 'Paused' },
+};
+
+function buildLocationText(loc: JobResult['location']) {
+  if (!loc) return 'Remote';
+  return (
+    [loc.address, loc.city, loc.state, loc.country]
+      .filter(Boolean)
+      .join(', ') || 'Remote'
+  );
+}
+
 function formatSalary(job: JobResult) {
   const { salary_min, salary_max, currency } = job;
   if (!salary_min && !salary_max) return null;
   if (salary_min && salary_max)
-    return `${currency} ${salary_min} - ${salary_max}`;
-  return `${currency} ${salary_min ?? salary_max}`;
+    return `${currency} ${Number(salary_min).toLocaleString()} - ${Number(salary_max).toLocaleString()}`;
+  return `${currency} ${Number(salary_min ?? salary_max).toLocaleString()}`;
+}
+
+function JobHoverCard({ job }: { job: JobResult }) {
+  const statusBadge = STATUS_BADGES[job.status] ?? {
+    color: 'bg-surface-container-high text-on-surface-variant',
+    label: job.status,
+  };
+  const salaryText = formatSalary(job);
+  const visibleSkills = job.skills_required.slice(0, 3);
+  const extraSkills = job.skills_required.length - visibleSkills.length;
+
+  return (
+    <div className="relative w-64">
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg overflow-hidden">
+        <div className="flex gap-3 p-3">
+          <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-surface-container-high">
+            {job.thumbnail ? (
+              <img
+                src={job.thumbnail}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-outline">
+                <Briefcase className="w-6 h-6" />
+              </div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              {job.category && (
+                <span className="text-label-sm font-bold text-primary uppercase tracking-wider truncate">
+                  {job.category.name}
+                </span>
+              )}
+              <span
+                className={`shrink-0 px-1.5 py-0.5 rounded-full text-label-sm font-medium leading-none ${statusBadge.color}`}>
+                {statusBadge.label}
+              </span>
+            </div>
+            <p className="text-body-md font-bold text-on-surface leading-snug line-clamp-1">
+              {job.title}
+            </p>
+            <p className="text-body-sm text-on-surface-variant truncate">
+              {[JOB_TYPE_LABELS[job.job_type], WORK_MODE_LABELS[job.work_mode]]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+          </div>
+        </div>
+
+        <div className="px-3 pb-3 space-y-1.5">
+          <div className="flex items-center gap-1.5 text-body-sm text-on-surface-variant">
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{buildLocationText(job.location)}</span>
+          </div>
+
+          {job.experience_level && (
+            <div className="flex items-center gap-1.5 text-body-sm text-on-surface-variant">
+              <Clock className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                {EXPERIENCE_LABELS[job.experience_level] ??
+                  job.experience_level}
+                {job.experience_years ? ` · ${job.experience_years}+ yrs` : ''}
+              </span>
+            </div>
+          )}
+
+          {job.deadline && (
+            <div className="flex items-center gap-1.5 text-body-sm text-on-surface-variant">
+              <Calendar className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                Apply by {new Date(job.deadline).toLocaleDateString()}
+              </span>
+            </div>
+          )}
+
+          {visibleSkills.length > 0 && (
+            <div className="flex flex-wrap gap-1 pt-0.5">
+              {visibleSkills.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded-full text-label-sm">
+                  {skill}
+                </span>
+              ))}
+              {extraSkills > 0 && (
+                <span className="text-label-sm text-outline px-1">
+                  +{extraSkills}
+                </span>
+              )}
+            </div>
+          )}
+
+          {salaryText && (
+            <div className="flex items-center justify-between pt-1.5 border-t border-outline-variant/40">
+              <span className="text-label-sm text-outline uppercase tracking-wide">
+                Salary
+              </span>
+              <span className="text-body-sm font-bold text-primary">
+                {salaryText}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-surface-container-lowest border-r border-b border-outline-variant rotate-45" />
+    </div>
+  );
+}
+
+interface DirectionsState {
+  pendingStart: StartPoint | null;
+  isRouteConfirmed: boolean;
+  route: { distanceKm: number; durationMin: number } | null;
+  routeLoading: boolean;
+  routeError: string | null;
+  geoLoading: boolean;
+  geoError: string | null;
+  onSearchSelect: (result: GeocodeResult) => void;
+  onUseCurrentLocation: () => void;
+  onConfirm: () => void;
+  onClear: () => void;
+}
+
+function DirectionsSection({ directions }: { directions: DirectionsState }) {
+  const {
+    pendingStart,
+    isRouteConfirmed,
+    route,
+    routeLoading,
+    routeError,
+    geoLoading,
+    geoError,
+    onSearchSelect,
+    onUseCurrentLocation,
+    onConfirm,
+    onClear,
+  } = directions;
+
+  return (
+    <div className="space-y-2 pt-2 border-t border-outline-variant/50">
+      <h4 className="text-body-md font-bold text-on-surface">Directions</h4>
+      <LocationSearchBox
+        placeholder="Search a starting location"
+        onSelect={onSearchSelect}
+      />
+      <div className="flex items-center gap-2">
+        <CurrentLocationButton
+          onClick={onUseCurrentLocation}
+          loading={geoLoading}
+          errored={!!geoError}
+          label="Use current location"
+          className="flex-1"
+        />
+      </div>
+      <p className="text-label-sm text-on-surface-variant">
+        Or click anywhere on the map to drop a custom starting point.
+      </p>
+      {pendingStart && (
+        <DirectionsPanel
+          mode={isRouteConfirmed ? 'route' : 'confirm'}
+          pointLabel={pendingStart.label}
+          onConfirm={onConfirm}
+          distanceKm={route?.distanceKm}
+          durationMin={route?.durationMin}
+          loading={routeLoading}
+          error={routeError}
+          onClear={onClear}
+        />
+      )}
+    </div>
+  );
+}
+
+function JobDetailPanel({
+  job,
+  onClose,
+  directions,
+}: {
+  job: JobResult;
+  onClose: () => void;
+  directions: DirectionsState;
+}) {
+  const statusBadge = STATUS_BADGES[job.status] ?? {
+    color: 'bg-surface-container-high text-on-surface-variant',
+    label: job.status,
+  };
+  const salaryText = formatSalary(job);
+
+  return (
+    <div className="absolute inset-y-0 right-0 z-1000 w-full sm:w-96 bg-surface-container-lowest border-l border-outline-variant shadow-xl overflow-y-auto">
+      <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-outline-variant bg-surface-container-lowest/95 backdrop-blur-sm">
+        <h3 className="text-title-md font-bold text-on-surface">Job Details</h3>
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors">
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="p-4 space-y-4">
+        <div className="relative w-full h-44 rounded-lg overflow-hidden bg-surface-container-high">
+          {job.thumbnail ? (
+            <img
+              src={job.thumbnail}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-outline">
+              <Briefcase className="w-10 h-10" />
+            </div>
+          )}
+          <span
+            className={`absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-label-sm font-medium leading-none ${statusBadge.color}`}>
+            {statusBadge.label}
+          </span>
+        </div>
+
+        <div className="space-y-1">
+          {job.category && (
+            <div className="flex items-center gap-1.5">
+              <CategoryIcon
+                iconname={job.category.icon}
+                size={14}
+                color="var(--color-primary)"
+              />
+              <span className="text-label-md font-bold text-primary uppercase tracking-wider">
+                {job.category.name}
+              </span>
+            </div>
+          )}
+          <h2 className="text-headline-sm font-bold text-on-surface leading-snug">
+            {job.title}
+          </h2>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {job.job_type && (
+            <span className="flex items-center gap-1 bg-surface-container-high text-on-surface-variant px-2.5 py-1 rounded-full text-body-sm">
+              <Briefcase className="w-3.5 h-3.5" />
+              {JOB_TYPE_LABELS[job.job_type] ?? job.job_type}
+            </span>
+          )}
+          {job.work_mode && (
+            <span className="flex items-center gap-1 bg-surface-container-high text-on-surface-variant px-2.5 py-1 rounded-full text-body-sm">
+              <Clock className="w-3.5 h-3.5" />
+              {WORK_MODE_LABELS[job.work_mode] ?? job.work_mode}
+            </span>
+          )}
+          {job.experience_level && (
+            <span className="bg-surface-container-high text-on-surface-variant px-2.5 py-1 rounded-full text-body-sm">
+              {EXPERIENCE_LABELS[job.experience_level] ?? job.experience_level}
+              {job.experience_years ? ` · ${job.experience_years}+ yrs` : ''}
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-2 text-body-md text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 shrink-0" />
+            <span>{buildLocationText(job.location)}</span>
+          </div>
+          {job.deadline && (
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 shrink-0" />
+              <span>
+                Apply by {new Date(job.deadline).toLocaleDateString()}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {job.skills_required.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-body-md font-bold text-on-surface">Skills</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {job.skills_required.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-surface-container-high text-on-surface-variant px-2.5 py-1 rounded-full text-body-sm">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between pt-2 border-t border-outline-variant/50">
+          <div>
+            <p className="text-label-sm text-outline uppercase tracking-wide">
+              Salary
+            </p>
+            <p className="text-title-md font-bold text-primary">
+              {salaryText ?? 'Not specified'}
+            </p>
+          </div>
+          <p className="text-body-sm text-on-surface-variant">
+            {job.total_applications}{' '}
+            {job.total_applications === 1 ? 'application' : 'applications'}
+          </p>
+        </div>
+
+        <Link
+          to={`/jobs/${job.id}`}
+          className="block w-full text-center px-4 py-2.5 bg-primary text-on-primary rounded-lg text-body-md font-medium hover:opacity-90 transition-opacity">
+          View Details
+        </Link>
+
+        <DirectionsSection directions={directions} />
+      </div>
+    </div>
+  );
 }
 
 export default function JobMapView({
@@ -288,9 +732,111 @@ export default function JobMapView({
   isLoading,
   permissionStatus,
   onRequestLocation,
+  geoLoading = false,
+  geoError = null,
 }: JobMapViewProps) {
   const fallbackCenter = { lat: 27.7172, lng: 85.324 }; // Kathmandu
   const initialCenter = center ?? userLocation ?? fallbackCenter;
+
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const selectedJob = jobs.find((j) => j.id === selectedJobId) ?? null;
+
+  // ── Directions: user picks a start point (search / current location /
+  // map click), confirms, and we route to the currently-selected job. ──
+  const [pendingStart, setPendingStart] = useState<StartPoint | null>(null);
+  const [confirmedOrigin, setConfirmedOrigin] = useState<RoutePoint | null>(
+    null
+  );
+  const awaitingGeoForStartRef = useRef(false);
+
+  const destination: RoutePoint | null =
+    selectedJob && selectedJob.location
+      ? {
+          lat: selectedJob.location.point.lat,
+          lng: selectedJob.location.point.lng,
+        }
+      : null;
+
+  const {
+    route,
+    loading: routeLoading,
+    error: routeError,
+  } = useRoute(confirmedOrigin, destination, 'driving');
+
+  const updatePendingStart = (point: StartPoint) => {
+    setPendingStart(point);
+    setConfirmedOrigin(null);
+  };
+
+  const handleSearchSelect = (result: GeocodeResult) => {
+    updatePendingStart({
+      lat: result.lat,
+      lng: result.lng,
+      label: result.displayName,
+      source: 'search',
+    });
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (userLocation) {
+      updatePendingStart({
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+        label: 'your current location',
+        source: 'current-location',
+      });
+    } else {
+      awaitingGeoForStartRef.current = true;
+      onRequestLocation();
+    }
+  };
+
+  useEffect(() => {
+    if (awaitingGeoForStartRef.current && userLocation) {
+      awaitingGeoForStartRef.current = false;
+      updatePendingStart({
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+        label: 'your current location',
+        source: 'current-location',
+      });
+    }
+  }, [userLocation]);
+
+  const handleMapPickStart = (lat: number, lng: number) => {
+    updatePendingStart({
+      lat,
+      lng,
+      label: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+      source: 'map-click',
+    });
+  };
+
+  const handleConfirmDirections = () => {
+    if (!pendingStart) return;
+    setConfirmedOrigin({ lat: pendingStart.lat, lng: pendingStart.lng });
+  };
+
+  const handleClearDirections = () => {
+    setPendingStart(null);
+    setConfirmedOrigin(null);
+  };
+
+  const directionsState: DirectionsState = {
+    pendingStart,
+    isRouteConfirmed: confirmedOrigin != null,
+    route: route
+      ? { distanceKm: route.distanceKm, durationMin: route.durationMin }
+      : null,
+    routeLoading,
+    routeError,
+    geoLoading,
+    geoError,
+    onSearchSelect: handleSearchSelect,
+    onUseCurrentLocation: handleUseCurrentLocation,
+    onConfirm: handleConfirmDirections,
+    onClear: handleClearDirections,
+  };
 
   return (
     <div className="absolute inset-0">
@@ -313,6 +859,14 @@ export default function JobMapView({
           userLocation={userLocation}
           onRequestLocation={onRequestLocation}
         />
+        <StartPointClickHandler
+          enabled={selectedJob != null}
+          onPick={handleMapPickStart}
+        />
+        <FitRouteBounds
+          startPoint={pendingStart}
+          routeCoordinates={route?.coordinates ?? null}
+        />
 
         {userLocation && (
           <Marker
@@ -323,6 +877,32 @@ export default function JobMapView({
               You are here
             </Tooltip>
           </Marker>
+        )}
+
+        {pendingStart && (
+          <Marker
+            position={[pendingStart.lat, pendingStart.lng]}
+            icon={
+              pendingStart.source === 'current-location'
+                ? currentLocationIcon
+                : startPointIcon
+            }
+            zIndexOffset={900}>
+            <Tooltip direction="top" offset={[0, -32]} opacity={1}>
+              Start: {pendingStart.label}
+            </Tooltip>
+          </Marker>
+        )}
+
+        {route && route.coordinates.length > 1 && (
+          <Polyline
+            positions={route.coordinates}
+            pathOptions={{
+              color: ROUTE_LINE_COLOR,
+              weight: 4,
+              opacity: 0.85,
+            }}
+          />
         )}
 
         {jobs
@@ -337,53 +917,34 @@ export default function JobMapView({
             <Marker
               key={job.id}
               position={[job.location.point.lat, job.location.point.lng]}
-              icon={getPinDivIcon(
-                (job.category as any)?.icon,
-                (job.category as any)?.id
-              )}>
-              <Tooltip direction="top" offset={[0, -28]} opacity={1} sticky>
-                <div className="flex gap-2 items-start max-w-[220px]">
-                  {job.thumbnail && (
-                    <img
-                      src={job.thumbnail}
-                      alt=""
-                      className="w-10 h-10 rounded object-cover shrink-0"
-                    />
-                  )}
-                  <div className="min-w-0">
-                    <p className="text-body-sm font-medium truncate">
-                      {job.title}
-                    </p>
-                    <p className="text-body-sm text-on-surface-variant">
-                      {job.category?.name}
-                    </p>
-                    <p className="text-body-sm text-on-surface-variant capitalize">
-                      {job.work_mode} · {job.job_type}
-                    </p>
-                    {formatSalary(job) && (
-                      <p className="text-body-sm font-medium">
-                        {formatSalary(job)}
-                      </p>
-                    )}
-                  </div>
-                </div>
+              icon={getPinDivIcon(job.category?.icon, job.category?.id)}
+              eventHandlers={{
+                click: () => setSelectedJobId(job.id),
+              }}>
+              <Tooltip
+                direction="top"
+                offset={[0, -36]}
+                opacity={1}
+                sticky
+                className="map-pin-tooltip">
+                <JobHoverCard job={job} />
               </Tooltip>
             </Marker>
           ))}
       </MapContainer>
 
       {isLoading && (
-        <div className="absolute bottom-4 right-4 z-[500] bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1.5 rounded-md text-body-sm text-on-surface-variant shadow-sm">
+        <div className="absolute bottom-4 right-4 z-500 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1.5 rounded-md text-body-sm text-on-surface-variant shadow-sm">
           Updating results…
         </div>
       )}
 
-      <div className="absolute bottom-4 left-4 z-[500] bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1.5 rounded-md text-body-sm text-on-surface-variant shadow-sm">
+      <div className="absolute bottom-4 left-4 z-500 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1.5 rounded-md text-body-sm text-on-surface-variant shadow-sm">
         {totalCount} job{totalCount === 1 ? '' : 's'} in this area
       </div>
 
       {(permissionStatus === 'prompt' || permissionStatus === 'denied') && (
-        <div className="absolute inset-0 z-[400] flex items-center justify-center bg-surface-container-lowest/60 backdrop-blur-sm">
+        <div className="absolute inset-0 z-400 flex items-center justify-center bg-surface-container-lowest/60 backdrop-blur-sm">
           <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 text-center shadow-md">
             <p className="text-body-md font-medium mb-1">See jobs near you</p>
             <p className="text-body-sm text-on-surface-variant mb-4">
@@ -398,6 +959,14 @@ export default function JobMapView({
             </button>
           </div>
         </div>
+      )}
+
+      {selectedJob && (
+        <JobDetailPanel
+          job={selectedJob}
+          onClose={() => setSelectedJobId(null)}
+          directions={directionsState}
+        />
       )}
     </div>
   );

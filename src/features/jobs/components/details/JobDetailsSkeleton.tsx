@@ -1,5 +1,9 @@
 function Block({ className = '' }: { className?: string }) {
-  return <div className={`bg-surface-container-high animate-pulse rounded-lg ${className}`} />;
+  return (
+    <div
+      className={`bg-surface-container-high animate-pulse rounded-lg ${className}`}
+    />
+  );
 }
 
 function JobDetailsSkeleton() {

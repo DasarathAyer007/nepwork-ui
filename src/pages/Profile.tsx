@@ -1,9 +1,6 @@
-import React from 'react';
-
 import { IntroHeader, ProfileInfo } from '@/features/user/';
 import { useGetProfileDetailsQuery } from '@/features/user/api/profileApi';
 import type { UserDetails } from '@/types/user.types';
-import { featureGroup } from 'leaflet';
 import { useParams } from 'react-router-dom';
 
 type Params = {

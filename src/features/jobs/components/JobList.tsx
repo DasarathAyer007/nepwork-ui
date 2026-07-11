@@ -8,10 +8,15 @@ const JOB_SORT_OPTIONS = [
   { value: 'created_at', label: 'Oldest' },
   { value: '-salary_max', label: 'Salary: High to Low' },
   { value: 'salary_min', label: 'Salary: Low to High' },
+  { value: '-total_applications', label: 'Most Applied' },
+  { value: 'total_applications', label: 'Least Applied' },
+  { value: 'experience_years', label: 'Experience: Low to High' },
+  { value: '-experience_years', label: 'Experience: High to Low' },
 ];
 
 interface JobListProps {
   jobs: JobResult[];
+  totalCount?: number;
   currentPage: number;
   totalPages: number;
   sortBy: string;
@@ -21,13 +26,14 @@ interface JobListProps {
 
 export default function JobList({
   jobs,
+  totalCount,
   currentPage,
   totalPages,
   sortBy,
   onSortChange,
   onPageChange,
 }: JobListProps) {
-  const totalCount = jobs.length; // Assuming jobs is an array of JobResult
+  const displayCount = totalCount ?? jobs.length;
   function handleSaveToggle(jobId: string) {
     // Implement the logic to toggle save status for the job with the given jobId
     console.log(`Toggling save for job ID: ${jobId}`);
@@ -36,11 +42,14 @@ export default function JobList({
     <div className="grow flex flex-col gap-4">
       <div className="flex justify-between items-center mb-2">
         <p className="text-on-surface-variant">
-          Showing <span className="font-bold text-on-surface">{totalCount}</span> services
+          Showing{' '}
+          <span className="font-bold text-on-surface">{displayCount}</span> jobs
         </p>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="job-sort-by" className="text-body-md text-on-surface-variant">
+          <label
+            htmlFor="job-sort-by"
+            className="text-body-md text-on-surface-variant">
             Sort by
           </label>
           <select

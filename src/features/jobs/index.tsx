@@ -14,7 +14,5 @@ export { default as StepJobLocationStatus } from './components/create/StepJobLoc
 export { default as StepJobSkillsCompensation } from './components/create/StepJobSkillsCompensation';
 export { default as StepJobReview } from './components/create/StepJobReview';
 
-
-
 export { default as JobDetails } from './components/details/JobDetails';
 export { default as JobDetailsSkeleton } from './components/details/JobDetailsSkeleton';

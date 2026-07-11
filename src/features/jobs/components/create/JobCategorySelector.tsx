@@ -1,5 +1,4 @@
 import CategoryIcon from '@/components/CategoryIcon';
-import { Label } from '@/components/ui/forms';
 
 import { useGetJobCategoryQuery } from '../../jobApi';
 import type { JobCategory } from '../../jobTypes';
@@ -15,11 +14,9 @@ export default function JobCategorySelector({ value, onChange, error }: Props) {
 
   return (
     <div className="space-y-2">
-      <Label>Category</Label>
-
       {isLoading && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="flex flex-wrap gap-2 max-h-[172px] overflow-hidden">
+          {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
               className="h-9 w-28 rounded-full bg-surface-container-high animate-pulse shrink-0"
@@ -35,7 +32,7 @@ export default function JobCategorySelector({ value, onChange, error }: Props) {
       )}
 
       {categories && (
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-thin">
+        <div className="flex flex-wrap content-start gap-2 max-h-[172px] overflow-y-auto overscroll-contain -mx-1 px-1 pr-2 scrollbar-thin">
           {categories?.map((cat: JobCategory) => {
             const selected = value === cat.id;
             return (

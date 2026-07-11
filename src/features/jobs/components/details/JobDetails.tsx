@@ -1,9 +1,10 @@
+import MapComponent from '@/components/map/MapComponent';
+
 import type { JobDetail } from '../../jobTypes';
 import EmployerCard from './EmployerCard';
 import JobApplyCard from './JobApplyCard';
 import JobDescription from './JobDescription';
 import JobHeader from './JobHeader';
-import MapComponent from '@/components/map/MapComponent';
 import JobRequirementsBenefits from './JobRequirementsBenefits';
 import JobSkills from './JobSkills';
 
@@ -25,8 +26,10 @@ function JobDetails({ job }: Props) {
             <JobSkills skills={job.skills_required} />
           </div>
 
-
-          <JobRequirementsBenefits requirements={job.requirements} benefits={job.benefits} />
+          <JobRequirementsBenefits
+            requirements={job.requirements}
+            benefits={job.benefits}
+          />
 
           <EmployerCard employer={job.employer} thumbnail={job.thumbnail} />
         </div>
@@ -35,7 +38,9 @@ function JobDetails({ job }: Props) {
           <JobApplyCard job={job} />
 
           <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
-            <h3 className="text-headline-sm font-bold text-on-surface mb-4">Location</h3>
+            <h3 className="text-headline-sm font-bold text-on-surface mb-4">
+              Location
+            </h3>
             {location?.point?.lat && location?.point?.lng ? (
               <MapComponent
                 latitude={location.point?.lat ?? null}
@@ -52,7 +57,12 @@ function JobDetails({ job }: Props) {
             )}
             {(location?.city || location?.country) && (
               <p className="text-body-sm text-on-surface-variant mt-3">
-                {[location.address, location.city, location.state, location.country]
+                {[
+                  location.address,
+                  location.city,
+                  location.state,
+                  location.country,
+                ]
                   .filter(Boolean)
                   .join(', ')}
               </p>

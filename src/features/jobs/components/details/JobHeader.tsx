@@ -1,7 +1,12 @@
 import { Building2, Clock, Heart, MapPin, Share2 } from 'lucide-react';
 
 import type { JobDetail } from '../../jobTypes';
-import { employerDisplayName, employerLogo, formatDate, titleCase } from '../../utils/formatJob';
+import {
+  employerDisplayName,
+  employerLogo,
+  formatDate,
+  titleCase,
+} from '../../utils/formatJob';
 
 const STATUS_TONE: Record<string, string> = {
   open: 'bg-success/10 text-success',
@@ -26,7 +31,11 @@ function JobHeader({ job }: Props) {
         <div className="shrink-0">
           <div className="w-20 h-20 bg-surface-container-high rounded-xl flex items-center justify-center border border-outline-variant/50 overflow-hidden">
             {logo ? (
-              <img src={logo} alt={companyName} className="w-full h-full object-cover" />
+              <img
+                src={logo}
+                alt={companyName}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <Building2 className="w-10 h-10 text-primary" />
             )}
@@ -35,16 +44,19 @@ function JobHeader({ job }: Props) {
 
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h1 className="text-headline-lg font-bold text-on-surface">{title}</h1>
+            <h1 className="text-headline-lg font-bold text-on-surface">
+              {title}
+            </h1>
             {employer.is_verified && (
               <span className="px-2 py-0.5 bg-primary/10 text-primary text-label-md font-medium rounded-full">
                 Verified
               </span>
             )}
-         
+
             <span
               className={`px-2 py-0.5 text-label-md font-medium rounded-full ${
-                STATUS_TONE[status] ?? 'bg-outline-variant/50 text-on-surface-variant'
+                STATUS_TONE[status] ??
+                'bg-outline-variant/50 text-on-surface-variant'
               }`}>
               {titleCase(status)}
             </span>
@@ -57,7 +69,9 @@ function JobHeader({ job }: Props) {
             <div className="flex items-center gap-1">
               <MapPin size={16} className="shrink-0" />
               <span>
-                {[location?.city, location?.country].filter(Boolean).join(', ') || 'Remote'}
+                {[location?.city, location?.country]
+                  .filter(Boolean)
+                  .join(', ') || 'Remote'}
               </span>
             </div>
 

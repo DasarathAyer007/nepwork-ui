@@ -40,6 +40,7 @@ function Header() {
     { name: 'Find Jobs', to: '/jobs' },
     { name: 'Service Marketplace', to: '/services' },
     { name: 'Messages', to: '/messages' },
+    { name: 'Dashboard', to: '/dashboard' },
   ];
 
   return (

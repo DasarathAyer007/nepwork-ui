@@ -1,8 +1,9 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
-import type { JobFormValues } from '../../jobSchema';
 import MapComponent from '@/components/map/MapComponent';
-import { Label, Input, FormSection } from '@/components/ui/forms';
+import { FormSection, Input, Label } from '@/components/ui/forms';
+
+import type { JobFormValues } from '../../jobSchema';
 
 const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft' },
@@ -34,7 +35,9 @@ export default function StepJobLocationStatus() {
 
   return (
     <div className="space-y-6">
-      <FormSection title="Job Location" description="Click on the map to drop a marker, or expand it for a bigger view. Skip this for fully remote roles.">
+      <FormSection
+        title="Job Location"
+        description="Click on the map to drop a marker, or expand it for a bigger view. Skip this for fully remote roles.">
         <div className="relative rounded-xl overflow-hidden border border-outline-variant/30 shadow-inner bg-surface-container-low">
           <MapComponent
             latitude={latitude}
@@ -101,14 +104,13 @@ export default function StepJobLocationStatus() {
         </div>
       </FormSection>
 
-      <FormSection title="Deadline & Contact" description="Specify application deadline and hiring contact details for potential applicants.">
+      <FormSection
+        title="Deadline & Contact"
+        description="Specify application deadline and hiring contact details for potential applicants.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <Label>Application Deadline</Label>
-            <Input
-              {...register('deadline')}
-              type="date"
-            />
+            <Input {...register('deadline')} type="date" />
           </div>
           <div className="space-y-1.5">
             <Label>Contact Email</Label>
@@ -134,7 +136,9 @@ export default function StepJobLocationStatus() {
         </div>
       </FormSection>
 
-      <FormSection title="Status" description="Jobs start as a draft by default. Set to Open when you're ready for applicants.">
+      <FormSection
+        title="Status"
+        description="Jobs start as a draft by default. Set to Open when you're ready for applicants.">
         <Controller
           control={control}
           name="status"

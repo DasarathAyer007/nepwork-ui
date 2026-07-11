@@ -5,15 +5,18 @@ import ServiceCard from './ServiceCard';
 const SERVICE_SORT_OPTIONS = [
   { value: '-created_at', label: 'Newest' },
   { value: 'created_at', label: 'Oldest' },
+  // avg_rating ordering is disabled until the backend annotates it.
   // { value: '-avg_rating', label: 'Highest Rated' },
   // { value: 'avg_rating', label: 'Lowest Rated' },
   { value: 'price', label: 'Price: Low to High' },
   { value: '-price', label: 'Price: High to Low' },
   { value: '-total_applies', label: 'Most Popular' },
+  { value: 'available_from', label: 'Earliest Availability' },
 ];
 
 interface ServiceListProps {
   services: ServiceResult[];
+  totalCount?: number;
   currentPage: number;
   totalPages: number;
   sortBy: string;
@@ -23,13 +26,14 @@ interface ServiceListProps {
 
 export default function ServiceList({
   services,
+  totalCount,
   currentPage,
   totalPages,
   sortBy,
   onSortChange,
   onPageChange,
 }: ServiceListProps) {
-  const totalCount = services.length;
+  const displayCount = totalCount ?? services.length;
   function handleSaveToggle(serviceId: string) {
     // Implement the logic to toggle save status for the service with the given serviceId
     console.log(`Toggling save for service ID: ${serviceId}`);
@@ -38,11 +42,15 @@ export default function ServiceList({
     <div className="grow flex flex-col gap-4">
       <div className="flex justify-between items-center mb-2">
         <p className="text-on-surface-variant">
-          Showing <span className="font-bold text-on-surface">{totalCount}</span> services
+          Showing{' '}
+          <span className="font-bold text-on-surface">{displayCount}</span>{' '}
+          services
         </p>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="service-sort-by" className="text-body-md text-on-surface-variant">
+          <label
+            htmlFor="service-sort-by"
+            className="text-body-md text-on-surface-variant">
             Sort by
           </label>
           <select

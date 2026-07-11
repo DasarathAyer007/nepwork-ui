@@ -9,8 +9,9 @@ import {
 } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 
+import { DropDown, FormSection, Input, Label } from '@/components/ui/forms';
+
 import type { JobFormValues } from '../../jobSchema';
-import { Label, Input, DropDown, FormSection } from '@/components/ui/forms';
 
 const JOB_TYPE_OPTIONS = [
   { value: 'full_time', label: 'Full Time', Icon: Briefcase },
@@ -42,8 +43,7 @@ export default function StepJobDetails() {
   return (
     <FormSection
       title="Job Details"
-      description="Specify the job type, remote/onsite flexibility, and minimum experience requirements."
-    >
+      description="Specify the job type, remote/onsite flexibility, and minimum experience requirements.">
       <div className="space-y-2">
         <Label>Job Type</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -56,7 +56,10 @@ export default function StepJobDetails() {
                 value={value}
               />
               <div className="w-full p-4 border-2 border-outline-variant/50 rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/40 flex flex-col items-center justify-center text-center gap-2 group-hover:shadow-sm">
-                <Icon size={20} className="text-primary group-hover:scale-110 transition-transform" />
+                <Icon
+                  size={20}
+                  className="text-primary group-hover:scale-110 transition-transform"
+                />
                 <span className="font-semibold text-xs text-on-surface">
                   {label}
                 </span>
@@ -65,7 +68,9 @@ export default function StepJobDetails() {
           ))}
         </div>
         {errors.job_type && (
-          <p className="text-xs text-error font-medium">{errors.job_type.message}</p>
+          <p className="text-xs text-error font-medium">
+            {errors.job_type.message}
+          </p>
         )}
       </div>
 
@@ -81,7 +86,10 @@ export default function StepJobDetails() {
                 value={value}
               />
               <div className="w-full p-4 border-2 border-outline-variant/50 rounded-xl transition-all peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/40 flex flex-col items-center justify-center text-center gap-2 group-hover:shadow-sm">
-                <Icon size={20} className="text-primary group-hover:scale-110 transition-transform" />
+                <Icon
+                  size={20}
+                  className="text-primary group-hover:scale-110 transition-transform"
+                />
                 <span className="font-semibold text-xs text-on-surface">
                   {label}
                 </span>
@@ -90,7 +98,9 @@ export default function StepJobDetails() {
           ))}
         </div>
         {errors.work_mode && (
-          <p className="text-xs text-error font-medium">{errors.work_mode.message}</p>
+          <p className="text-xs text-error font-medium">
+            {errors.work_mode.message}
+          </p>
         )}
       </div>
 

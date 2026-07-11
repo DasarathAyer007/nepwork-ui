@@ -19,7 +19,6 @@ export { default as StepLocation } from './components/create/StepLocation';
 
 export { default as StepReview } from './components/create/StepReview';
 
-
 export { default as CategorySelector } from './components/create/CategorySelector';
 
 export { default as SkillsInput } from '../../components/SkillsInput';

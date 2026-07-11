@@ -11,7 +11,9 @@ interface Props {
 function InfoBlock({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-surface-container rounded-lg p-4">
-      <p className="text-label-md font-medium text-on-surface-variant">{label}</p>
+      <p className="text-label-md font-medium text-on-surface-variant">
+        {label}
+      </p>
       <p className="text-body-md font-bold text-on-surface">{value}</p>
     </div>
   );
@@ -31,27 +33,38 @@ function EmployerCard({ employer, thumbnail }: Props) {
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
-      <h2 className="text-headline-md font-bold text-on-surface mb-4">About the Employer</h2>
+      <h2 className="text-headline-md font-bold text-on-surface mb-4">
+        About the Employer
+      </h2>
 
       <div className="flex items-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant/50 shrink-0">
           {logo ? (
-            <img src={logo} alt={displayName} className="w-full h-full object-cover" />
+            <img
+              src={logo}
+              alt={displayName}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <Building2 className="w-8 h-8 text-primary" />
           )}
         </div>
         <div>
-          <p className="text-body-lg font-bold text-on-surface">{displayName}</p>
+          <p className="text-body-lg font-bold text-on-surface">
+            {displayName}
+          </p>
           {employer.is_verified && (
-            <span className="text-label-sm text-primary font-medium">Verified employer</span>
+            <span className="text-label-sm text-primary font-medium">
+              Verified employer
+            </span>
           )}
         </div>
       </div>
 
       {level === 'private' ? (
         <p className="text-body-md text-on-surface-variant">
-          This employer keeps their profile private. Apply to the job to get in touch.
+          This employer keeps their profile private. Apply to the job to get in
+          touch.
         </p>
       ) : (
         <>
@@ -61,19 +74,26 @@ function EmployerCard({ employer, thumbnail }: Props) {
             </p>
           )}
 
-          {(employer.industry || employer.employees_count != null || location) && (
+          {(employer.industry ||
+            employer.employees_count != null ||
+            location) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {employer.industry && <InfoBlock label="Industry" value={employer.industry} />}
-              {employer.employees_count != null && (
-                <InfoBlock label="Company Size" value={`${employer.employees_count}+ employees`} />
+              {employer.industry && (
+                <InfoBlock label="Industry" value={employer.industry} />
               )}
-              {location && level !== 'limited' && <InfoBlock label="Location" value={location} />}
+              {employer.employees_count != null && (
+                <InfoBlock
+                  label="Company Size"
+                  value={`${employer.employees_count}+ employees`}
+                />
+              )}
+              {location && level !== 'limited' && (
+                <InfoBlock label="Location" value={location} />
+              )}
             </div>
           )}
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
-
-
             {level === 'full' && employer.email && (
               <a
                 href={`mailto:${employer.email}`}
@@ -84,23 +104,24 @@ function EmployerCard({ employer, thumbnail }: Props) {
             )}
           </div>
 
-          {employer.social_links && (level === 'full' || level === 'public') && (
-            <div className="mt-4 flex gap-3">
-              {Object.entries(employer.social_links)
-                .filter(([, url]) => !!url)
-                .map(([key, url]) => (
-                  <a
-                    key={key}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={key}
-                    className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
-                    <LinkIcon size={16} />
-                  </a>
-                ))}
-            </div>
-          )}
+          {employer.social_links &&
+            (level === 'full' || level === 'public') && (
+              <div className="mt-4 flex gap-3">
+                {Object.entries(employer.social_links)
+                  .filter(([, url]) => !!url)
+                  .map(([key, url]) => (
+                    <a
+                      key={key}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={key}
+                      className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+                      <LinkIcon size={16} />
+                    </a>
+                  ))}
+              </div>
+            )}
         </>
       )}
     </div>

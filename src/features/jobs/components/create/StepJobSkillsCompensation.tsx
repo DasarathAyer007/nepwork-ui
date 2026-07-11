@@ -1,10 +1,10 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
 import SkillsInput from '@/components/SkillsInput';
+import { DropDown, FormSection, Input, Label } from '@/components/ui/forms';
 
 import type { JobFormValues } from '../../jobSchema';
 import KeyValueListInput from './KeyValueListInput';
-import { Label, Input, DropDown, FormSection } from '@/components/ui/forms';
 
 const CURRENCIES = ['USD', 'NPR', 'INR', 'EUR', 'GBP'];
 
@@ -17,7 +17,9 @@ export default function StepJobSkillsCompensation() {
 
   return (
     <div className="space-y-6">
-      <FormSection title="Skills Required" description="Add the skills a candidate should have for this role.">
+      <FormSection
+        title="Skills Required"
+        description="Add the skills a candidate should have for this role.">
         <Controller
           control={control}
           name="skills_required"
@@ -31,7 +33,9 @@ export default function StepJobSkillsCompensation() {
         />
       </FormSection>
 
-      <FormSection title="Requirements" description="Add each requirement as a short label and detail, e.g. 'Education' → 'Bachelor's in CS or equivalent'.">
+      <FormSection
+        title="Requirements"
+        description="Add each requirement as a short label and detail, e.g. 'Education' → 'Bachelor's in CS or equivalent'.">
         <Controller
           control={control}
           name="requirements"
@@ -47,7 +51,9 @@ export default function StepJobSkillsCompensation() {
         />
       </FormSection>
 
-      <FormSection title="Compensation" description="Set the salary range and currency for this role.">
+      <FormSection
+        title="Compensation"
+        description="Set the salary range and currency for this role.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label>Salary Min</Label>
@@ -101,7 +107,9 @@ export default function StepJobSkillsCompensation() {
         </div>
       </FormSection>
 
-      <FormSection title="Benefits" description="List perks as a label and detail, e.g. 'Health' → 'Full medical, dental, and vision'.">
+      <FormSection
+        title="Benefits"
+        description="List perks as a label and detail, e.g. 'Health' → 'Full medical, dental, and vision'.">
         <Controller
           control={control}
           name="benefits"

@@ -82,7 +82,8 @@ export default function StepJobReview() {
               Job Type & Mode
             </h4>
             <p className="text-sm font-semibold text-on-surface mt-1">
-              {JOB_TYPE_LABELS[values.job_type]} · {WORK_MODE_LABELS[values.work_mode]}
+              {JOB_TYPE_LABELS[values.job_type]} ·{' '}
+              {WORK_MODE_LABELS[values.work_mode]}
             </p>
           </div>
         </div>
@@ -98,7 +99,9 @@ export default function StepJobReview() {
             </h4>
             <p className="text-sm font-semibold text-on-surface mt-1">
               {EXPERIENCE_LABELS[values.experience_level]}
-              {values.experience_years != null ? ` (${values.experience_years} yrs)` : ''}
+              {values.experience_years != null
+                ? ` (${values.experience_years} yrs)`
+                : ''}
             </p>
           </div>
         </div>
@@ -139,7 +142,9 @@ export default function StepJobReview() {
                   </span>
                 ))
               ) : (
-                <span className="text-sm text-on-surface-variant">None added</span>
+                <span className="text-sm text-on-surface-variant">
+                  None added
+                </span>
               )}
             </div>
           </div>
@@ -192,7 +197,9 @@ export default function StepJobReview() {
               </h4>
               <div className="space-y-2">
                 {values.requirements.map((r, i) => (
-                  <p key={i} className="text-sm text-on-surface leading-relaxed flex items-start gap-2">
+                  <p
+                    key={i}
+                    className="text-sm text-on-surface leading-relaxed flex items-start gap-2">
                     <span className="font-semibold shrink-0">• {r.key}:</span>
                     <span className="text-on-surface-variant">{r.value}</span>
                   </p>
@@ -207,7 +214,9 @@ export default function StepJobReview() {
               </h4>
               <div className="space-y-2">
                 {values.benefits.map((b, i) => (
-                  <p key={i} className="text-sm text-on-surface leading-relaxed flex items-start gap-2">
+                  <p
+                    key={i}
+                    className="text-sm text-on-surface leading-relaxed flex items-start gap-2">
                     <span className="font-semibold shrink-0">• {b.key}:</span>
                     <span className="text-on-surface-variant">{b.value}</span>
                   </p>
@@ -223,7 +232,10 @@ export default function StepJobReview() {
         <div className="flex items-center gap-2.5">
           <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
           <span className="text-sm text-on-surface leading-relaxed">
-            Will be published as <strong className="text-primary font-bold">{STATUS_LABELS[values.status]}</strong>
+            Will be published as{' '}
+            <strong className="text-primary font-bold">
+              {STATUS_LABELS[values.status]}
+            </strong>
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-4 text-xs text-on-surface-variant">
@@ -234,7 +246,8 @@ export default function StepJobReview() {
           )}
           {values.contact_phone && (
             <span className="flex items-center gap-1.5 font-medium bg-surface-container/50 px-3 py-1 rounded-lg border border-outline-variant/20">
-              <Phone size={14} className="text-primary" /> {values.contact_phone}
+              <Phone size={14} className="text-primary" />{' '}
+              {values.contact_phone}
             </span>
           )}
         </div>

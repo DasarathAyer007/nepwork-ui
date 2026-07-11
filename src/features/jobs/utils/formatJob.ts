@@ -2,7 +2,9 @@ export function formatSalaryRange(min: string, max: string, currency: string) {
   const minNum = Number(min);
   const maxNum = Number(max);
   const fmt = (n: number) =>
-    Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '—';
+    Number.isFinite(n)
+      ? n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : '—';
   return `${currency} ${fmt(minNum)} - ${fmt(maxNum)}`;
 }
 
@@ -16,9 +18,7 @@ export function formatDate(date: string | Date) {
 
 // "part-time" / "onsite" / "senior" -> "Part Time" / "Onsite" / "Senior"
 export function titleCase(value: string) {
-  return value
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return value.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function employerDisplayName(job: {

@@ -8,18 +8,29 @@ interface Props {
 function MetaBlock({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-surface-container rounded-lg p-4">
-      <p className="text-label-md font-medium text-on-surface-variant">{label}</p>
+      <p className="text-label-md font-medium text-on-surface-variant">
+        {label}
+      </p>
       <p className="text-body-md font-bold text-on-surface">{value}</p>
     </div>
   );
 }
 
 function JobDescription({ job }: Props) {
-  const { description, job_type, work_mode, experience_level, experience_years, deadline } = job;
+  const {
+    description,
+    job_type,
+    work_mode,
+    experience_level,
+    experience_years,
+    deadline,
+  } = job;
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
-      <h2 className="text-headline-md font-bold text-on-surface mb-4">Job description</h2>
+      <h2 className="text-headline-md font-bold text-on-surface mb-4">
+        Job description
+      </h2>
       <p className="text-body-md text-on-surface-variant leading-relaxed mb-6 whitespace-pre-line">
         {description}
       </p>

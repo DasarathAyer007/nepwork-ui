@@ -31,7 +31,11 @@ declare module 'leaflet' {
       latLng: L.LatLng;
     }
 
-    function waypoint(latLng: L.LatLng, name?: string, options?: unknown): Waypoint;
+    function waypoint(
+      latLng: L.LatLng,
+      name?: string,
+      options?: unknown
+    ): Waypoint;
 
     interface IOSRMV1Options {
       serviceUrl?: string;
@@ -43,7 +47,10 @@ declare module 'leaflet' {
     interface IRouter {
       route(
         waypoints: Waypoint[],
-        callback: (error: { status?: number; message?: string } | null, routes?: IRoute[]) => void
+        callback: (
+          error: { status?: number; message?: string } | null,
+          routes?: IRoute[]
+        ) => void
       ): void;
     }
 

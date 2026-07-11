@@ -9,14 +9,22 @@ interface Props {
 }
 
 function JobApplyCard({ job }: Props) {
-  const { id, salary_min, salary_max, currency, job_type, work_mode, contact_email, contact_phone } = job;
+  const {
+    id,
+    salary_min,
+    salary_max,
+    currency,
+    job_type,
+    work_mode,
+    contact_email,
+    contact_phone,
+  } = job;
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
-     <Link
+      <Link
         to={`/jobs/${id}/apply`}
-        className="block w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-center"
-      >
+        className="block w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110 transition-all duration-200 active:scale-95 text-center">
         Apply Now
       </Link>
 
@@ -35,11 +43,15 @@ function JobApplyCard({ job }: Props) {
         </div>
         <div className="flex justify-between items-center text-body-md">
           <span className="text-on-surface-variant">Job Type</span>
-          <span className="font-medium text-on-surface">{titleCase(job_type)}</span>
+          <span className="font-medium text-on-surface">
+            {titleCase(job_type)}
+          </span>
         </div>
         <div className="flex justify-between items-center text-body-md">
           <span className="text-on-surface-variant">Work Mode</span>
-          <span className="font-medium text-on-surface">{titleCase(work_mode)}</span>
+          <span className="font-medium text-on-surface">
+            {titleCase(work_mode)}
+          </span>
         </div>
       </div>
 
@@ -56,7 +68,9 @@ function JobApplyCard({ job }: Props) {
       )}
 
       <div className="mt-6 pt-4 border-t border-outline-variant/50">
-        <p className="text-label-md font-medium text-on-surface-variant mb-3">SHARE THIS ROLE</p>
+        <p className="text-label-md font-medium text-on-surface-variant mb-3">
+          SHARE THIS ROLE
+        </p>
         <div className="flex gap-2">
           <button className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
             <LinkIcon size={18} />

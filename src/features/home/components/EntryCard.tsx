@@ -1,4 +1,5 @@
 import { ArrowBigRight, Handshake, UserPlus } from 'lucide-react';
+
 import { Card } from '@/components/ui/Card';
 
 function EntryCard() {

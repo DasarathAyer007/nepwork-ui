@@ -18,6 +18,7 @@ import {
   useGetJobCategoryQuery,
   useGetJobsListQuery,
 } from '../features/jobs/jobApi';
+import getApiErrorMessage from '../utils/getApiErrorMessage';
 
 const FALLBACK_CENTER = { lat: 27.7172, lng: 85.324 }; // Kathmandu — match JobMapView's fallback
 
@@ -51,6 +52,8 @@ export default function Jobs() {
     country: '',
     postalCode: '',
     hasLocation: null,
+    deadlineBefore: '',
+    deadlineAfter: '',
   });
 
   const [sortBy, setSortBy] = useState('-created_at');
@@ -59,7 +62,7 @@ export default function Jobs() {
   const { data: categories } = useGetJobCategoryQuery(null);
 
   const queryParams = useMemo(() => {
-    const params: any = {
+    const params: Record<string, unknown> = {
       page: currentPage,
       page_size: viewMode === 'map' ? 200 : 20, // map isn't paginated visually — fetch everything in the radius
       ordering: sortBy,
@@ -83,6 +86,8 @@ export default function Jobs() {
     if (filters.country) params.country = filters.country;
     if (filters.postalCode) params.postal_code = filters.postalCode;
     if (filters.hasLocation !== null) params.has_location = filters.hasLocation;
+    if (filters.deadlineBefore) params.deadline_before = filters.deadlineBefore;
+    if (filters.deadlineAfter) params.deadline_after = filters.deadlineAfter;
 
     if (viewMode === 'map' && geoParams) {
       params.lat = geoParams.lat;
@@ -120,6 +125,8 @@ export default function Jobs() {
       country: '',
       postalCode: '',
       hasLocation: null,
+      deadlineBefore: '',
+      deadlineAfter: '',
     });
     setSearchTerm('');
     setSortBy('-created_at');
@@ -203,6 +210,8 @@ export default function Jobs() {
           isLoading={isLoading}
           permissionStatus={geolocation.permissionStatus}
           onRequestLocation={geolocation.requestLocation}
+          geoLoading={geolocation.loading}
+          geoError={geolocation.error}
         />
 
         <div className="absolute top-4 left-4 right-4 z-999">
@@ -270,13 +279,17 @@ export default function Jobs() {
             {isError && (
               <div className="flex items-center justify-center py-12">
                 <p className="text-error">
-                  Error: {(error as any)?.message || 'Failed to load jobs'}
+                  {getApiErrorMessage({
+                    error,
+                    fallbackMessage: 'An error occurred while fetching jobs.',
+                  })}
                 </p>
               </div>
             )}
 
             <JobList
               jobs={data?.results ?? EMPTY_JOBS}
+              totalCount={totalCount}
               currentPage={currentPage}
               totalPages={totalPages}
               sortBy={sortBy}

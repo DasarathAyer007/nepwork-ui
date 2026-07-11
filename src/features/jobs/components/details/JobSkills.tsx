@@ -7,7 +7,9 @@ function JobSkills({ skills }: Props) {
 
   return (
     <div>
-      <h3 className="text-headline-sm font-bold text-on-surface mb-3">Skills Required</h3>
+      <h3 className="text-headline-sm font-bold text-on-surface mb-3">
+        Skills Required
+      </h3>
       <div className="flex flex-wrap gap-2">
         {skills.map((skill) => (
           <span

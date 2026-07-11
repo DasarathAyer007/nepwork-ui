@@ -28,6 +28,15 @@ export interface ServiceResult {
   is_saved: boolean;
 }
 
+export interface ServiceDetail extends ServiceResult {
+  description: string;
+  created_at: string;
+  updated_at: string;
+  radius_km: number | null;
+  available_from: string | null;
+  available_to: string | null;
+}
+
 export interface ServicesListResponse {
   count: number;
   page: number;
@@ -51,12 +60,17 @@ export interface ServicesQueryParams {
   currency?: string;
   price_type?: string;
   availability_status?: string; // e.g. "available"
+  status?: string; // service status: draft/active/paused/closed (my-services only)
   is_available?: string; // "true" or "false"
   has_location?: string;
   ordering?: string;
   page?: number;
   page_size?: number;
-  skill?: string[];
+  skills?: string[]; // skill IDs — backend filters via `skills__id__in`
+  radius_min?: string;
+  radius_max?: string;
+  available_from?: string;
+  available_to?: string;
   lat?: number;
   lng?: number;
   radius_km?: number;
@@ -71,6 +85,10 @@ export interface Filters {
   availabilityStatus: string; // "", "available", "busy", "unavailable"
   availableNow: boolean;
   hasLocation: boolean | null;
+  radiusMin: string;
+  radiusMax: string;
+  availableFrom: string;
+  availableTo: string;
 }
 
 export interface ServiceLocationPayload {
@@ -128,4 +146,73 @@ export interface Service {
 export interface Skill {
   id: string;
   name: string;
+}
+
+// ── Service Requests ─────────────────────────────────────────
+
+export type ServiceRequestStatus =
+  | 'open'
+  | 'in_review'
+  | 'accepted'
+  | 'rejected'
+  | 'in_progress'
+  | 'completed'
+  | 'cancelled';
+
+export type ServiceRequestPriority = 'low' | 'medium' | 'high' | 'urgent';
+
+export interface ServiceRequestUser {
+  id: string;
+  username: string;
+  full_name: string;
+  profile_picture: string | null;
+}
+
+export interface ServiceRequestService {
+  id: string;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  status: string;
+  user: ServiceRequestUser;
+}
+
+export interface ServiceRequestResult {
+  id: string;
+  user: ServiceRequestUser;
+  service: ServiceRequestService;
+  status: ServiceRequestStatus;
+  priority: ServiceRequestPriority;
+  budget: string | null;
+  currency: string;
+  preferred_date: string | null;
+  preferred_time: string | null;
+  estimated_duration_hours: number | null;
+  is_negotiable: boolean;
+  request_message: string;
+  response_message: string;
+  location: BasicLocation | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ServiceRequestListResponse {
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  next: string | null;
+  previous: string | null;
+  results: ServiceRequestResult[];
+}
+
+export interface ServiceRequestQueryParams {
+  scope?: 'sent' | 'received';
+  service_id?: string;
+  status?: string;
+  priority?: string;
+  ordering?: string;
+  page?: number;
+  page_size?: number;
 }
