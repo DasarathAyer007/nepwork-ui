@@ -12,6 +12,8 @@ import ManageJobDetails from '@/pages/dashboard/ManageJobDetails.tsx';
 import ManageMyRequestDetails from '@/pages/dashboard/ManageMyRequestDetails.tsx';
 import ManageRequestReceivedDetails from '@/pages/dashboard/ManageRequestReceivedDetails.tsx';
 import ManageServiceDetails from '@/pages/dashboard/ManageServiceDetails.tsx';
+import ServiceRequestsList from '@/pages/dashboard/ServiceRequestsList.tsx';
+
 import DashboardMyApplications from '@/pages/dashboard/MyApplications.tsx';
 import DashboardMyJobs from '@/pages/dashboard/MyJobs.tsx';
 import DashboardMyRequests from '@/pages/dashboard/MyRequests.tsx';
@@ -33,7 +35,6 @@ import SignUp from '../pages/SignUp';
 import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
 import ServiceApplyPage from '@/pages/ServiceApplyPage';
 import SignUpOTP from '../pages/SignUpOTP';
-
 function route() {
   return (
     <Routes>
@@ -85,9 +86,14 @@ function route() {
         />
         <Route path="my-requests" element={<DashboardMyRequests />} />
         <Route path="my-requests/:id" element={<ManageMyRequestDetails />} />
+        <Route path="services" element={<DashboardMyServices />} />
+      <Route path="services/:id" element={<ManageServiceDetails />} />
+      <Route path="services/:id/requests" element={<ServiceRequestsList />} />
+       <Route path="*" element={<NotFoundPage />} />
       </Route>
       {/* <Route path="/chat/:currentUserId" element={<ChatWindow />} /> */}
-      <Route path="*" element={<NotFoundPage />} />
+     
+      
     </Routes>
   );
 }

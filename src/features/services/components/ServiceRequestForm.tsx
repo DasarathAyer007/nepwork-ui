@@ -7,45 +7,50 @@ import {
   MapPin,
   Upload,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
+import { useCreateServiceRequestMutation } from '@/features/services/serviceApi';
 import type { ServiceDetail } from '../types';
 
 interface ServiceRequestFormProps {
   service: ServiceDetail;
 }
 
-function ServiceRequestForm({
-  service,
-}: ServiceRequestFormProps) {
-  const [attachment, setAttachment] =
-    useState<File | null>(null);
+function ServiceRequestForm({ service }: ServiceRequestFormProps) {
+  const navigate = useNavigate();
+  const [createRequest, { isLoading }] = useCreateServiceRequestMutation();
 
-  const [budget, setBudget] =
-    useState('');
-
-  const [deadline, setDeadline] =
-    useState('');
-
-  const [requirements, setRequirements] =
-    useState('');
-
-  const [notes, setNotes] =
-    useState('');
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [budget, setBudget] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [requirements, setRequirements] = useState('');
+  const [notes, setNotes] = useState('');
 
   const handleSubmit = async () => {
     if (!requirements.trim()) {
-      toast.error(
-        'Please describe your requirements.'
-      );
+      toast.error('Please describe your requirements.');
       return;
     }
 
-    // API call later
+    const combinedMessage = notes.trim()
+      ? `${requirements.trim()}\n\nAdditional notes: ${notes.trim()}`
+      : requirements.trim();
 
-    toast.success(
-      'Service request submitted successfully!'
-    );
+    try {
+      await createRequest({
+        service: service.id,
+        request_message: combinedMessage,
+        currency: service.currency,
+        budget: budget ? Number(budget) : undefined,
+        preferred_date: deadline || null,
+      }).unwrap();
+
+      toast.success('Service request submitted successfully!');
+      navigate('/dashboard/my-requests');
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Couldn't send this request."));
+    }
   };
 
   return (
@@ -69,8 +74,7 @@ function ServiceRequestForm({
 
               <span className="text-on-surface-variant font-normal flex items-center gap-1">
                 <MapPin size={16} />
-                {service.location?.city ??
-                  'Remote'}
+                {service.location?.city ?? 'Remote'}
               </span>
             </div>
 
@@ -82,10 +86,8 @@ function ServiceRequestForm({
 
               <div className="flex items-center gap-1">
                 <span className="font-medium text-on-surface">
-                  {service.currency}{' '}
-                  {service.price}
-                  {service.price_type ===
-                    'hourly' && '/hr'}
+                  {service.currency} {service.price}
+                  {service.price_type === 'hourly' && '/hr'}
                 </span>
               </div>
 
@@ -105,9 +107,7 @@ function ServiceRequestForm({
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-                  {service.user?.username
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  {service.user?.username.slice(0, 2).toUpperCase()}
                 </div>
 
                 <div>
@@ -119,8 +119,7 @@ function ServiceRequestForm({
 
               <Link
                 to={`/profile/${service.user?.username}`}
-                className="block mt-3 text-body-md text-primary hover:underline"
-              >
+                className="block mt-3 text-body-md text-primary hover:underline">
                 View Profile ↗
               </Link>
             </div>
@@ -131,18 +130,13 @@ function ServiceRequestForm({
       {/* Requirements */}
       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
         <h2 className="text-headline-md font-bold text-on-surface mb-2 flex items-center gap-2">
-          <FileText
-            className="text-primary"
-            size={24}
-          />
+          <FileText className="text-primary" size={24} />
           Project Requirements
         </h2>
 
         <textarea
           value={requirements}
-          onChange={(e) =>
-            setRequirements(e.target.value)
-          }
+          onChange={(e) => setRequirements(e.target.value)}
           className="w-full h-40 bg-surface-container-lowest border border-outline-variant rounded-md px-4 py-3"
           placeholder="Describe your requirements..."
         />
@@ -159,25 +153,18 @@ function ServiceRequestForm({
             type="file"
             className="hidden"
             accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            onChange={(e) =>
-              setAttachment(
-                e.target.files?.[0] ??
-                  null
-              )
-            }
+            onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
           />
 
-          <Upload
-            size={32}
-            className="mb-2"
-          />
+          <Upload size={32} className="mb-2" />
 
-          <p>
-            {attachment
-              ? attachment.name
-              : 'Upload requirements file'}
-          </p>
+          <p>{attachment ? attachment.name : 'Upload requirements file'}</p>
         </label>
+
+        <p className="text-label-md text-on-surface-variant mt-2">
+          Note: attachments aren't sent with the request yet — this is stored
+          locally for now.
+        </p>
       </div>
 
       {/* Budget & Deadline */}
@@ -191,18 +178,14 @@ function ServiceRequestForm({
             type="number"
             placeholder="Budget"
             value={budget}
-            onChange={(e) =>
-              setBudget(e.target.value)
-            }
+            onChange={(e) => setBudget(e.target.value)}
             className="border border-outline-variant rounded-md px-4 py-3"
           />
 
           <input
             type="date"
             value={deadline}
-            onChange={(e) =>
-              setDeadline(e.target.value)
-            }
+            onChange={(e) => setDeadline(e.target.value)}
             className="border border-outline-variant rounded-md px-4 py-3"
           />
         </div>
@@ -216,9 +199,7 @@ function ServiceRequestForm({
 
         <textarea
           value={notes}
-          onChange={(e) =>
-            setNotes(e.target.value)
-          }
+          onChange={(e) => setNotes(e.target.value)}
           className="w-full h-32 border border-outline-variant rounded-md px-4 py-3"
           placeholder="Any additional instructions..."
         />
@@ -227,13 +208,17 @@ function ServiceRequestForm({
       {/* Buttons */}
       <div className="flex gap-4 pb-6">
         <button
-          onClick={handleSubmit}
-          className="flex-1 py-3 bg-primary text-on-primary rounded-lg"
-        >
-          Send Request
+          onClick={() => void handleSubmit()}
+          disabled={isLoading}
+          className="flex-1 py-3 bg-primary text-on-primary rounded-lg disabled:opacity-50 cursor-pointer">
+          {isLoading ? 'Sending...' : 'Send Request'}
         </button>
 
-        <button className="flex-1 py-3 border border-outline-variant rounded-lg">
+        <button
+          type="button"
+          disabled
+          title="Coming soon"
+          className="flex-1 py-3 border border-outline-variant rounded-lg opacity-50 cursor-not-allowed">
           Save Draft
         </button>
       </div>

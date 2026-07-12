@@ -115,6 +115,7 @@ export default function ManageRequestReceivedDetails() {
   }
 
   const canRespond = request.status === 'open';
+ 
 
   const handleAccept = async () => {
     try {

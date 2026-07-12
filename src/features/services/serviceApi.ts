@@ -1,8 +1,22 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '@/services/baseQuery';
-
-import type { Service, ServiceDetail } from './types';
+// import type { Service, ServiceDetail, ServiceUpdatePayload } from './types';
+// // import type { Service, ServiceDetail } from './types';
+// import type {
+//   Category,
+//   ServiceRequestListResponse,
+//   ServiceRequestQueryParams,
+//   ServiceRequestResult,
+//   ServicesListResponse,
+//   ServicesQueryParams,
+// } from './types';
+import type {
+  Service,
+  ServiceDetail,
+  ServiceUpdatePayload,
+  ServiceRequestCreatePayload,
+} from './types';
 import type {
   Category,
   ServiceRequestListResponse,
@@ -71,10 +85,14 @@ export const ServiceApi = createApi({
 
     // Body is a loosely-typed partial payload since this single endpoint
     // backs many independently-shaped section edits (see ManageServiceDetails).
+    // updateService: builder.mutation<
+    //   ServiceDetail,
+    //   { id: string; body: Record<string, unknown> | FormData }
+    // >({
     updateService: builder.mutation<
       ServiceDetail,
-      { id: string; body: Record<string, unknown> | FormData }
-    >({
+      { id: string; body: ServiceUpdatePayload | FormData }
+     >({
       query: ({ id, body }) => ({
         url: `/services/${id}/`,
         method: 'PATCH',
@@ -96,7 +114,17 @@ export const ServiceApi = createApi({
         'Service',
       ],
     }),
-
+      createServiceRequest: builder.mutation<
+            ServiceRequestResult,
+            ServiceRequestCreatePayload
+          >({
+            query: (body) => ({
+              url: '/services/requests/',
+              method: 'POST',
+              body,
+            }),
+            invalidatesTags: ['ServiceRequest'],
+          }),
     getServiceRequests: builder.query<
       ServiceRequestListResponse,
       ServiceRequestQueryParams
@@ -170,6 +198,7 @@ export const {
   useGetServiceRecommendationsQuery,
   useUpdateServiceMutation,
   useDeleteServiceMutation,
+  useCreateServiceRequestMutation,
   useGetServiceRequestsQuery,
   useGetServiceRequestDetailQuery,
   useAcceptServiceRequestMutation,

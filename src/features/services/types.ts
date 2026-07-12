@@ -16,8 +16,8 @@ export interface ServiceResult {
   price_type: 'fixed' | 'hourly';
   price: string | null;
   currency: string;
-  availability_status: string;
-  status: string;
+  availability_status: ServiceAvailability;
+  status: ServiceLifecycleStatus;
   location: BasicLocation | null;
   user: BasicUser;
   category: Category | null;
@@ -216,3 +216,37 @@ export interface ServiceRequestQueryParams {
   page?: number;
   page_size?: number;
 }
+export interface ServiceRequestCreatePayload {
+  service: string; // service id
+  priority?: ServiceRequestPriority;
+  budget?: number;
+  currency?: string;
+  preferred_date?: string | null;
+  preferred_time?: string | null;
+  estimated_duration_hours?: number;
+  is_negotiable?: boolean;
+  request_message: string;
+}
+
+export interface ServiceUpdatePayload {
+  title?: string;
+  description?: string;
+  category?: string;
+  status?: ServiceLifecycleStatus;
+  availability_status?: ServiceAvailability;
+  price_type?: 'fixed' | 'hourly';
+  price?: number;
+  currency?: string;
+  skills?: string[];
+  location?: ServiceLocationPayload;
+  radius_km?: number;
+  available_from?: string | null;
+  available_to?: string | null;
+}
+export type ServiceLifecycleStatus = 'draft' | 'active' | 'paused' | 'closed';
+export type ServiceAvailability =
+  | 'available'
+  | 'unavailable'
+  | 'break'
+  | 'holiday';
+
