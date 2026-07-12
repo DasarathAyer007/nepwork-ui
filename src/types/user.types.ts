@@ -25,6 +25,7 @@ export interface PersonalProfile extends BaseUser {
 }
 
 export interface BasicUser {
+  is_verified: import("react/jsx-runtime").JSX.Element;
   id: string;
   username: string;
   profile_picture: string;
