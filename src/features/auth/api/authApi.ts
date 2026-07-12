@@ -5,6 +5,7 @@ import { baseQuery } from '../../../services/baseQuery';
 import type {
   AuthResponse,
   LoginRequest,
+  OtpVerificationResponse,
   SignupRequest,
   SignupResponse,
   Skill,
@@ -20,6 +21,22 @@ export const AuthApi = createApi({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
         url: authEndpoints.LOGIN,
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    loginWithGoogle: builder.mutation<AuthResponse, { token: string }>({
+      query: (body) => ({
+        url: authEndpoints.GOOGLE_LOGIN,
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    loginWithFacebook: builder.mutation<AuthResponse, { token: string }>({
+      query: (body) => ({
+        url: authEndpoints.FACEBOOK_LOGIN,
         method: 'POST',
         body,
       }),
@@ -55,11 +72,37 @@ export const AuthApi = createApi({
         params: params ?? undefined,
       }),
     }),
+    verifyOtp: builder.mutation<
+      OtpVerificationResponse,
+      { email: string; otp: string }
+    >({
+      query: (body) => ({
+        url: authEndpoints.VERIFY_OTP,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    resendOtp: builder.mutation<
+      { message: string; cooldown_seconds: number },
+      { email: string }
+    >({
+      query: (body) => ({
+        url: authEndpoints.RESEND_OTP,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
 export const {
+  useVerifyOtpMutation,
+  useResendOtpMutation,
   useLoginMutation,
+  useLoginWithGoogleMutation,
+  useLoginWithFacebookMutation,
   useSignupMutation,
   useCompleteOnboardingMutation,
   useGetSkillsQuery,

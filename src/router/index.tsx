@@ -26,11 +26,14 @@ import Home from '../pages/Home';
 import JobDetailsPage from '../pages/JobDetailsPage.tsx';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
+import NotFoundPage from '../pages/NotFoundPage.tsx';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
 import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
 import ServiceApplyPage from '@/pages/ServiceApplyPage';
+import SignUpOTP from '../pages/SignUpOTP';
+
 function route() {
   return (
     <Routes>
@@ -52,6 +55,7 @@ function route() {
         <Route path="/services/:id/apply" element={<ServiceApplyPage />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/verify-otp" element={<SignUpOTP />} />
       <Route path="/login" element={<LogIn />} />
 
       <Route path="/dashboard" element={<UserDashboard />}>
@@ -83,6 +87,7 @@ function route() {
         <Route path="my-requests/:id" element={<ManageMyRequestDetails />} />
       </Route>
       {/* <Route path="/chat/:currentUserId" element={<ChatWindow />} /> */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

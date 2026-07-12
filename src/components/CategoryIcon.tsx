@@ -15,5 +15,9 @@ export default function CategoryIcon({
   if (!iconname) return <Icons.CircleHelp size={size} />;
   const Icon = Icons[iconname as keyof typeof Icons] as LucideIcon;
 
-  return Icon ? <Icon size={size}  className={`text-${color}`} /> : <Icons.CircleHelp size={size} className={`text-${color}`} />;
+  return Icon ? (
+    <Icon size={size} className={`text-${color}`} />
+  ) : (
+    <Icons.CircleHelp size={size} className={`text-${color}`} />
+  );
 }

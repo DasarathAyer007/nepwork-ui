@@ -13,7 +13,6 @@ import {
   useUpdateServiceMutation,
 } from '@/features/services/serviceApi';
 import {
-  AlertTriangle,
   ArrowLeft,
   ChevronDown,
   ShieldAlert,
@@ -28,6 +27,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import CategoryIcon from '@/components/CategoryIcon';
 import SkillsInput from '@/components/SkillsInput';
 import MapComponent from '@/components/map/MapComponent';
+import NotFound from '@/components/ui/NotFound';
 import { DropDown, Input, TextArea } from '@/components/ui/forms';
 
 import { useAppSelector } from '@/hooks/useSelectore';
@@ -68,28 +68,6 @@ type LocationDraft = {
   postal_code: string;
   radiusKm: string;
 };
-
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-24">
-      <div className="size-14 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
-        <AlertTriangle size={26} />
-      </div>
-      <h1 className="text-headline-sm font-bold text-on-surface">
-        Service not found
-      </h1>
-      <p className="text-body-md text-on-surface-variant mt-2">
-        The service you're looking for doesn't exist or has been removed.
-      </p>
-      <Link
-        to="/dashboard/services"
-        className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
-        <ArrowLeft size={16} />
-        Back to My Services
-      </Link>
-    </div>
-  );
-}
 
 function AccessDenied() {
   return (
@@ -158,7 +136,12 @@ export default function ManageServiceDetails() {
         onRetry={refetch}
       />
     ) : (
-      <NotFound />
+      <NotFound
+        title="Service not found"
+        message="The service you're looking for doesn't exist or has been removed."
+        actionLabel="Back to My Services"
+        actionTo="/dashboard/services"
+      />
     );
   }
 

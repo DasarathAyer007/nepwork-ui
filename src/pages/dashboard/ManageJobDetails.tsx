@@ -22,7 +22,6 @@ import type {
   WorkMode,
 } from '@/features/jobs/jobTypes';
 import {
-  AlertTriangle,
   ArrowLeft,
   Briefcase,
   ChevronDown,
@@ -37,6 +36,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import CategoryIcon from '@/components/CategoryIcon';
 import SkillsInput from '@/components/SkillsInput';
 import MapComponent from '@/components/map/MapComponent';
+import NotFound from '@/components/ui/NotFound';
 import { DropDown, Input, Label, TextArea } from '@/components/ui/forms';
 
 import { useAppSelector } from '@/hooks/useSelectore';
@@ -90,28 +90,6 @@ type LocationDraft = {
   postal_code: string;
 };
 type ContactDraft = { email: string; phone: string };
-
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-24">
-      <div className="size-14 rounded-full bg-error/10 text-error flex items-center justify-center mb-4">
-        <AlertTriangle size={26} />
-      </div>
-      <h1 className="text-headline-sm font-bold text-on-surface">
-        Job not found
-      </h1>
-      <p className="text-body-md text-on-surface-variant mt-2">
-        The job you're looking for doesn't exist or has been removed.
-      </p>
-      <Link
-        to="/dashboard/jobs"
-        className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-lg font-medium">
-        <ArrowLeft size={16} />
-        Back to My Jobs
-      </Link>
-    </div>
-  );
-}
 
 function AccessDenied() {
   return (
@@ -180,7 +158,12 @@ export default function ManageJobDetails() {
         onRetry={refetch}
       />
     ) : (
-      <NotFound />
+      <NotFound
+        title="Job not found"
+        message="The job you're looking for doesn't exist or has been removed."
+        actionLabel="Back to My Jobs"
+        actionTo="/dashboard/jobs"
+      />
     );
   }
 
