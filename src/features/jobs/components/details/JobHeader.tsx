@@ -1,4 +1,10 @@
-import { Building2, Clock, Bookmark, MapPin } from 'lucide-react';
+import {
+  BookmarkCheck,
+  BookmarkPlus,
+  Building2,
+  Clock,
+  MapPin,
+} from 'lucide-react';
 
 import type { JobDetail } from '../../jobTypes';
 import {
@@ -18,9 +24,10 @@ const STATUS_TONE: Record<string, string> = {
 
 interface Props {
   job: JobDetail;
+  onSaveToggle: () => void;
 }
 
-function JobHeader({ job }: Props) {
+function JobHeader({ job, onSaveToggle }: Props) {
   const { title, status, created_at, location, employer } = job;
   const companyName = employerDisplayName(job);
   const logo = employerLogo(job);
@@ -92,8 +99,21 @@ function JobHeader({ job }: Props) {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
-            <Bookmark size={20} />
+          <button
+            type="button"
+            onClick={onSaveToggle}
+            className={`inline-flex items-center justify-center rounded-full border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+              job.is_saved
+                ? 'border-primary/30 bg-primary/10 text-primary hover:bg-primary/15'
+                : 'border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary'
+            }`}
+            aria-pressed={job.is_saved}
+            aria-label={job.is_saved ? 'Remove from saved jobs' : 'Save job'}>
+            {job.is_saved ? (
+              <BookmarkCheck size={20} className="fill-current" />
+            ) : (
+              <BookmarkPlus size={20} />
+            )}
           </button>
         </div>
       </div>

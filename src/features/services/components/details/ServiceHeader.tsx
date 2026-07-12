@@ -1,7 +1,8 @@
 import {
+  BookmarkCheck,
+  BookmarkPlus,
   Briefcase,
   Clock,
-  Heart,
   MapPin,
   Share2,
 } from 'lucide-react';
@@ -15,9 +16,10 @@ const STATUS_TONE: Record<string, string> = {
 
 interface Props {
   service: ServiceDetail;
+  onSaveToggle: () => void;
 }
 
-function ServiceHeader({ service }: Props) {
+function ServiceHeader({ service, onSaveToggle }: Props) {
   const location = [
     service.location?.city,
     service.location?.country,
@@ -96,8 +98,21 @@ function ServiceHeader({ service }: Props) {
 
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
-          <button className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
-            <Heart size={20} />
+          <button
+            type="button"
+            onClick={onSaveToggle}
+            className={`inline-flex items-center justify-center rounded-full border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+              service.is_saved
+                ? 'border-primary/30 bg-primary/10 text-primary hover:bg-primary/15'
+                : 'border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary'
+            }`}
+            aria-pressed={service.is_saved}
+            aria-label={service.is_saved ? 'Remove from saved services' : 'Save service'}>
+            {service.is_saved ? (
+              <BookmarkCheck size={20} className="fill-current" />
+            ) : (
+              <BookmarkPlus size={20} />
+            )}
           </button>
 
           <button className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">

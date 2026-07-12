@@ -17,6 +17,8 @@ import JobSearchBar from '../features/jobs/components/JobSearchBar';
 import {
   useGetJobCategoryQuery,
   useGetJobsListQuery,
+  useSaveJobMutation,
+  useUnsaveJobMutation,
 } from '../features/jobs/jobApi';
 import getApiErrorMessage from '../utils/getApiErrorMessage';
 
@@ -99,8 +101,22 @@ export default function Jobs() {
   }, [currentPage, sortBy, searchTerm, filters, viewMode, geoParams]);
 
   const { data, isLoading, isError, error } = useGetJobsListQuery(queryParams);
+  const [saveJob] = useSaveJobMutation();
+  const [unsaveJob] = useUnsaveJobMutation();
   const totalPages = data?.total_pages ?? 1;
   const totalCount = data?.count ?? 0;
+
+  const handleSaveToggle = useCallback(
+    async (job: JobResult) => {
+      if (job.is_saved) {
+        await unsaveJob(job.id);
+        return;
+      }
+
+      await saveJob({ job_id: job.id });
+    },
+    [saveJob, unsaveJob]
+  );
 
   const handleSearch = useCallback(() => setCurrentPage(1), []);
 
@@ -295,6 +311,7 @@ export default function Jobs() {
               sortBy={sortBy}
               onSortChange={setSortBy}
               onPageChange={handlePageChange}
+              onSaveToggle={handleSaveToggle}
             />
           </div>
         </div>

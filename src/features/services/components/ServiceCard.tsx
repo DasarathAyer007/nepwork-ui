@@ -7,7 +7,7 @@ import type { Category, ServiceResult } from '../types';
 
 interface ServiceCardProps {
   data: ServiceResult;
-  onSaveToggle: (id: string) => void;
+  onSaveToggle: (data: ServiceResult) => void;
   maxSkillsShown?: number;
 }
 
@@ -70,7 +70,7 @@ export default function ServiceCard({
       </Link>
 
       {/* Content */}
-      <div className="flex-grow min-w-0 flex flex-col gap-1">
+      <div className="grow min-w-0 flex flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
           {data.category ? (
             <div className="flex items-center gap-1 min-w-0">
@@ -88,10 +88,15 @@ export default function ServiceCard({
           <button
             onClick={(e) => {
               e.preventDefault();
-              onSaveToggle(data.id);
+              onSaveToggle(data);
             }}
-            className="shrink-0 p-1.5 -m-1.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-            aria-label={data.is_saved ? 'Remove from saved' : 'Save service'}>
+            className={`shrink-0 inline-flex items-center justify-center rounded-full border p-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+              data.is_saved
+                ? 'border-primary/30 bg-primary/10 text-primary hover:bg-primary/15'
+                : 'border-outline-variant/50 text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
+            }`}
+            aria-pressed={data.is_saved}
+            aria-label={data.is_saved ? 'Remove from saved services' : 'Save service'}>
             {data.is_saved ? (
               <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
             ) : (

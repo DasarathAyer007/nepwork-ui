@@ -1,5 +1,10 @@
-
-import { ArrowUpRight, Building2, Link as LinkIcon, Mail, MessageCircle, } from 'lucide-react';
+import {
+  Building2,
+  Link as LinkIcon,
+  Mail,
+  MessageCircle,
+  ArrowUpRight
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import type { JobEmployer } from '../../jobTypes';

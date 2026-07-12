@@ -122,6 +122,7 @@ export interface JobDetail {
   created_at: string;
   updated_at: string;
   employer: JobEmployer;
+  is_saved: boolean;
 }
 
 export interface JobResult {

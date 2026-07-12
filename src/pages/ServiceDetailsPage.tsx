@@ -1,9 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
+import { useCallback } from 'react';
 
 import ServiceDetails from '@/features/services/components/details/ServiceDetails';
 import ServiceDetailsSkeleton from '@/features/services/components/details/ServiceDetailsSkeleton';
 
-import { useGetServiceDetailQuery } from '@/features/services/serviceApi';
+import {
+  useGetServiceDetailQuery,
+  useSaveServiceMutation,
+  useUnsaveServiceMutation,
+} from '@/features/services/serviceApi';
 
 function NotFound() {
   return (
@@ -38,13 +43,26 @@ function ServiceDetailsPage() {
   } = useGetServiceDetailQuery(id ?? '', {
     skip: !id,
   });
+  const [saveService] = useSaveServiceMutation();
+  const [unsaveService] = useUnsaveServiceMutation();
+
+  const handleSaveToggle = useCallback(async () => {
+    if (!service) return;
+
+    if (service.is_saved) {
+      await unsaveService(service.id);
+      return;
+    }
+
+    await saveService({ service_id: service.id });
+  }, [saveService, service, unsaveService]);
 
   if (isLoading) return <ServiceDetailsSkeleton />;
   if (isError || !service) return <NotFound />;
 
   return (
     <div className="bg-background min-h-screen pt-20 pb-16">
-      <ServiceDetails service={service} />
+      <ServiceDetails service={service} onSaveToggle={handleSaveToggle} />
     </div>
   );
 }

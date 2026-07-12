@@ -1,6 +1,11 @@
 import NotFound from '@/components/ui/NotFound';
 import { JobDetails, JobDetailsSkeleton } from '@/features/jobs/';
-import { useGetJobDetailQuery } from '@/features/jobs/jobApi';
+import {
+  useGetJobDetailQuery,
+  useSaveJobMutation,
+  useUnsaveJobMutation,
+} from '@/features/jobs/jobApi';
+import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 function JobDetailsPage() {
@@ -12,6 +17,19 @@ function JobDetailsPage() {
   } = useGetJobDetailQuery(id ?? '', {
     skip: !id,
   });
+  const [saveJob] = useSaveJobMutation();
+  const [unsaveJob] = useUnsaveJobMutation();
+
+  const handleSaveToggle = useCallback(async () => {
+    if (!job) return;
+
+    if (job.is_saved) {
+      await unsaveJob(job.id);
+      return;
+    }
+
+    await saveJob({ job_id: job.id });
+  }, [job, saveJob, unsaveJob]);
 
   if (isLoading) return <JobDetailsSkeleton />;
   if (isError || !job) {
@@ -28,7 +46,7 @@ function JobDetailsPage() {
 
   return (
     <div className="bg-background min-h-screen pt-20 pb-16">
-      <JobDetails job={job} />
+      <JobDetails job={job} onSaveToggle={handleSaveToggle} />
     </div>
   );
 }
