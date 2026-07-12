@@ -1,5 +1,9 @@
 import { useState } from 'react';
-
+import type {
+  ServiceAvailability,
+  ServiceLifecycleStatus,
+  ServiceUpdatePayload,
+} from '@/features/services/types';
 import { selectUser } from '@/features/auth/authSelectors';
 import ConfirmDialog from '@/features/dashboard/components/ConfirmDialog';
 import ErrorState from '@/features/dashboard/components/ErrorState';
@@ -37,14 +41,14 @@ const PRICE_TYPE_OPTIONS = [
   { value: 'hourly', label: 'Hourly Rate' },
 ];
 
-const AVAILABILITY_OPTIONS: { value: string; label: string }[] = [
+const AVAILABILITY_OPTIONS: { value: ServiceAvailability; label: string }[] = [
   { value: 'available', label: 'Available' },
   { value: 'unavailable', label: 'Unavailable' },
   { value: 'break', label: 'On Break' },
   { value: 'holiday', label: 'Holiday' },
 ];
 
-const STATUS_OPTIONS: { value: string; label: string }[] = [
+const STATUS_OPTIONS: { value: ServiceLifecycleStatus; label: string }[] = [
   { value: 'draft', label: 'Draft' },
   { value: 'active', label: 'Active' },
   { value: 'paused', label: 'Paused' },
@@ -56,7 +60,7 @@ const CURRENCY_OPTIONS = ['USD', 'NPR', 'INR', 'EUR', 'GBP'].map((c) => ({
   label: c,
 }));
 
-type PricingDraft = { priceType: string; price: string; currency: string };
+type PricingDraft = {  priceType: 'fixed' | 'hourly'; price: string; currency: string };
 type AvailableHoursDraft = { from: string; to: string };
 type LocationDraft = {
   lat: number | null;
@@ -150,10 +154,10 @@ export default function ManageServiceDetails() {
   }
 
   const runSave = async (
-    sectionId: string,
-    body: Record<string, unknown> | FormData,
-    successLabel: string
-  ) => {
+  sectionId: string,
+  body: ServiceUpdatePayload | FormData,
+  successLabel: string
+) => {
     setSavingId(sectionId);
     setSaveError(null);
     try {
@@ -249,7 +253,7 @@ export default function ManageServiceDetails() {
                 ) : (
                   <label className="flex flex-col items-center justify-center gap-1.5 size-24 rounded-lg border-2 border-dashed border-outline-variant text-on-surface-variant hover:border-primary/50 hover:bg-surface-container cursor-pointer transition-colors">
                     <Upload size={18} />
-                    <span className="text-[11px] font-medium">Upload</span>
+                    <span className="text-label-sm font-medium">Upload</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -321,7 +325,7 @@ export default function ManageServiceDetails() {
           )}
         />
 
-        <EditableSection<string>
+        <EditableSection<ServiceLifecycleStatus>
           id="status"
           label="Status"
           activeId={activeSection}
@@ -351,7 +355,7 @@ export default function ManageServiceDetails() {
           )}
         />
 
-        <EditableSection<string>
+        <EditableSection<ServiceAvailability>
           id="availability_status"
           label="Availability"
           activeId={activeSection}
@@ -499,8 +503,8 @@ export default function ManageServiceDetails() {
                 options={PRICE_TYPE_OPTIONS}
                 value={draft.priceType}
                 onChange={(e) =>
-                  setDraft({ ...draft, priceType: e.target.value })
-                }
+                setDraft({ ...draft, priceType: e.target.value as 'fixed' | 'hourly' })
+              }
               />
               <Input
                 type="number"
@@ -587,13 +591,17 @@ export default function ManageServiceDetails() {
           }}
           isSaving={savingId === 'location'}
           error={sectionError('location')}
-          onSave={(draft) =>
-            runSave(
+         onSave={(draft) => {
+            if (draft.lat == null || draft.lng == null) {
+              setSaveError('Please select a location on the map.');
+              return;
+            }
+            return runSave(
               'location',
               {
                 location: {
-                  lat: draft.lat,
-                  lng: draft.lng,
+                  latitude: draft.lat,
+                  longitude: draft.lng,
                   address: draft.address,
                   city: draft.city,
                   state: draft.state,
@@ -603,8 +611,8 @@ export default function ManageServiceDetails() {
                 radius_km: draft.radiusKm ? Number(draft.radiusKm) : undefined,
               },
               'Location'
-            )
-          }
+            );
+          }}
           renderDisplay={(value) => (
             <div className="space-y-3">
               {value.lat != null && value.lng != null && (

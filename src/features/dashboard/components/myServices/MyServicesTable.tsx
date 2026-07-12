@@ -1,5 +1,5 @@
 import type { ServiceResult } from '@/features/services/types';
-import { Wrench } from 'lucide-react';
+import { Users, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import ServiceStatusBadge from './ServiceStatusBadge';
@@ -81,8 +81,16 @@ export default function MyServicesTable({
               <td className="px-4 py-3 text-body-md text-on-surface-variant whitespace-nowrap">
                 {service.category?.name ?? '—'}
               </td>
-              <td className="px-4 py-3 text-body-md font-medium text-on-surface whitespace-nowrap">
-                {service.total_applies}
+              <td className="px-4 py-3 whitespace-nowrap">
+                <Link
+                  to={`/dashboard/services/${service.id}/requests`}
+                  className="inline-flex items-center gap-1.5 text-body-md font-medium text-on-surface hover:text-primary transition-colors">
+                  <Users size={15} className="text-on-surface-variant" />
+                  {service.total_applies}
+                  <span className="text-label-md font-semibold text-primary underline underline-offset-2">
+                    View
+                  </span>
+                </Link>
               </td>
             </tr>
           ))}

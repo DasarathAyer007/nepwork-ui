@@ -271,7 +271,7 @@ export default function ManageJobDetails() {
                 ) : (
                   <label className="flex flex-col items-center justify-center gap-1.5 size-24 rounded-lg border-2 border-dashed border-outline-variant text-on-surface-variant hover:border-primary/50 hover:bg-surface-container cursor-pointer transition-colors">
                     <Upload size={18} />
-                    <span className="text-[11px] font-medium">Upload</span>
+                    <span className="text-label-sm font-medium">Upload</span>
                     <input
                       type="file"
                       accept="image/*"
