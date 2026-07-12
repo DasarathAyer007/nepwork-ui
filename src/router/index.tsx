@@ -29,7 +29,8 @@ import LogIn from '../pages/LogIn';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
-
+import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
+import ServiceApplyPage from '@/pages/ServiceApplyPage';
 function route() {
   return (
     <Routes>
@@ -45,6 +46,10 @@ function route() {
         <Route path="/create" element={<CreatePostType />} />
         <Route path="/create/job" element={<CreateJob />} />
         <Route path="/create/service" element={<CreateService />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/create" element={<CreateService />} />
+        <Route path="/services/:id" element={<ServiceDetailsPage />} />
+        <Route path="/services/:id/apply" element={<ServiceApplyPage />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />
@@ -63,6 +68,7 @@ function route() {
           path="my-applications/:id"
           element={<ManageApplicationDetails />}
         />
+        {/* <Route path="/services/:id/apply" element={<ServiceApplyPage />} /> */}
         <Route path="services" element={<DashboardMyServices />} />
         <Route path="services/:id" element={<ManageServiceDetails />} />
         <Route

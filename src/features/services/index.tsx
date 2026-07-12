@@ -24,3 +24,6 @@ export { default as CategorySelector } from './components/create/CategorySelecto
 export { default as SkillsInput } from '../../components/SkillsInput';
 
 // export { default as LocationPicker } from './components/create/LocationPicker';
+export { default as ServiceDetails } from './components/details/ServiceDetails';
+export { default as ServiceDetailsSkeleton } from './components/details/ServiceDetailsSkeleton';
+// export { default as ServiceRequestForm } from './components/ServiceRequestForm';
