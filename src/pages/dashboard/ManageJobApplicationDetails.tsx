@@ -13,13 +13,7 @@ import {
   useGetJobApplicationDetailQuery,
 } from '@/features/jobs/jobApi';
 import type { ApplicationStatus } from '@/features/jobs/jobTypes';
-import {
-  ArrowLeft,
-  ChevronDown,
-  ShieldAlert,
-  User,
-  X,
-} from 'lucide-react';
+import { ArrowLeft, ChevronDown, ShieldAlert, User, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link, useParams } from 'react-router-dom';
 
@@ -27,10 +21,7 @@ import NotFound from '@/components/ui/NotFound';
 
 import { useAppSelector } from '@/hooks/useSelectore';
 
-const TERMINAL_STATUSES = new Set<ApplicationStatus>([
-  'rejected',
-  'withdrawn',
-]);
+const TERMINAL_STATUSES = new Set<ApplicationStatus>(['rejected', 'withdrawn']);
 
 // Statuses the employer can freely move a candidate to next (excludes
 // "rejected", which has its own dedicated action button).

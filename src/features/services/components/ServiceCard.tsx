@@ -96,7 +96,9 @@ export default function ServiceCard({
                 : 'border-outline-variant/50 text-on-surface-variant hover:bg-surface-container-high hover:text-primary'
             }`}
             aria-pressed={data.is_saved}
-            aria-label={data.is_saved ? 'Remove from saved services' : 'Save service'}>
+            aria-label={
+              data.is_saved ? 'Remove from saved services' : 'Save service'
+            }>
             {data.is_saved ? (
               <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
             ) : (

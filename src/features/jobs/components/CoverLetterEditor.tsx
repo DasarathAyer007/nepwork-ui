@@ -1,3 +1,10 @@
+import CharacterCount from '@tiptap/extension-character-count';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import { type Editor, EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
   AlignCenter,
   AlignLeft,
@@ -17,13 +24,6 @@ import {
   Underline as UnderlineIcon,
   Undo,
 } from 'lucide-react';
-import { EditorContent, useEditor, type Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Link from '@tiptap/extension-link';
-import Placeholder from '@tiptap/extension-placeholder';
-import CharacterCount from '@tiptap/extension-character-count';
 
 interface CoverLetterEditorProps {
   value: string;
@@ -211,7 +211,9 @@ function CoverLetterEditor({
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Link.configure({ openOnClick: false, autolink: true }),
-      Placeholder.configure({ placeholder: placeholder || 'Write your cover letter...' }),
+      Placeholder.configure({
+        placeholder: placeholder || 'Write your cover letter...',
+      }),
       CharacterCount,
     ],
     content: value,

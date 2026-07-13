@@ -57,8 +57,7 @@ function JobApplyCard({ job }: Props) {
           <p className="text-label-md font-medium text-on-surface-variant mb-1">
             Salary Range
           </p>
-          <p
-            className="text-body-md font-semibold text-on-surface">
+          <p className="text-body-md font-semibold text-on-surface">
             {formatSalaryRange(salary_min, salary_max, currency)}
           </p>
         </div>
@@ -68,9 +67,7 @@ function JobApplyCard({ job }: Props) {
             <p className="text-label-md font-medium text-on-surface-variant mb-1">
               Job Type
             </p>
-            <p
-              className="text-body-md font-semibold text-on-surface"
-            >
+            <p className="text-body-md font-semibold text-on-surface">
               {titleCase(job_type)}
             </p>
           </div>
@@ -79,9 +76,7 @@ function JobApplyCard({ job }: Props) {
             <p className="text-label-md font-medium text-on-surface-variant mb-1">
               Work Mode
             </p>
-            <p
-              className="text-body-md font-semibold text-on-surface"
-            >
+            <p className="text-body-md font-semibold text-on-surface">
               {titleCase(work_mode)}
             </p>
           </div>

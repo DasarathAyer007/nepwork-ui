@@ -4,6 +4,8 @@ import CreateJob from '@/pages/CreateJob.tsx';
 import CreateService from '@/pages/CreateService.tsx';
 import JobApplicationPage from '@/pages/JobApplicationPage.tsx';
 import MessagePage from '@/pages/MessagePage.tsx';
+import ServiceApplyPage from '@/pages/ServiceApplyPage';
+import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
 import Services from '@/pages/Services.tsx';
 import JobApplicationsList from '@/pages/dashboard/JobApplicationsList.tsx';
 import ManageApplicationDetails from '@/pages/dashboard/ManageApplicationDetails.tsx';
@@ -12,14 +14,13 @@ import ManageJobDetails from '@/pages/dashboard/ManageJobDetails.tsx';
 import ManageMyRequestDetails from '@/pages/dashboard/ManageMyRequestDetails.tsx';
 import ManageRequestReceivedDetails from '@/pages/dashboard/ManageRequestReceivedDetails.tsx';
 import ManageServiceDetails from '@/pages/dashboard/ManageServiceDetails.tsx';
-import ServiceRequestsList from '@/pages/dashboard/ServiceRequestsList.tsx';
-
 import DashboardMyApplications from '@/pages/dashboard/MyApplications.tsx';
 import DashboardMyJobs from '@/pages/dashboard/MyJobs.tsx';
 import DashboardMyRequests from '@/pages/dashboard/MyRequests.tsx';
 import DashboardMyServices from '@/pages/dashboard/MyServices.tsx';
 import DashboardOverview from '@/pages/dashboard/Overview.tsx';
 import DashboardRequestsReceived from '@/pages/dashboard/RequestsReceived.tsx';
+import ServiceRequestsList from '@/pages/dashboard/ServiceRequestsList.tsx';
 import { Route, Routes } from 'react-router-dom';
 
 import MainLayout from '../layouts/User/MainLayout';
@@ -32,9 +33,8 @@ import NotFoundPage from '../pages/NotFoundPage.tsx';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
-import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
-import ServiceApplyPage from '@/pages/ServiceApplyPage';
 import SignUpOTP from '../pages/SignUpOTP';
+
 function route() {
   return (
     <Routes>
@@ -87,13 +87,11 @@ function route() {
         <Route path="my-requests" element={<DashboardMyRequests />} />
         <Route path="my-requests/:id" element={<ManageMyRequestDetails />} />
         <Route path="services" element={<DashboardMyServices />} />
-      <Route path="services/:id" element={<ManageServiceDetails />} />
-      <Route path="services/:id/requests" element={<ServiceRequestsList />} />
-       <Route path="*" element={<NotFoundPage />} />
+        <Route path="services/:id" element={<ManageServiceDetails />} />
+        <Route path="services/:id/requests" element={<ServiceRequestsList />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
       {/* <Route path="/chat/:currentUserId" element={<ChatWindow />} /> */}
-     
-      
     </Routes>
   );
 }

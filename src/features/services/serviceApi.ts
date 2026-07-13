@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '@/services/baseQuery';
+
 // import type { Service, ServiceDetail, ServiceUpdatePayload } from './types';
 // // import type { Service, ServiceDetail } from './types';
 // import type {
@@ -14,8 +15,8 @@ import { baseQuery } from '@/services/baseQuery';
 import type {
   Service,
   ServiceDetail,
-  ServiceUpdatePayload,
   ServiceRequestCreatePayload,
+  ServiceUpdatePayload,
 } from './types';
 import type {
   Category,
@@ -109,7 +110,7 @@ export const ServiceApi = createApi({
     updateService: builder.mutation<
       ServiceDetail,
       { id: string; body: ServiceUpdatePayload | FormData }
-     >({
+    >({
       query: ({ id, body }) => ({
         url: `/services/${id}/`,
         method: 'PATCH',
@@ -131,17 +132,17 @@ export const ServiceApi = createApi({
         'Service',
       ],
     }),
-      createServiceRequest: builder.mutation<
-            ServiceRequestResult,
-            ServiceRequestCreatePayload
-          >({
-            query: (body) => ({
-              url: '/services/requests/',
-              method: 'POST',
-              body,
-            }),
-            invalidatesTags: ['ServiceRequest'],
-          }),
+    createServiceRequest: builder.mutation<
+      ServiceRequestResult,
+      ServiceRequestCreatePayload
+    >({
+      query: (body) => ({
+        url: '/services/requests/',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['ServiceRequest'],
+    }),
     getServiceRequests: builder.query<
       ServiceRequestListResponse,
       ServiceRequestQueryParams

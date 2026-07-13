@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+
 import type { ServiceDetail } from '../../types';
 
 interface Props {
@@ -14,9 +15,7 @@ function ServiceApplyCard({ service }: Props) {
 
       <div className="space-y-4">
         <div>
-          <p className="text-label-md text-on-surface-variant">
-            Price
-          </p>
+          <p className="text-label-md text-on-surface-variant">Price</p>
 
           <p className="font-bold text-primary text-title-lg">
             {service.currency} {service.price}
@@ -25,19 +24,14 @@ function ServiceApplyCard({ service }: Props) {
         </div>
 
         <div>
-          <p className="text-label-md text-on-surface-variant">
-            Availability
-          </p>
+          <p className="text-label-md text-on-surface-variant">Availability</p>
 
-          <p className="text-on-surface">
-            {service.availability_status}
-          </p>
+          <p className="text-on-surface">{service.availability_status}</p>
         </div>
 
         <Link
           to={`/services/${service.id}/apply`}
-          className="w-full inline-flex justify-center px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110"
-        >
+          className="w-full inline-flex justify-center px-6 py-3 bg-primary text-on-primary rounded-lg font-medium hover:brightness-110">
           Request Service
         </Link>
       </div>

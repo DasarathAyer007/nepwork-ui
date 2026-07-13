@@ -20,10 +20,7 @@ interface Props {
 }
 
 function ServiceHeader({ service, onSaveToggle }: Props) {
-  const location = [
-    service.location?.city,
-    service.location?.country,
-  ]
+  const location = [service.location?.city, service.location?.country]
     .filter(Boolean)
     .join(', ');
 
@@ -62,8 +59,7 @@ function ServiceHeader({ service, onSaveToggle }: Props) {
               className={`px-2 py-0.5 text-label-md font-medium rounded-full ${
                 STATUS_TONE[service.status] ??
                 'bg-outline-variant/50 text-on-surface-variant'
-              }`}
-            >
+              }`}>
               {service.status}
             </span>
           </div>
@@ -89,8 +85,7 @@ function ServiceHeader({ service, onSaveToggle }: Props) {
             <div className="flex items-center gap-1">
               <Clock size={16} className="shrink-0" />
               <span>
-                Posted:{' '}
-                {new Date(service.created_at).toLocaleDateString()}
+                Posted: {new Date(service.created_at).toLocaleDateString()}
               </span>
             </div>
           </div>
@@ -107,7 +102,9 @@ function ServiceHeader({ service, onSaveToggle }: Props) {
                 : 'border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary'
             }`}
             aria-pressed={service.is_saved}
-            aria-label={service.is_saved ? 'Remove from saved services' : 'Save service'}>
+            aria-label={
+              service.is_saved ? 'Remove from saved services' : 'Save service'
+            }>
             {service.is_saved ? (
               <BookmarkCheck size={20} className="fill-current" />
             ) : (

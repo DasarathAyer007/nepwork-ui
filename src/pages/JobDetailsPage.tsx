@@ -1,12 +1,14 @@
-import NotFound from '@/components/ui/NotFound';
+import { useCallback } from 'react';
+
 import { JobDetails, JobDetailsSkeleton } from '@/features/jobs/';
 import {
   useGetJobDetailQuery,
   useSaveJobMutation,
   useUnsaveJobMutation,
 } from '@/features/jobs/jobApi';
-import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+
+import NotFound from '@/components/ui/NotFound';
 
 function JobDetailsPage() {
   const { id } = useParams<{ id: string }>();

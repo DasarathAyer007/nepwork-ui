@@ -10,14 +10,7 @@ import {
   useGetServiceRequestDetailQuery,
   useRejectServiceRequestMutation,
 } from '@/features/services/serviceApi';
-import {
-  ArrowLeft,
-  Check,
-  ShieldAlert,
-  User,
-  Wrench,
-  X,
-} from 'lucide-react';
+import { ArrowLeft, Check, ShieldAlert, User, Wrench, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link, useParams } from 'react-router-dom';
 
@@ -115,7 +108,6 @@ export default function ManageRequestReceivedDetails() {
   }
 
   const canRespond = request.status === 'open';
- 
 
   const handleAccept = async () => {
     try {

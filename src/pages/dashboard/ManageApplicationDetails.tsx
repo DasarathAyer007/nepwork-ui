@@ -12,13 +12,7 @@ import {
   useGetJobApplicationDetailQuery,
   useWithdrawJobApplicationMutation,
 } from '@/features/jobs/jobApi';
-import {
-  ArrowLeft,
-  Briefcase,
-  ShieldAlert,
-  Trash2,
-  Undo2,
-} from 'lucide-react';
+import { ArrowLeft, Briefcase, ShieldAlert, Trash2, Undo2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 

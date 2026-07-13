@@ -1,7 +1,6 @@
 import MapComponent from '@/components/map/MapComponent';
 
 import type { ServiceDetail } from '../../types';
-
 import ServiceApplyCard from './ServiceApplyCard';
 import ServiceDescription from './ServiceDescription';
 import ServiceHeader from './ServiceHeader';

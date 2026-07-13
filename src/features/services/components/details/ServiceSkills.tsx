@@ -15,8 +15,7 @@ function ServiceSkills({ skills }: Props) {
         {skills.map((skill) => (
           <span
             key={skill}
-            className="px-3 py-1 rounded-full bg-primary/10 text-primary text-label-md"
-          >
+            className="px-3 py-1 rounded-full bg-primary/10 text-primary text-label-md">
             {skill}
           </span>
         ))}
