@@ -1,7 +1,8 @@
-import NotFound from '@/components/ui/NotFound';
 import { JobDetails, JobDetailsSkeleton } from '@/features/jobs/';
 import { useGetJobDetailQuery } from '@/features/jobs/jobApi';
 import { useParams } from 'react-router-dom';
+
+import NotFound from '@/components/ui/NotFound';
 
 function JobDetailsPage() {
   const { id } = useParams<{ id: string }>();

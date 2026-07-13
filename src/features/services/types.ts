@@ -249,4 +249,3 @@ export type ServiceAvailability =
   | 'unavailable'
   | 'break'
   | 'holiday';
-

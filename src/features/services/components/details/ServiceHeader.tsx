@@ -1,10 +1,4 @@
-import {
-  Briefcase,
-  Clock,
-  Heart,
-  MapPin,
-  Share2,
-} from 'lucide-react';
+import { Briefcase, Clock, Heart, MapPin, Share2 } from 'lucide-react';
 
 import type { ServiceDetail } from '../../types';
 
@@ -18,10 +12,7 @@ interface Props {
 }
 
 function ServiceHeader({ service }: Props) {
-  const location = [
-    service.location?.city,
-    service.location?.country,
-  ]
+  const location = [service.location?.city, service.location?.country]
     .filter(Boolean)
     .join(', ');
 
@@ -60,8 +51,7 @@ function ServiceHeader({ service }: Props) {
               className={`px-2 py-0.5 text-label-md font-medium rounded-full ${
                 STATUS_TONE[service.status] ??
                 'bg-outline-variant/50 text-on-surface-variant'
-              }`}
-            >
+              }`}>
               {service.status}
             </span>
           </div>
@@ -87,8 +77,7 @@ function ServiceHeader({ service }: Props) {
             <div className="flex items-center gap-1">
               <Clock size={16} className="shrink-0" />
               <span>
-                Posted:{' '}
-                {new Date(service.created_at).toLocaleDateString()}
+                Posted: {new Date(service.created_at).toLocaleDateString()}
               </span>
             </div>
           </div>

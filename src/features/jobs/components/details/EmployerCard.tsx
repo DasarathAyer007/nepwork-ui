@@ -1,54 +1,39 @@
-
-import { ArrowUpRight, Building2, Link as LinkIcon, Mail, MessageCircle, } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Building2,
+  Link as LinkIcon,
+  Mail,
+  MessageCircle,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import type { JobEmployer } from '../../jobTypes';
-import {
-  employerDisplayName,
-  employerLogo,
-} from '../../utils/formatJob';
+import { employerDisplayName, employerLogo } from '../../utils/formatJob';
 
 interface Props {
   employer: JobEmployer;
   thumbnail: string | null;
 }
 
-function InfoBlock({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function InfoBlock({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-surface-container rounded-lg p-4">
       <p className="text-label-md font-medium text-on-surface-variant">
         {label}
       </p>
-      <p className="text-body-md font-bold text-on-surface">
-        {value}
-      </p>
+      <p className="text-body-md font-bold text-on-surface">{value}</p>
     </div>
   );
 }
 
-function locationLabel(
-  location: JobEmployer['location']
-) {
+function locationLabel(location: JobEmployer['location']) {
   if (!location) return null;
   if (typeof location === 'string') return location;
 
-  return (
-    [location.city, location.country]
-      .filter(Boolean)
-      .join(', ') || null
-  );
+  return [location.city, location.country].filter(Boolean).join(', ') || null;
 }
 
-function EmployerCard({
-  employer,
-  thumbnail,
-}: Props) {
+function EmployerCard({ employer, thumbnail }: Props) {
   const level = employer.access_level;
   const displayName = employerDisplayName({
     employer,
@@ -57,9 +42,7 @@ function EmployerCard({
     employer,
     thumbnail,
   });
-  const location = locationLabel(
-    employer.location
-  );
+  const location = locationLabel(employer.location);
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8">
@@ -104,8 +87,7 @@ function EmployerCard({
         {employer.id && employer.username && (
           <Link
             to={`/messages?userId=${employer.id}&username=${employer.username}&profile_picture=${employer.profile_picture ?? ''}`}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:brightness-110 transition-all shrink-0"
-          >
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:brightness-110 transition-all shrink-0">
             <MessageCircle size={18} />
             Chat
           </Link>
@@ -114,8 +96,8 @@ function EmployerCard({
 
       {level === 'private' ? (
         <p className="text-body-md text-on-surface-variant">
-          This employer keeps their profile private.
-          Apply to the job to get in touch.
+          This employer keeps their profile private. Apply to the job to get in
+          touch.
         </p>
       ) : (
         <>
@@ -130,10 +112,7 @@ function EmployerCard({
             location) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {employer.industry && (
-                <InfoBlock
-                  label="Industry"
-                  value={employer.industry}
-                />
+                <InfoBlock label="Industry" value={employer.industry} />
               )}
 
               {employer.employees_count != null && (
@@ -143,39 +122,28 @@ function EmployerCard({
                 />
               )}
 
-              {location &&
-                level !== 'limited' && (
-                  <InfoBlock
-                    label="Location"
-                    value={location}
-                  />
-                )}
+              {location && level !== 'limited' && (
+                <InfoBlock label="Location" value={location} />
+              )}
             </div>
           )}
 
-          {level === 'full' &&
-            employer.email && (
-              <div className="mt-4">
-                <a
-                  href={`mailto:${employer.email}`}
-                  className="flex items-center gap-1 text-primary hover:underline text-body-md"
-                >
-                  <Mail size={16} />
-                  {employer.email}
-                </a>
-              </div>
-            )}
+          {level === 'full' && employer.email && (
+            <div className="mt-4">
+              <a
+                href={`mailto:${employer.email}`}
+                className="flex items-center gap-1 text-primary hover:underline text-body-md">
+                <Mail size={16} />
+                {employer.email}
+              </a>
+            </div>
+          )}
 
           {employer.social_links &&
-            (level === 'full' ||
-              level === 'public') && (
+            (level === 'full' || level === 'public') && (
               <div className="mt-4 flex gap-3">
-                {Object.entries(
-                  employer.social_links
-                )
-                  .filter(
-                    ([, url]) => !!url
-                  )
+                {Object.entries(employer.social_links)
+                  .filter(([, url]) => !!url)
                   .map(([key, url]) => (
                     <a
                       key={key}
@@ -183,8 +151,7 @@ function EmployerCard({
                       target="_blank"
                       rel="noopener noreferrer"
                       title={key}
-                      className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors"
-                    >
+                      className="p-2 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
                       <LinkIcon size={16} />
                     </a>
                   ))}

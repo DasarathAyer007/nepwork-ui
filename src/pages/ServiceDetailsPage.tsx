@@ -1,9 +1,7 @@
-import { Link, useParams } from 'react-router-dom';
-
 import ServiceDetails from '@/features/services/components/details/ServiceDetails';
 import ServiceDetailsSkeleton from '@/features/services/components/details/ServiceDetailsSkeleton';
-
 import { useGetServiceDetailQuery } from '@/features/services/serviceApi';
+import { Link, useParams } from 'react-router-dom';
 
 function NotFound() {
   return (
@@ -19,8 +17,7 @@ function NotFound() {
 
         <Link
           to="/services"
-          className="mt-4 inline-block px-6 py-2 bg-primary text-on-primary rounded-lg"
-        >
+          className="mt-4 inline-block px-6 py-2 bg-primary text-on-primary rounded-lg">
           Back to Services
         </Link>
       </div>

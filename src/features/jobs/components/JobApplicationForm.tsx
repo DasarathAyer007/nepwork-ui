@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-import {useNavigate} from 'react-router-dom';
-
+import ConfirmDialog from '@/features/dashboard/components/ConfirmDialog';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DOMPurify from 'dompurify';
 import {
@@ -15,10 +14,10 @@ import {
 } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
-import ConfirmDialog from '@/features/dashboard/components/ConfirmDialog';
 import { handleApiErrors } from '@/utils/handleApiErrors';
 
 import { useApplyJobMutation } from '../jobApi';
@@ -127,8 +126,7 @@ function JobApplicationForm({
 }: JobApplicationFormProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [applyJob, { isLoading }] = useApplyJobMutation();
-        const navigate = useNavigate();
-
+  const navigate = useNavigate();
 
   const {
     control,
@@ -164,7 +162,6 @@ function JobApplicationForm({
       setShowConfirm(false);
 
       navigate(`/dashboard/my-applications/`);
-      
     } catch (error) {
       handleApiErrors(error, setError, toast);
       setShowConfirm(false);
@@ -320,10 +317,7 @@ function JobApplicationForm({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between bg-surface-container rounded-lg px-4 py-3 border border-outline-variant/30">
                       <div className="flex items-center gap-2 min-w-0">
-                        <FileText
-                          className="text-primary shrink-0"
-                          size={20}
-                        />
+                        <FileText className="text-primary shrink-0" size={20} />
                         <span className="text-body-md text-on-surface truncate">
                           {value.name}
                         </span>

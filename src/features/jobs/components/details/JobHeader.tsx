@@ -1,4 +1,4 @@
-import { Building2, Clock, Bookmark, MapPin } from 'lucide-react';
+import { Bookmark, Building2, Clock, MapPin } from 'lucide-react';
 
 import type { JobDetail } from '../../jobTypes';
 import {
@@ -44,8 +44,7 @@ function JobHeader({ job }: Props) {
 
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <h1
-              className="text-headline-lg font-bold text-on-surface">
+            <h1 className="text-headline-lg font-bold text-on-surface">
               {title}
             </h1>
             {employer.is_verified && (
@@ -64,11 +63,7 @@ function JobHeader({ job }: Props) {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-body-md text-on-surface-variant leading-relaxed">
-            <span
-              className="font-medium text-primary"
-             >
-              {companyName}
-            </span>
+            <span className="font-medium text-primary">{companyName}</span>
             <span className="w-1 h-1 rounded-full bg-outline-variant" />
 
             <div className="flex items-center gap-1 min-w-0">
@@ -84,9 +79,7 @@ function JobHeader({ job }: Props) {
 
             <div className="flex items-center gap-1 min-w-0">
               <Clock size={16} className="shrink-0" />
-              <span>
-                Posted: {formatDate(created_at)}
-              </span>
+              <span>Posted: {formatDate(created_at)}</span>
             </div>
           </div>
         </div>

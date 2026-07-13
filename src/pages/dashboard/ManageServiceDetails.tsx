@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import type {
-  ServiceAvailability,
-  ServiceLifecycleStatus,
-  ServiceUpdatePayload,
-} from '@/features/services/types';
+
 import { selectUser } from '@/features/auth/authSelectors';
 import ConfirmDialog from '@/features/dashboard/components/ConfirmDialog';
 import ErrorState from '@/features/dashboard/components/ErrorState';
@@ -16,6 +12,11 @@ import {
   useGetServiceDetailQuery,
   useUpdateServiceMutation,
 } from '@/features/services/serviceApi';
+import type {
+  ServiceAvailability,
+  ServiceLifecycleStatus,
+  ServiceUpdatePayload,
+} from '@/features/services/types';
 import {
   ArrowLeft,
   ChevronDown,
@@ -60,7 +61,11 @@ const CURRENCY_OPTIONS = ['USD', 'NPR', 'INR', 'EUR', 'GBP'].map((c) => ({
   label: c,
 }));
 
-type PricingDraft = {  priceType: 'fixed' | 'hourly'; price: string; currency: string };
+type PricingDraft = {
+  priceType: 'fixed' | 'hourly';
+  price: string;
+  currency: string;
+};
 type AvailableHoursDraft = { from: string; to: string };
 type LocationDraft = {
   lat: number | null;
@@ -154,10 +159,10 @@ export default function ManageServiceDetails() {
   }
 
   const runSave = async (
-  sectionId: string,
-  body: ServiceUpdatePayload | FormData,
-  successLabel: string
-) => {
+    sectionId: string,
+    body: ServiceUpdatePayload | FormData,
+    successLabel: string
+  ) => {
     setSavingId(sectionId);
     setSaveError(null);
     try {
@@ -503,8 +508,11 @@ export default function ManageServiceDetails() {
                 options={PRICE_TYPE_OPTIONS}
                 value={draft.priceType}
                 onChange={(e) =>
-                setDraft({ ...draft, priceType: e.target.value as 'fixed' | 'hourly' })
-              }
+                  setDraft({
+                    ...draft,
+                    priceType: e.target.value as 'fixed' | 'hourly',
+                  })
+                }
               />
               <Input
                 type="number"
@@ -591,7 +599,7 @@ export default function ManageServiceDetails() {
           }}
           isSaving={savingId === 'location'}
           error={sectionError('location')}
-         onSave={(draft) => {
+          onSave={(draft) => {
             if (draft.lat == null || draft.lng == null) {
               setSaveError('Please select a location on the map.');
               return;

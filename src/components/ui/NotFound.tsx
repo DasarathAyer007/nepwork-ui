@@ -31,9 +31,7 @@ export default function NotFound({
       </div>
       <h1 className="text-headline-sm font-bold text-on-surface">{title}</h1>
       {message && (
-        <p className="text-body-md text-on-surface-variant mt-2 ">
-          {message}
-        </p>
+        <p className="text-body-md text-on-surface-variant mt-2 ">{message}</p>
       )}
       {actionLabel &&
         (actionTo ? (

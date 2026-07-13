@@ -11,9 +11,7 @@ function MetaBlock({ label, value }: { label: string; value: string }) {
       <p className="text-label-md font-medium text-on-surface-variant mb-1">
         {label}
       </p>
-      <p
-        className="text-body-md font-bold text-on-surface leading-snug"
-       >
+      <p className="text-body-md font-bold text-on-surface leading-snug">
         {value}
       </p>
     </div>

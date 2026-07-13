@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
-
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -18,7 +17,9 @@ interface ResumePdfPreviewProps {
 
 function ResumePdfPreview({ file, maxHeightClassName }: ResumePdfPreviewProps) {
   const previewKey =
-    typeof file === 'string' ? file : `${file.name}-${file.size}-${file.lastModified}`;
+    typeof file === 'string'
+      ? file
+      : `${file.name}-${file.size}-${file.lastModified}`;
 
   return (
     <ResumePdfPreviewContent

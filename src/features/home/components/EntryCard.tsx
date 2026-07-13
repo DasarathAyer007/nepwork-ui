@@ -1,4 +1,5 @@
 import { ArrowBigRight, Handshake, UserPlus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { Card } from '@/components/ui/Card';
 
@@ -22,12 +23,14 @@ function EntryCard() {
                 Join thousands of professionals finding daily tasks, long-term
                 contracts, and quick gigs.
               </p>
-              <button className="flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+              <Link
+                to="/jobs"
+                className="flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
                 Browse Jobs{' '}
                 <span className="material-symbols-outlined">
                   <ArrowBigRight />
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </Card>
@@ -47,12 +50,14 @@ function EntryCard() {
                 Find verified experts for home repair, digital marketing, or
                 seasonal household help.
               </p>
-              <button className="flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+              <Link
+                to="/services"
+                className="flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
                 Browse Services{' '}
                 <span className="material-symbols-outlined">
                   <ArrowBigRight />
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </Card>
