@@ -9,14 +9,15 @@ import ServiceSkills from './ServiceSkills';
 
 interface Props {
   service: ServiceDetail;
+  onSaveToggle: () => void;
 }
 
-function ServiceDetails({ service }: Props) {
+function ServiceDetails({ service, onSaveToggle }: Props) {
   const { location } = service;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
-      <ServiceHeader service={service} />
+      <ServiceHeader service={service} onSaveToggle={onSaveToggle} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

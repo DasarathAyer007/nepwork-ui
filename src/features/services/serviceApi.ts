@@ -65,6 +65,23 @@ export const ServiceApi = createApi({
       ],
     }),
 
+    saveService: builder.mutation<unknown, { service_id: string }>({
+      query: (body) => ({
+        url: '/services/saved/',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Service'],
+    }),
+
+    unsaveService: builder.mutation<void, string>({
+      query: (serviceId) => ({
+        url: `/services/saved/${serviceId}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Service'],
+    }),
+
     getMyServices: builder.query<ServicesListResponse, ServicesQueryParams>({
       query: (params) => ({
         url: '/services/my/',
@@ -195,6 +212,8 @@ export const {
   useGetCategoryQuery,
   useCreateServiceMutation,
   useGetServiceDetailQuery,
+  useSaveServiceMutation,
+  useUnsaveServiceMutation,
   useGetMyServicesQuery,
   useGetServiceRecommendationsQuery,
   useUpdateServiceMutation,

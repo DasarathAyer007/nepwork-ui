@@ -49,6 +49,23 @@ export const JobApi = createApi({
       providesTags: (_result, _error, jobId) => [{ type: 'Job', id: jobId }],
     }),
 
+    saveJob: builder.mutation<unknown, { job_id: string }>({
+      query: (body) => ({
+        url: '/jobs/saved/',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Job'],
+    }),
+
+    unsaveJob: builder.mutation<void, string>({
+      query: (jobId) => ({
+        url: `/jobs/saved/${jobId}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Job'],
+    }),
+
     getMyJobs: builder.query<JobListResponse, JobListQueryParams>({
       query: (params) => ({
         url: '/jobs/my-jobs/',
@@ -168,6 +185,8 @@ export const {
   useCreateJobMutation,
   useGetJobsListQuery,
   useGetJobDetailQuery,
+  useSaveJobMutation,
+  useUnsaveJobMutation,
   useGetMyJobsQuery,
   useGetJobRecommendationsQuery,
   useUpdateJobMutation,

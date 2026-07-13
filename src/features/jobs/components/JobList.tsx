@@ -22,6 +22,7 @@ interface JobListProps {
   sortBy: string;
   onSortChange: (sort: string) => void;
   onPageChange: (page: number) => void;
+  onSaveToggle: (job: JobResult) => void;
 }
 
 export default function JobList({
@@ -32,12 +33,9 @@ export default function JobList({
   sortBy,
   onSortChange,
   onPageChange,
+  onSaveToggle,
 }: JobListProps) {
   const displayCount = totalCount ?? jobs.length;
-  function handleSaveToggle(jobId: string) {
-    // Implement the logic to toggle save status for the job with the given jobId
-    console.log(`Toggling save for job ID: ${jobId}`);
-  }
   return (
     <div className="grow flex flex-col gap-4">
       <div className="flex justify-between items-center mb-2">
@@ -66,7 +64,7 @@ export default function JobList({
         </div>
       </div>
       {jobs.map((job) => (
-        <ServiceCard key={job.id} data={job} onSaveToggle={handleSaveToggle} />
+        <ServiceCard key={job.id} data={job} onSaveToggle={onSaveToggle} />
       ))}
 
       <Pagination

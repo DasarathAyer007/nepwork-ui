@@ -10,6 +10,8 @@ import {
 import {
   useGetCategoryQuery,
   useGetServicesListQuery,
+  useSaveServiceMutation,
+  useUnsaveServiceMutation,
 } from '@/features/services/serviceApi';
 import type {
   Category,
@@ -103,8 +105,22 @@ export default function Services() {
 
   const { data, isLoading, isError, error } =
     useGetServicesListQuery(queryParams);
+  const [saveService] = useSaveServiceMutation();
+  const [unsaveService] = useUnsaveServiceMutation();
   const totalPages = data?.total_pages ?? 1;
   const totalCount = data?.count ?? 0;
+
+  const handleSaveToggle = useCallback(
+    async (service: ServiceResult) => {
+      if (service.is_saved) {
+        await unsaveService(service.id);
+        return;
+      }
+
+      await saveService({ service_id: service.id });
+    },
+    [saveService, unsaveService]
+  );
 
   const handleSearch = useCallback(() => setCurrentPage(1), []);
   const handleFilterChange = useCallback((newFilters: Filters) => {
@@ -279,6 +295,7 @@ export default function Services() {
               sortBy={sortBy}
               onSortChange={setSortBy}
               onPageChange={setCurrentPage}
+              onSaveToggle={handleSaveToggle}
             />
           )}
         </div>

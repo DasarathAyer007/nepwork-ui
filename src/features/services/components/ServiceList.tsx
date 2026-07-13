@@ -22,6 +22,7 @@ interface ServiceListProps {
   sortBy: string;
   onSortChange: (sort: string) => void;
   onPageChange: (page: number) => void;
+  onSaveToggle: (service: ServiceResult) => void;
 }
 
 export default function ServiceList({
@@ -32,12 +33,9 @@ export default function ServiceList({
   sortBy,
   onSortChange,
   onPageChange,
+  onSaveToggle,
 }: ServiceListProps) {
   const displayCount = totalCount ?? services.length;
-  function handleSaveToggle(serviceId: string) {
-    // Implement the logic to toggle save status for the service with the given serviceId
-    console.log(`Toggling save for service ID: ${serviceId}`);
-  }
   return (
     <div className="grow flex flex-col gap-4">
       <div className="flex justify-between items-center mb-2">
@@ -70,7 +68,7 @@ export default function ServiceList({
         <ServiceCard
           key={service.id}
           data={service}
-          onSaveToggle={handleSaveToggle}
+          onSaveToggle={onSaveToggle}
         />
       ))}
 
