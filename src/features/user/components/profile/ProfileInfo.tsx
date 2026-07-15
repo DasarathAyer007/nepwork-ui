@@ -1,4 +1,3 @@
-
 import type { UserDetails } from '@/types/user.types';
 import { SocialIcon } from 'react-social-icons';
 

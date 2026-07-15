@@ -250,7 +250,4 @@ export interface ServiceUpdatePayload {
 }
 export type ServiceLifecycleStatus = 'draft' | 'active' | 'paused' | 'closed';
 export type ServiceAvailability =
-  | 'available'
-  | 'unavailable'
-  | 'break'
-  | 'holiday';
+  'available' | 'unavailable' | 'break' | 'holiday';

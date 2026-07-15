@@ -59,17 +59,28 @@ export function ImageCropDialog({
     }
   };
 
+  const MAX_PREVIEW_WIDTH = 640;
+  const MAX_PREVIEW_HEIGHT = 480;
+  const scale = Math.min(
+    MAX_PREVIEW_WIDTH / outputWidth,
+    MAX_PREVIEW_HEIGHT / outputHeight,
+    1
+  );
+  const previewWidth = outputWidth * scale;
+  const previewHeight = outputHeight * scale;
+
   return (
     <Dialog.Root open={open} onOpenChange={handleClose}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-surface/80 backdrop-blur-sm" />
         <Dialog.Content
-          className={` fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50
+          style={{ width: previewWidth + 32 }}
+          className={`fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 max-w-[92vw]
             rounded-lg bg-surface-container-lowest shadow-lg border border-outline-variant p-4
            overflow-y-auto ${className ?? ''}`}>
           <div className="flex items-center justify-between mb-3">
             <Dialog.Title className="text-title-md font-bold text-on-surface">
-              Crop your thumbnail
+              Crop your image
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
@@ -81,7 +92,9 @@ export function ImageCropDialog({
             </Dialog.Close>
           </div>
 
-          <div className="relative aspect-3/2 bg-surface-container rounded-md overflow-hidden w-4xl ">
+          <div
+            className="relative mx-auto bg-surface-container rounded-md overflow-hidden max-w-full"
+            style={{ width: previewWidth, height: previewHeight }}>
             <Cropper
               image={imageSrc}
               crop={crop}

@@ -17,11 +17,18 @@ import type {
 } from 'react-hook-form';
 import { useFormContext } from 'react-hook-form';
 
+import { ImageCropDialog } from '@/components/ui/ImageCropDialog';
+
 interface ProfileImageFormProps<TFieldValues extends FieldValues> {
   setValue: UseFormSetValue<TFieldValues>;
   watch: UseFormWatch<TFieldValues>;
   profileFieldName?: Path<TFieldValues>;
   coverFieldName?: Path<TFieldValues>;
+}
+
+interface PendingImage {
+  src: string;
+  name: string;
 }
 
 export function ProfileImageForm<TFieldValues extends FieldValues>({
@@ -44,13 +51,20 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
   const profileUrlRef = useRef<string | null>(null);
   const coverUrlRef = useRef<string | null>(null);
 
+  const profileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const [pendingProfileImage, setPendingProfileImage] =
+    useState<PendingImage | null>(null);
+  const [pendingCoverImage, setPendingCoverImage] =
+    useState<PendingImage | null>(null);
+
   const {
     formState: { errors },
   } = useFormContext();
 
   const profileError = errors[resolvedProfileField]?.message as
-    | string
-    | undefined;
+    string | undefined;
   const coverError = errors[resolvedCoverField]?.message as string | undefined;
 
   // Helper to update preview and revoke old URL
@@ -98,33 +112,57 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
   }, []);
 
   const handleProfileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setValue(resolvedProfileField, file as TFieldValues[Path<TFieldValues>], {
-      shouldValidate: true,
-    });
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingProfileImage({ src: URL.createObjectURL(file), name: file.name });
   };
 
   const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingCoverImage({ src: URL.createObjectURL(file), name: file.name });
+  };
+
+  const closeProfileCropDialog = () => {
+    if (pendingProfileImage) URL.revokeObjectURL(pendingProfileImage.src);
+    setPendingProfileImage(null);
+    if (profileInputRef.current) profileInputRef.current.value = '';
+  };
+
+  const closeCoverCropDialog = () => {
+    if (pendingCoverImage) URL.revokeObjectURL(pendingCoverImage.src);
+    setPendingCoverImage(null);
+    if (coverInputRef.current) coverInputRef.current.value = '';
+  };
+
+  const handleProfileCropSave = (file: File) => {
+    setValue(resolvedProfileField, file as TFieldValues[Path<TFieldValues>], {
+      shouldValidate: true,
+    });
+    closeProfileCropDialog();
+  };
+
+  const handleCoverCropSave = (file: File) => {
     setValue(resolvedCoverField, file as TFieldValues[Path<TFieldValues>], {
       shouldValidate: true,
     });
+    closeCoverCropDialog();
   };
 
   return (
     <div className="space-y-4">
-      <div className="relative">
-        {/* Cover Photo */}
-        <div className="relative h-44 w-full rounded-2xl overflow-hidden group border border-outline-variant/30 bg-surface-container shadow-inner">
+      <div className="rounded-md overflow-hidden border border-outline-variant bg-surface-container-lowest shadow-sm">
+        {/* Cover Photo (3:1) */}
+        <div className="relative h-40 md:h-52 w-full bg-surface-container-high group">
           {coverPreview ? (
             <img
               src={coverPreview}
               alt="Cover"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover"
             />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-outline group-hover:text-primary transition-colors">
-              <Camera className="w-8 h-8 mb-2 animate-pulse" />
+              <Camera className="w-8 h-8 mb-2" />
               <span className="text-xs font-semibold uppercase tracking-wider">
                 Upload Cover Image
               </span>
@@ -138,6 +176,7 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
             Change Cover Photo
           </label>
           <input
+            ref={coverInputRef}
             id="cover-upload"
             type="file"
             accept="image/*"
@@ -146,17 +185,19 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
           />
         </div>
 
-        {/* Profile Picture */}
-        <div className="absolute -bottom-10 left-8 w-28 h-28 rounded-full bg-surface-container-lowest p-1 shadow-md border border-outline-variant/20 z-10 group/profile">
-          <div className="relative w-full h-full rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+        {/* Profile Picture (1:1) */}
+        <div className="px-6 pb-6">
+          <div className="relative -mt-14 md:-mt-16 inline-block w-28 h-28 md:w-32 md:h-32 rounded-xl border-4 border-surface-container-lowest bg-surface-container-high overflow-hidden shadow-md group/profile">
             {profilePreview ? (
               <img
                 src={profilePreview}
                 alt="Profile"
-                className="w-full h-full object-cover group-hover/profile:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <User className="w-12 h-12 text-outline" />
+              <div className="w-full h-full flex items-center justify-center">
+                <User className="w-10 h-10 text-outline" />
+              </div>
             )}
             {/* Profile Edit Overlay */}
             <label
@@ -165,6 +206,7 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
               <Camera className="w-6 h-6" />
             </label>
             <input
+              ref={profileInputRef}
               id="profile-upload"
               type="file"
               accept="image/*"
@@ -174,9 +216,6 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
           </div>
         </div>
       </div>
-
-      {/* Spacing for absolute elements */}
-      <div className="h-10" />
 
       {/* Error messages */}
       <div className="flex flex-col gap-1.5 mt-2">
@@ -193,6 +232,32 @@ export function ProfileImageForm<TFieldValues extends FieldValues>({
           </div>
         )}
       </div>
+
+      {pendingCoverImage && (
+        <ImageCropDialog
+          open
+          imageSrc={pendingCoverImage.src}
+          fileName={pendingCoverImage.name}
+          aspect={3 / 1}
+          outputWidth={1800}
+          outputHeight={600}
+          onCancel={closeCoverCropDialog}
+          onSave={handleCoverCropSave}
+        />
+      )}
+
+      {pendingProfileImage && (
+        <ImageCropDialog
+          open
+          imageSrc={pendingProfileImage.src}
+          fileName={pendingProfileImage.name}
+          aspect={1}
+          outputWidth={800}
+          outputHeight={800}
+          onCancel={closeProfileCropDialog}
+          onSave={handleProfileCropSave}
+        />
+      )}
     </div>
   );
 }

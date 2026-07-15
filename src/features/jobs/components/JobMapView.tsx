@@ -41,11 +41,7 @@ interface JobMapViewProps {
   onBoundsChange: (lat: number, lng: number, radiusKm: number) => void;
   isLoading?: boolean;
   permissionStatus:
-    | 'checking'
-    | 'prompt'
-    | 'granted'
-    | 'denied'
-    | 'unsupported';
+    'checking' | 'prompt' | 'granted' | 'denied' | 'unsupported';
   onRequestLocation: () => void;
   /** Whether a current-location request is in flight (for the directions "use current location" control). */
   geoLoading?: boolean;

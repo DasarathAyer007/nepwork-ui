@@ -19,8 +19,7 @@ const optionalImageFile = z
   .refine(
     (file) => !file || ALLOWED_IMAGE_TYPES.includes(file.type),
     'Only JPEG, PNG or SVG images are allowed'
-  )
-  .transform((val) => val || undefined);
+  );
 
 const socialLinkSchema = z.object({
   platform: z.string().trim().min(1),

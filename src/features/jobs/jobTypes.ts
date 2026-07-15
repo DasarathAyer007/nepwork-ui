@@ -2,11 +2,7 @@
 import type { BasicLocation } from '@/types/location.types';
 
 export type JobType =
-  | 'full_time'
-  | 'part_time'
-  | 'contract'
-  | 'internship'
-  | 'freelance';
+  'full_time' | 'part_time' | 'contract' | 'internship' | 'freelance';
 export type WorkMode = 'onsite' | 'remote' | 'hybrid';
 export type ExperienceLevel = 'entry' | 'mid' | 'senior' | 'lead';
 export type JobStatus = 'draft' | 'open' | 'paused' | 'closed';
@@ -31,7 +27,7 @@ export interface JobCategory {
   id: string;
   name: string;
   icon: string;
-  color:string;
+  color: string;
   description: string;
 }
 

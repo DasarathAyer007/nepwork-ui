@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+
 import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
 import {
   StepJobBasicInfo,
@@ -18,6 +18,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import StepIndicator from '@/components/ui/StepIndicator';
@@ -131,7 +132,9 @@ export default function CreateJob() {
       // TODO: navigate to the new job's detail page / show a success toast
     } catch (err) {
       // TODO: surface a submit error to the user
-      toast.error(getApiErrorMessage(err, "Couldn't post this job. Please try again."));
+      toast.error(
+        getApiErrorMessage(err, "Couldn't post this job. Please try again.")
+      );
     }
   };
 

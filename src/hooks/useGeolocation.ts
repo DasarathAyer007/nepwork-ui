@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 type GeoPermissionState =
-  | 'checking'
-  | 'prompt'
-  | 'granted'
-  | 'denied'
-  | 'unsupported';
+  'checking' | 'prompt' | 'granted' | 'denied' | 'unsupported';
 
 interface GeoState {
   lat: number | null;

@@ -1,10 +1,6 @@
 export type ServicePriceType = 'fixed' | 'hourly' | '';
 export type ServiceAvailabilityStatus =
-  | 'available'
-  | 'unavailable'
-  | 'break'
-  | 'holiday'
-  | '';
+  'available' | 'unavailable' | 'break' | 'holiday' | '';
 export type ServiceStatusFilter = 'draft' | 'active' | 'paused' | 'closed' | '';
 
 export interface MyServicesFilters {
