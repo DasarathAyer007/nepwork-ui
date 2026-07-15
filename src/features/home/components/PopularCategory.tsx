@@ -1,113 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 
-import {
-  Bike,
-  BookOpen,
-  Camera,
-  ChevronLeft,
-  ChevronRight,
-  Code,
-  Dumbbell,
-  Home,
-  Palette,
-  Scissors,
-  Sparkles,
-  Truck,
-  Utensils,
-  Wrench,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const categories = [
-  {
-    title: 'Home Repair',
-    icon: Home,
-    count: '1.2k+',
-    iconBg: 'bg-primary-fixed',
-    iconColor: 'text-primary',
-  },
-  {
-    title: 'Digital Tasks',
-    icon: Code,
-    count: '850+',
-    iconBg: 'bg-secondary-container',
-    iconColor: 'text-secondary',
-  },
-  {
-    title: 'Delivery',
-    icon: Bike,
-    count: '2.4k+',
-    iconBg: 'bg-tertiary-fixed',
-    iconColor: 'text-tertiary',
-  },
-  {
-    title: 'Cleaning',
-    icon: Sparkles,
-    count: '600+',
-    iconBg: 'bg-primary-fixed',
-    iconColor: 'text-primary',
-  },
-  {
-    title: 'Electrician',
-    icon: Wrench,
-    count: '450+',
-    iconBg: 'bg-secondary-container',
-    iconColor: 'text-secondary',
-  },
-  {
-    title: 'Design',
-    icon: Palette,
-    count: '320+',
-    iconBg: 'bg-tertiary-fixed',
-    iconColor: 'text-tertiary',
-  },
-  {
-    title: 'Photography',
-    icon: Camera,
-    count: '280+',
-    iconBg: 'bg-primary-fixed',
-    iconColor: 'text-primary',
-  },
-  {
-    title: 'Tutoring',
-    icon: BookOpen,
-    count: '500+',
-    iconBg: 'bg-secondary-container',
-    iconColor: 'text-secondary',
-  },
-  {
-    title: 'Cooking',
-    icon: Utensils,
-    count: '190+',
-    iconBg: 'bg-tertiary-fixed',
-    iconColor: 'text-tertiary',
-  },
-  {
-    title: 'Fitness',
-    icon: Dumbbell,
-    count: '230+',
-    iconBg: 'bg-primary-fixed',
-    iconColor: 'text-primary',
-  },
-  {
-    title: 'Moving',
-    icon: Truck,
-    count: '370+',
-    iconBg: 'bg-secondary-container',
-    iconColor: 'text-secondary',
-  },
-  {
-    title: 'Beauty',
-    icon: Scissors,
-    count: '410+',
-    iconBg: 'bg-tertiary-fixed',
-    iconColor: 'text-tertiary',
-  },
-];
+import CategoryIcon from '@/components/CategoryIcon';
 
+import { useGetPopularCategoriesQuery } from '../../services/serviceApi';
+
+// service Category
 function PopularCategory() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const { data: categories, isLoading } = useGetPopularCategoriesQuery();
 
   const updateScrollState = () => {
     const el = scrollRef.current;
@@ -119,10 +25,13 @@ function PopularCategory() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    updateScrollState();
     el.addEventListener('scroll', updateScrollState, { passive: true });
     return () => el.removeEventListener('scroll', updateScrollState);
   }, []);
+
+  useEffect(() => {
+    updateScrollState();
+  }, [isLoading, categories]);
 
   const scroll = (direction: 'left' | 'right') => {
     scrollRef.current?.scrollBy({
@@ -185,29 +94,51 @@ function PopularCategory() {
           <div
             ref={scrollRef}
             className="flex gap-5 overflow-x-auto no-scrollbar pb-2 pt-2">
-            {categories.map((cat, idx) => {
-              const Icon = cat.icon;
-              return (
+            {isLoading &&
+              Array.from({ length: 6 }).map((_, idx) => (
                 <div
                   key={idx}
+                  className="shrink-0 w-48 h-[168px] rounded-2xl bg-surface-container-lowest border border-outline-variant/40 animate-pulse"
+                />
+              ))}
+
+            {!isLoading &&
+              categories?.map((cat) => (
+                <Link
+                  key={cat.id}
+                  to={`/services?category=${cat.id}`}
                   className="group shrink-0 w-48 bg-surface-container-lowest rounded-2xl py-6 flex flex-col items-center gap-3 border border-outline-variant/40 cursor-pointer hover:bg-primary hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                   {/* Icon container */}
                   <div
-                    className={`w-14 h-14 rounded-xl flex items-center justify-center ${cat.iconBg} ${cat.iconColor} group-hover:bg-white/20 group-hover:text-on-primary transition-all duration-300`}>
-                    <Icon className="w-7 h-7" />
+                    style={{
+                      backgroundColor: `${cat.color}1a`,
+                      color: cat.color,
+                    }}
+                    className="w-14 h-14 rounded-xl flex items-center justify-center group-hover:bg-white/20 group-hover:text-on-primary transition-all duration-300">
+                    <CategoryIcon
+                      className="group-hover:text-on-primary"
+                      iconname={cat.icon}
+                      size={28}
+                      color="currentColor"
+                    />
                   </div>
 
                   <h4 className="font-bold text-on-surface group-hover:text-on-primary transition-colors duration-300 text-center leading-tight">
-                    {cat.title}
+                    {cat.name}
                   </h4>
 
                   {/* Count badge */}
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant group-hover:bg-white/20 group-hover:text-on-primary transition-all duration-300">
-                    {cat.count} Experts
+                    {cat.count} Services
                   </span>
-                </div>
-              );
-            })}
+                </Link>
+              ))}
+
+            {!isLoading && categories?.length === 0 && (
+              <p className="text-on-surface-variant py-6">
+                No popular categories yet.
+              </p>
+            )}
           </div>
         </div>
 
