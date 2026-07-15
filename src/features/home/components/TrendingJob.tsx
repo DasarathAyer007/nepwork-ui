@@ -1,79 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-import JobCard, { type Job } from './JobCard';
-
-const jobs: Job[] = [
-  {
-    type: 'High Priority',
-    typeColor: 'bg-tertiary-container text-on-tertiary-container',
-    salary: 'NPR 15,000',
-    title: 'Commercial Building Electrician',
-    location: 'Kathmandu, Nepal',
-    name: 'Bishal K.',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    postedAt: '2h ago',
-    tags: ['Electrician', 'Full-time', 'On-site'],
-  },
-  {
-    type: 'Freelance',
-    typeColor: 'bg-secondary-container text-on-secondary-container',
-    salary: 'NPR 8,000',
-    title: 'Social Media Content Creator',
-    location: 'Remote / Patan',
-    name: 'Anjali R.',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    postedAt: '5h ago',
-    tags: ['Marketing', 'Remote', 'Part-time'],
-  },
-  {
-    type: 'Contract',
-    typeColor: 'bg-primary-container text-on-primary-container',
-    salary: 'NPR 45,000',
-    title: 'Senior Frontend Developer',
-    location: 'Lalitpur, Nepal',
-    name: 'Suman T.',
-    avatar: 'https://randomuser.me/api/portraits/men/65.jpg',
-    postedAt: '1d ago',
-    tags: ['React', 'TypeScript', 'Hybrid'],
-  },
-  {
-    type: 'Full-time',
-    typeColor: 'bg-primary-fixed text-on-primary-fixed',
-    salary: 'NPR 25,000',
-    title: 'House Plumber & Pipe Fitter',
-    location: 'Bhaktapur, Nepal',
-    name: 'Ramesh P.',
-    avatar: 'https://randomuser.me/api/portraits/men/41.jpg',
-    postedAt: '3h ago',
-    tags: ['Plumbing', 'Full-time', 'On-site'],
-  },
-  {
-    type: 'Freelance',
-    typeColor: 'bg-secondary-container text-on-secondary-container',
-    salary: 'NPR 12,000',
-    title: 'Photography & Event Coverage',
-    location: 'Pokhara, Nepal',
-    name: 'Sunita M.',
-    avatar: 'https://randomuser.me/api/portraits/women/31.jpg',
-    postedAt: '6h ago',
-    tags: ['Photography', 'Events', 'Freelance'],
-  },
-  {
-    type: 'Contract',
-    typeColor: 'bg-primary-container text-on-primary-container',
-    salary: 'NPR 30,000',
-    title: 'UI/UX Designer for Mobile App',
-    location: 'Remote / Kathmandu',
-    name: 'Priya S.',
-    avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-    postedAt: '12h ago',
-    tags: ['Figma', 'UI/UX', 'Remote'],
-  },
-];
+import { useGetTrendingJobsQuery } from '../../jobs/jobApi';
+import JobCard from './JobCard';
 
 function TrendingJob() {
+  const { data, isLoading } = useGetTrendingJobsQuery();
+  const jobs = data?.results ?? [];
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -114,9 +49,11 @@ function TrendingJob() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4">
+          <Link
+            to="/jobs"
+            className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4">
             Browse All <ArrowRight className="w-4 h-4" />
-          </button>
+          </Link>
 
           <div className="flex gap-2">
             <button
@@ -152,19 +89,38 @@ function TrendingJob() {
         <div
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto pt-2 no-scrollbar pb-2">
-          {jobs.map((job, i) => (
-            <div key={i} className="shrink-0 max-w-4xs">
-              <JobCard job={job} />
-            </div>
-          ))}
+          {isLoading &&
+            Array.from({ length: 4 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="shrink-0 w-80 rounded-2xl bg-surface-container-lowest border border-outline-variant/40 animate-pulse"
+                // Give a minimum height to keep the loading state visually stable
+                style={{ minHeight: '360px' }}
+              />
+            ))}
+
+          {!isLoading &&
+            jobs.map((job) => (
+              <div key={job.id} className="shrink-0">
+                <JobCard job={job} />
+              </div>
+            ))}
+
+          {!isLoading && jobs.length === 0 && (
+            <p className="text-on-surface-variant py-6">
+              No trending jobs right now.
+            </p>
+          )}
         </div>
       </div>
 
       {/* Mobile browse all */}
       <div className="mt-8 flex justify-center md:hidden">
-        <button className="flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4">
+        <Link
+          to="/jobs"
+          className="flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4">
           Browse All Jobs <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
     </section>
   );
