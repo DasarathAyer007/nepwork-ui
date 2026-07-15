@@ -74,6 +74,14 @@ export const JobApi = createApi({
       providesTags: ['Job'],
     }),
 
+    getTrendingJobs: builder.query<JobListResponse, JobListQueryParams | void>({
+      query: (params) => ({
+        url: '/jobs/trending/',
+        params: params ?? undefined,
+      }),
+      providesTags: ['Job'],
+    }),
+
     getJobRecommendations: builder.query<JobListResponse, JobListQueryParams>({
       query: (params) => ({
         url: '/jobs/recommendations/',
@@ -188,6 +196,7 @@ export const {
   useSaveJobMutation,
   useUnsaveJobMutation,
   useGetMyJobsQuery,
+  useGetTrendingJobsQuery,
   useGetJobRecommendationsQuery,
   useUpdateJobMutation,
   useDeleteJobMutation,

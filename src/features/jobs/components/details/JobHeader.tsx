@@ -28,18 +28,17 @@ interface Props {
 }
 
 function JobHeader({ job, onSaveToggle }: Props) {
-  const { title, status, created_at, location, employer } = job;
+  const { title, status, created_at, location, employer, thumbnail } = job;
   const companyName = employerDisplayName(job);
-  const logo = employerLogo(job);
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 md:p-8 mb-6">
       <div className="flex flex-col md:flex-row md:items-start gap-6">
-        <div className="shrink-0">
-          <div className="w-20 h-20 bg-surface-container-high rounded-xl flex items-center justify-center border border-outline-variant/50 overflow-hidden">
-            {logo ? (
+        <div className="shrink-0 self-start">
+          <div className="w-36 sm:w-44 aspect-3/2 bg-surface-container-high rounded-md flex items-center justify-center border border-outline-variant overflow-hidden">
+            {thumbnail ? (
               <img
-                src={logo}
+                src={thumbnail}
                 alt={companyName}
                 className="w-full h-full object-cover"
               />

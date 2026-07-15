@@ -131,7 +131,7 @@ export default function JobCard({
       {/* Thumbnail / Logo */}
       <Link
         to={`/jobs/${data.id}`}
-        className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden shrink-0 bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/20">
+        className="relative w-32 sm:w-36 aspect-3/2 self-start rounded-md overflow-hidden shrink-0 border border-outline-variant/60 bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/20">
         {data.thumbnail ? (
           <img
             src={data.thumbnail}

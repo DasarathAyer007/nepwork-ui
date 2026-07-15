@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { Upload, X } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+import { ImageCropDialog } from '@/components/ui/ImageCropDialog';
 import { FormSection, Input, Label, TextArea } from '@/components/ui/forms';
 
 import type { JobFormValues } from '../../jobSchema';
@@ -19,6 +20,27 @@ export default function StepJobBasicInfo() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const thumbnail = watch('thumbnail');
+
+  const [pendingImage, setPendingImage] = useState<{
+    src: string;
+    name: string;
+  } | null>(null);
+
+  const handleFileSelect = (file: File | undefined) => {
+    if (!file) return;
+    setPendingImage({ src: URL.createObjectURL(file), name: file.name });
+  };
+
+  const closeCropDialog = () => {
+    if (pendingImage) URL.revokeObjectURL(pendingImage.src);
+    setPendingImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleCropSave = (file: File) => {
+    setValue('thumbnail', file);
+    closeCropDialog();
+  };
 
   return (
     <FormSection
@@ -93,9 +115,7 @@ export default function StepJobBasicInfo() {
                 accept="image/*"
                 className="hidden"
                 type="file"
-                onChange={(e) =>
-                  setValue('thumbnail', e.target.files?.[0] ?? null)
-                }
+                onChange={(e) => handleFileSelect(e.target.files?.[0])}
               />
             </div>
           ) : (
@@ -117,6 +137,16 @@ export default function StepJobBasicInfo() {
           )}
         </div>
       </div>
+
+      {pendingImage && (
+        <ImageCropDialog
+          open
+          imageSrc={pendingImage.src}
+          fileName={pendingImage.name}
+          onCancel={closeCropDialog}
+          onSave={handleCropSave}
+        />
+      )}
     </FormSection>
   );
 }

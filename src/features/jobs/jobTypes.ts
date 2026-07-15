@@ -31,6 +31,7 @@ export interface JobCategory {
   id: string;
   name: string;
   icon: string;
+  color:string;
   description: string;
 }
 
@@ -38,6 +39,7 @@ export interface BasicJobCategory {
   id: string;
   name: string;
   icon: string;
+  color: string;
 }
 
 export interface JobCreatePayload {
@@ -133,17 +135,21 @@ export interface JobResult {
   job_type: JobType;
   work_mode: WorkMode;
   status: JobStatus;
+  location: BasicLocation | null;
+  posted_by: string;
+  organization: string | null;
   category: BasicJobCategory | null;
   skills_required: string[];
   experience_level: ExperienceLevel;
   experience_years: number | null;
-  location: BasicLocation | null;
   salary_min: string | null;
   salary_max: string | null;
   currency: string;
   deadline: string | null;
   total_applications: number;
-  is_saved: boolean;
+  // Omitted by the API for anonymous requests (only annotated for
+  // authenticated users) - never assume it is present.
+  is_saved?: boolean;
 }
 
 export interface JobListResponse {

@@ -20,6 +20,7 @@ import type {
 } from './types';
 import type {
   Category,
+  PopularCategory,
   ServiceRequestListResponse,
   ServiceRequestQueryParams,
   ServiceRequestResult,
@@ -44,6 +45,12 @@ export const ServiceApi = createApi({
     getCategory: builder.query<Category[], null>({
       query: () => ({
         url: '/services/category/',
+      }),
+    }),
+
+    getPopularCategories: builder.query<PopularCategory[], void>({
+      query: () => ({
+        url: '/services/category/popular/',
       }),
     }),
 
@@ -210,6 +217,7 @@ export const ServiceApi = createApi({
 export const {
   useGetServicesListQuery,
   useGetCategoryQuery,
+  useGetPopularCategoriesQuery,
   useCreateServiceMutation,
   useGetServiceDetailQuery,
   useSaveServiceMutation,

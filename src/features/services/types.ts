@@ -5,7 +5,12 @@ export interface Category {
   id: string;
   name: string;
   icon: string;
+  color: string;
   description: string;
+}
+
+export interface PopularCategory extends Category {
+  count: number;
 }
 
 export interface ServiceResult {

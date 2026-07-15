@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { Location } from '@/types/location.types';
 import * as Dialog from '@radix-ui/react-dialog';

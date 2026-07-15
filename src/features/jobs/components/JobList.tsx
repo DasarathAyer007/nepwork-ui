@@ -1,7 +1,7 @@
 import Pagination from '@/components/Pagination';
 
 import type { JobResult } from '../jobTypes';
-import ServiceCard from './JobCard';
+import JobCard from './JobCard';
 
 const JOB_SORT_OPTIONS = [
   { value: '-created_at', label: 'Newest' },
@@ -64,7 +64,7 @@ export default function JobList({
         </div>
       </div>
       {jobs.map((job) => (
-        <ServiceCard key={job.id} data={job} onSaveToggle={onSaveToggle} />
+        <JobCard key={job.id} data={job} onSaveToggle={onSaveToggle} />
       ))}
 
       <Pagination
