@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
 import {
   StepBasicInfo,
   StepLocation,
@@ -16,6 +17,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Rocket } from 'lucide-react';
 import { type FieldPath, FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 import StepIndicator from '@/components/ui/StepIndicator';
@@ -72,8 +74,8 @@ export default function CreateService() {
     formData.append(
       'location',
       JSON.stringify({
-        latitude: values.location.latitude,
-        longitude: values.location.longitude,
+        lat: values.location.latitude,
+        lng: values.location.longitude,
         city: values.location.city,
         state: values.location.state,
         country: values.location.country,
@@ -83,12 +85,21 @@ export default function CreateService() {
 
     try {
       await createService(formData).unwrap();
+      toast.success('Service posted successfully!');
       navigate('/services');
     } catch (err) {
-      // TODO: surface a submit error to the user
-      console.error('Failed to create service', err);
+      toast.error(
+        getApiErrorMessage(err, "Couldn't post this service. Please try again.")
+      );
     }
   };
+
+  // Single wrapped submit handler — referenced by both the form's native
+  // onSubmit and the WizardActions submit button, so react-hook-form's
+  // validation + our onSubmit logic only ever run once per click.
+  const submitForm = handleSubmit((values) => {
+    void onSubmit(values);
+  });
 
   return (
     <main className="flex-grow pt-28 pb-16 px-margin-mobile md:px-margin-desktop bg-background/50">
@@ -101,7 +112,7 @@ export default function CreateService() {
         />
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={submitForm} className="space-y-6">
             <div className="transition-all duration-300">
               {step === 1 && <StepBasicInfo />}
               {step === 2 && <StepPricingSkills />}
@@ -114,7 +125,7 @@ export default function CreateService() {
               totalSteps={TOTAL_STEPS}
               onBack={goBack}
               onNext={() => void goNext()}
-              onSubmit={() => void handleSubmit(onSubmit)()}
+              onSubmit={() => void submitForm()}
               isSubmitting={isLoading}
               submitLabel="Post Service"
               submitLoadingLabel="Posting…"

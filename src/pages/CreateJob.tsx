@@ -1,5 +1,6 @@
 import { useState } from 'react';
-
+import toast from 'react-hot-toast';
+import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
 import {
   StepJobBasicInfo,
   StepJobDetails,
@@ -125,11 +126,12 @@ export default function CreateJob() {
     formData.append('currency', values.currency);
     try {
       await createJob(formData).unwrap();
+      toast.success('Job posted successfully!');
       navigate('/jobs');
       // TODO: navigate to the new job's detail page / show a success toast
     } catch (err) {
       // TODO: surface a submit error to the user
-      console.error('Failed to create job', err);
+      toast.error(getApiErrorMessage(err, "Couldn't post this job. Please try again."));
     }
   };
 
