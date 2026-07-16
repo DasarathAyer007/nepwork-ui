@@ -44,7 +44,7 @@ export default function ProfileDropdown({
       label: 'My Applications',
       description: 'Track your job applications',
       badge: 3,
-      to: '/applications',
+      to: '/dashboard/my-applications',
     },
     {
       icon: <Bookmark size={16} />,
