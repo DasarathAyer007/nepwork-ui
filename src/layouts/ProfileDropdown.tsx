@@ -43,7 +43,6 @@ export default function ProfileDropdown({
       icon: <Briefcase size={16} />,
       label: 'My Applications',
       description: 'Track your job applications',
-      badge: 3,
       to: '/dashboard/my-applications',
     },
     {
@@ -132,7 +131,6 @@ export default function ProfileDropdown({
             icon={link.icon}
             label={link.label}
             description={link.description}
-            badge={link.badge}
             to={link.to}
             onClick={onClose}
           />

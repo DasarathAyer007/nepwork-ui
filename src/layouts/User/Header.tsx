@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Bell, Menu, MessageCircle, UserRound, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
 
@@ -9,6 +9,7 @@ import {
   selectIsAuthenticated,
   selectUser,
 } from '../../features/auth/authSelectors';
+import { logout } from '../../features/auth/authSlice';
 import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
 import {
   selectChatUnreadCount,
@@ -22,10 +23,16 @@ function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isLogin = useAppSelector(selectIsAuthenticated);
   const user = useAppSelector(selectUser);
   const notificationCount = useAppSelector(selectUnreadCount);
   const unreadMessageCount = useAppSelector(selectChatUnreadCount);
+  const handleLogout = () => {
+  dispatch(logout());
+  setShowProfile(false);
+  navigate('/login');
+};
   const { data: unreadCountData } = useGetUnreadCountQuery(undefined, {
     skip: !isLogin,
   });
@@ -114,11 +121,7 @@ function Header() {
                 {showProfile && user && (
                   <ProfileDropdown
                     user={user}
-                    onLogout={() => {
-                      // Handle logout logic here
-                      console.log('User logged out');
-                      setShowProfile(false);
-                    }}
+                    onLogout={handleLogout}
                     onClose={() => setShowProfile(false)}
                   />
                 )}
