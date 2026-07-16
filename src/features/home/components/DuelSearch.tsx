@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Briefcase, MapPin, Search, Wrench } from 'lucide-react';
+import { Briefcase, MapPin, Search } from 'lucide-react';
 
 const jobSuggestions = [
   'Graphic Designer',
@@ -13,19 +14,6 @@ const jobSuggestions = [
   'Nurse',
   'Teacher',
   'Driver',
-];
-
-const serviceSuggestions = [
-  'Plumber',
-  'Electrician',
-  'House Cleaning',
-  'Tutoring',
-  'Photography',
-  'Delivery',
-  'Carpenter',
-  'Painter',
-  'Personal Trainer',
-  'Makeup Artist',
 ];
 
 const locationSuggestions = [
@@ -42,22 +30,17 @@ const locationSuggestions = [
   'Nepalgunj',
 ];
 
-type TabType = 'jobs' | 'services';
-
 function DuelSearch() {
-  const [activeTab, setActiveTab] = useState<TabType>('jobs');
+  const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [locationQuery, setLocationQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
-
   const searchRef = useRef<HTMLInputElement>(null);
   const locationRef = useRef<HTMLInputElement>(null);
 
-  const searchOptions =
-    activeTab === 'jobs' ? jobSuggestions : serviceSuggestions;
-
-  const filteredSearch = searchOptions.filter((i) =>
+  const filteredSearch = jobSuggestions.filter((i) =>
     i.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -83,47 +66,24 @@ function DuelSearch() {
   }, []);
 
   const handleSearch = () => {
-    console.log({ activeTab, searchQuery, locationQuery });
-  };
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+    if (locationQuery.trim()) params.set('location', locationQuery.trim());
 
-  const Icon = activeTab === 'jobs' ? Briefcase : Wrench;
+    const queryString = params.toString();
+    navigate(queryString ? `/jobs?${queryString}` : '/jobs');
+  };
 
   return (
     <div className="relative w-full max-w-3xl mx-auto z-50">
       {/* Card */}
       <div className="bg-surface-container-lowest p-3 rounded-2xl shadow-lg relative ">
-        {/* Tabs */}
-        <div className="relative flex p-1 bg-surface-container rounded-xl mb-3 overflow-hidden">
-          <div
-            className="absolute top-1 bottom-1 w-1/2 bg-primary rounded-lg transition-all duration-300"
-            style={{ left: activeTab === 'jobs' ? '0%' : '50%' }}
-          />
-
-          <button
-            className={`flex-1 py-2 text-sm font-bold relative  ${
-              activeTab === 'jobs'
-                ? 'text-on-primary'
-                : 'text-on-surface-variant'
-            }`}
-            onClick={() => {
-              setActiveTab('jobs');
-              setSearchQuery('');
-            }}>
-            Find Jobs
-          </button>
-
-          <button
-            className={`flex-1 py-2 text-sm font-bold relative  ${
-              activeTab === 'services'
-                ? 'text-on-primary'
-                : 'text-on-surface-variant'
-            }`}
-            onClick={() => {
-              setActiveTab('services');
-              setSearchQuery('');
-            }}>
-            Hire Talent
-          </button>
+        {/* Heading */}
+        <div className="flex items-center gap-2 px-2 pb-3">
+          <span className="flex items-center justify-center size-7 rounded-lg bg-primary text-on-primary">
+            <Briefcase size={16} />
+          </span>
+          <h3 className="text-sm font-bold text-on-surface">Find Jobs</h3>
         </div>
 
         {/* Inputs */}
@@ -134,9 +94,7 @@ function DuelSearch() {
               <Search className="w-5 h-5 text-primary" />
               <input
                 className="w-full bg-transparent outline-none text-on-surface py-1"
-                placeholder={
-                  activeTab === 'jobs' ? 'Search jobs...' : 'Search services...'
-                }
+                placeholder="Search jobs..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -156,7 +114,7 @@ function DuelSearch() {
                       setShowSearch(false);
                     }}
                     className="px-3 py-2 hover:bg-surface-container cursor-pointer flex items-center gap-2 text-sm">
-                    <Icon className="w-4 h-4 text-primary" />
+                    <Briefcase className="w-4 h-4 text-primary" />
                     {item}
                   </div>
                 ))}

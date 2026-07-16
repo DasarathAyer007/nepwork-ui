@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useSearchParams } from 'react-router-dom';
 import JobList from '@/features/jobs/components/JobList';
 import type {
   JobCategory,
@@ -60,6 +60,19 @@ export default function Jobs() {
 
   const [sortBy, setSortBy] = useState('-created_at');
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const urlSearch = searchParams.get('search');
+    const urlLocation = searchParams.get('location');
+
+    if (urlSearch) setSearchTerm(urlSearch);
+    if (urlLocation) {
+      setFilters((prev) => ({ ...prev, city: urlLocation }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount only — don't fight the user's later edits
 
   const { data: categories } = useGetJobCategoryQuery(null);
 

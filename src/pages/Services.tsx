@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useSearchParams } from 'react-router-dom';
 import { getApiErrorMessage } from '@/features/dashboard/utils/getApiErrorMessage';
 import {
   SearchBar,
@@ -58,9 +58,43 @@ export default function Services() {
   });
   const [sortBy, setSortBy] = useState('-created_at');
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: categories = EMPTY_CATEGORIES } = useGetCategoryQuery(null);
 
-  const { data: categories } = useGetCategoryQuery(null);
 
+  const [searchParams] = useSearchParams();
+  const [hasAppliedUrlParams, setHasAppliedUrlParams] = useState(false);
+
+  useEffect(() => {
+    if (hasAppliedUrlParams) return;
+
+    const urlSearch = searchParams.get('search');
+    const urlLocation = searchParams.get('location');
+
+    if (urlLocation) setLocationQuery(urlLocation);
+
+    if (urlSearch) {
+      if (categories.length > 0) {
+        const matchedCategory = categories.find(
+          (cat) => cat.name.toLowerCase() === urlSearch.toLowerCase()
+              || urlSearch.toLowerCase().includes(cat.name.toLowerCase())
+
+        );
+
+        if (matchedCategory) {
+          setFilters((prev) => ({ ...prev, category: matchedCategory.id }));
+        } else {
+          setServiceName(urlSearch);
+        }
+        setHasAppliedUrlParams(true);
+      }
+      // if categories haven't loaded yet, wait for the next render
+      // (this effect re-runs once `categories` updates)
+    } else {
+      setHasAppliedUrlParams(true);
+    }
+  }, [searchParams, categories, hasAppliedUrlParams]);
+
+  // const { data: categories } = useGetCategoryQuery(null);
   const queryParams = useMemo<ServicesQueryParams>(
     () => ({
       page: currentPage,
