@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
 
+import { MessageSquare } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+
 import { selectUser } from '@/features/auth/authSelectors';
 import { useGetChatsQuery } from '@/features/chat/chatApi';
 import ChatSidebar from '@/features/chat/components/ChatSidebar';
 import ChatWindow from '@/features/chat/components/ChatWindow';
 import type { Chat, User } from '@/features/chat/types';
-import { useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
 
 type SelectedChat =
   | {
@@ -137,41 +139,59 @@ export default function MessagePage() {
     selectedChat?.mode !== 'existing'
   );
 
-  return (
-    <main className="flex h-dvh w-full max-w-8xl mx-auto bg-surface-container-lowest">
-      <ChatSidebar
-        selectedChatId={
-          activeSelection?.mode === 'existing' ? activeSelection.chatId : null
-        }
-        currentUserId={currentUserId}
-        draftUser={draftUser}
-        isDraftActive={
-          activeSelection?.mode === 'draft' &&
-          activeSelection.user.id === draftUser?.id
-        }
-        showDraftEntry={showDraftEntry}
-        onSelectChat={handleSelectChat}
-        onSelectDraft={() => {
-          if (draftUser) {
-            handleSelectDraft(draftUser);
-          }
-        }}
-      />
+  // On small screens only one pane is visible at a time, WhatsApp-style:
+  // the chat list until a conversation is opened, then the conversation
+  // (with a back button to return to the list).
+  const isConversationOpen = Boolean(chatWindowTarget);
 
-      {chatWindowTarget ? (
-        <ChatWindow
-          target={chatWindowTarget}
-          chat={activeChat}
+  return (
+    <div className="mx-auto flex h-full w-full max-w-8xl overflow-hidden bg-surface-container-lowest md:p-md">
+      <div className="flex h-full w-full overflow-hidden border border-outline-variant/60 bg-surface-container-lowest md:rounded-xl md:shadow-md">
+        <ChatSidebar
+          className={isConversationOpen ? 'hidden md:flex' : 'flex'}
+          selectedChatId={
+            activeSelection?.mode === 'existing' ? activeSelection.chatId : null
+          }
           currentUserId={currentUserId}
-          onChatCreated={handleChatCreated}
+          draftUser={draftUser}
+          isDraftActive={
+            activeSelection?.mode === 'draft' &&
+            activeSelection.user.id === draftUser?.id
+          }
+          showDraftEntry={showDraftEntry}
+          onSelectChat={handleSelectChat}
+          onSelectDraft={() => {
+            if (draftUser) {
+              handleSelectDraft(draftUser);
+            }
+          }}
         />
-      ) : (
-        <div className="flex flex-1 items-center justify-center bg-surface-bright">
-          <p className="text-body-lg text-on-surface-variant">
-            Select a conversation to start messaging
-          </p>
-        </div>
-      )}
-    </main>
+
+        {chatWindowTarget ? (
+          <ChatWindow
+            className="flex"
+            target={chatWindowTarget}
+            chat={activeChat}
+            currentUserId={currentUserId}
+            onChatCreated={handleChatCreated}
+            onBack={() => setSelectedChat(null)}
+          />
+        ) : (
+          <div className="hidden flex-1 flex-col items-center justify-center gap-md bg-surface-container-low/40 text-center md:flex">
+            <div className="flex size-20 items-center justify-center rounded-full bg-surface-container-high">
+              <MessageSquare className="size-9 text-outline" strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-title-md font-semibold text-on-surface">
+                Your messages
+              </p>
+              <p className="mt-1 text-body-sm text-on-surface-variant">
+                Select a conversation to start messaging
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

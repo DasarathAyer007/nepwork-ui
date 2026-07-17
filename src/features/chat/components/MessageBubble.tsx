@@ -15,26 +15,28 @@ export default function MessageBubble({
 
   return (
     <div
-      className={`flex items-end gap-sm max-w-[85%] ${isMine ? 'ml-auto flex-row-reverse' : ''}`}>
+      className={`flex max-w-[75%] items-end gap-xs ${isMine ? 'ml-auto flex-row-reverse' : ''}`}>
       {!isMine && (
         <img
           alt={message.sender.username}
-          className="w-8 h-8 rounded-full object-cover shrink-0"
+          className="h-7 w-7 shrink-0 rounded-full object-cover"
           src={message.sender.profile_picture || '/default-avatar.png'}
         />
       )}
       <div
-        className={`p-md rounded-lg shadow-sm ${
+        className={`rounded-lg px-sm py-2 shadow-sm ${
           isMine
-            ? 'bg-primary text-on-primary rounded-br-none'
-            : 'bg-surface-container-high rounded-bl-none border border-outline-variant/10'
+            ? 'rounded-br-sm bg-primary text-on-primary'
+            : 'rounded-bl-sm border border-outline-variant/40 bg-surface-container-lowest text-on-surface'
         }`}>
-        <p className="text-body-sm leading-relaxed">{message.content}</p>
+        <p className="whitespace-pre-wrap wrap-break-word text-body-sm leading-relaxed">
+          {message.content}
+        </p>
         <div
-          className={`flex items-center gap-xs mt-xs ${isMine ? 'justify-end' : ''}`}>
+          className={`mt-1 flex items-center gap-xs ${isMine ? 'justify-end' : ''}`}>
           <span
             className={`text-[10px] font-medium ${
-              isMine ? 'text-primary-container/80' : 'text-on-surface-variant'
+              isMine ? 'text-on-primary/70' : 'text-on-surface-variant'
             }`}>
             {new Date(message.created_at).toLocaleTimeString([], {
               hour: '2-digit',

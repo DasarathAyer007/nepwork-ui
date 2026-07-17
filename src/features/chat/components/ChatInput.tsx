@@ -51,18 +51,18 @@ export default function ChatInput({
   };
 
   return (
-    <div className="p-md bg-surface-container-lowest border-t border-outline-variant">
-      <div className="flex items-end gap-sm bg-surface px-sm py-sm rounded-lg border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+    <div className="shrink-0 border-t border-outline-variant bg-surface-container-lowest p-md">
+      <div className="flex items-end gap-xs rounded-full border border-outline-variant bg-surface px-sm py-1.5 transition-all focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
         <button
           type="button"
           aria-label="Add attachment"
-          className="p-xs text-outline hover:text-primary transition-colors">
+          className="rounded-full p-2 text-outline transition-colors hover:text-primary">
           <CirclePlus size={20} />
         </button>
         <button
           type="button"
           aria-label="Add emoji"
-          className="p-xs text-outline hover:text-primary transition-colors">
+          className="rounded-full p-2 text-outline transition-colors hover:text-primary">
           <Smile size={20} />
         </button>
         <textarea
@@ -72,7 +72,7 @@ export default function ChatInput({
           placeholder={placeholder}
           rows={1}
           disabled={disabled}
-          className="flex-1 bg-transparent border-none focus:ring-0 text-body-sm resize-none py-1 max-h-32 custom-scrollbar placeholder:text-on-surface-variant"
+          className="flex-1 resize-none border-none bg-transparent py-2 text-body-sm outline-none placeholder:text-on-surface-variant focus:ring-0 focus:outline-none custom-scrollbar max-h-32"
         />
         <button
           type="button"
@@ -82,7 +82,7 @@ export default function ChatInput({
           className="bg-primary text-on-primary p-2 rounded-lg flex items-center justify-center hover:bg-primary-dim transition-all group disabled:opacity-50 disabled:cursor-not-allowed">
           <Send
             size={18}
-            className="group-hover:scale-110 transition-transform"
+            className="transition-transform group-hover:scale-110"
           />
         </button>
       </div>

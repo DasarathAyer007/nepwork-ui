@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 
+import { ArrowLeft } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 import { selectUser } from '@/features/auth/authSelectors';
@@ -23,6 +24,8 @@ interface ChatWindowProps {
   chat?: Chat | null; // full chat for existing mode
   currentUserId: string;
   onChatCreated?: (chatId: string, newChat: Chat) => void;
+  onBack?: () => void;
+  className?: string;
 }
 
 export default function ChatWindow({
@@ -30,6 +33,8 @@ export default function ChatWindow({
   chat,
   currentUserId,
   onChatCreated,
+  onBack,
+  className = 'flex',
 }: ChatWindowProps) {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
@@ -148,26 +153,33 @@ export default function ChatWindow({
   const isOnline = Boolean(otherMember?.online);
 
   return (
-    <section className="flex-1 flex flex-col bg-surface-bright">
+    <section className={`${className} min-w-0 flex-1 flex-col bg-surface-container-low/30`}>
       {/* Header */}
-      <div className="h-16 border-b border-outline-variant flex items-center justify-between px-md bg-surface-container-lowest">
-        <div className="flex items-center gap-sm">
-          <div className="relative">
-            <img
-              alt={headerName}
-              className="w-10 h-10 rounded-full object-cover"
-              src={otherMember?.profile_picture || '/default-avatar.png'}
-            />
-          </div>
-          <div>
-            <h3 className="text-body-md font-bold text-on-surface">
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-md">
+        <div className="flex min-w-0 items-center gap-sm">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back to chats"
+              className="-ml-1 rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low md:hidden">
+              <ArrowLeft size={20} />
+            </button>
+          )}
+          <img
+            alt={headerName}
+            className="h-10 w-10 shrink-0 rounded-full object-cover"
+            src={otherMember?.profile_picture || '/default-avatar.png'}
+          />
+          <div className="min-w-0">
+            <h3 className="truncate text-body-md font-bold text-on-surface">
               {headerName}
             </h3>
-            <p className="text-[10px] text-primary font-extrabold uppercase tracking-widest">
+            <p className="truncate text-label-sm font-medium text-primary">
               {typingUsers.length > 0
-                ? 'Typing…'
+                ? 'typing…'
                 : isOnline
-                  ? 'Online · Active Now'
+                  ? 'Online'
                   : 'Offline'}
             </p>
           </div>
@@ -176,7 +188,7 @@ export default function ChatWindow({
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-md space-y-md custom-scrollbar">
+      <div className="custom-scrollbar flex-1 space-y-sm overflow-y-auto p-md">
         {isLoading && (
           <div className="text-center text-body-sm text-on-surface-variant">
             Loading…
@@ -185,7 +197,7 @@ export default function ChatWindow({
         {target.mode === 'draft' &&
           !isLoading &&
           displayMessages.length === 0 && (
-            <div className="text-center text-body-sm text-on-surface-variant mt-lg">
+            <div className="mt-lg text-center text-body-sm text-on-surface-variant">
               No messages yet – say hi to {otherMember?.username}!
             </div>
           )}
@@ -198,12 +210,12 @@ export default function ChatWindow({
         ))}
         {typingUsers.length > 0 && (
           <div className="flex items-center gap-sm">
-            <div className="bg-surface-container px-sm py-2 rounded-lg flex gap-1 items-center">
-              <span className="w-1.5 h-1.5 bg-outline-variant rounded-full animate-bounce" />
-              <span className="w-1.5 h-1.5 bg-outline-variant rounded-full animate-bounce [animation-delay:0.2s]" />
-              <span className="w-1.5 h-1.5 bg-outline-variant rounded-full animate-bounce [animation-delay:0.4s]" />
+            <div className="flex items-center gap-1 rounded-full bg-surface-container-high px-sm py-2">
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-outline-variant" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-outline-variant [animation-delay:0.2s]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-outline-variant [animation-delay:0.4s]" />
             </div>
-            <span className="text-label-sm text-on-surface-variant italic font-medium">
+            <span className="text-label-sm font-medium italic text-on-surface-variant">
               {otherMember?.username ?? 'Someone'} is typing…
             </span>
           </div>
