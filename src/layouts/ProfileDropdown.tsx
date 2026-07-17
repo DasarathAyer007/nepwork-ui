@@ -82,7 +82,7 @@ export default function ProfileDropdown({
     {
       icon: <HelpCircle size={16} />,
       label: 'Help & Support',
-      to: '/support',
+      to: '/help-center',
     },
   ];
 

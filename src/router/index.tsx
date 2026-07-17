@@ -24,6 +24,8 @@ import DashboardRequestsReceived from '@/pages/dashboard/RequestsReceived.tsx';
 import ServiceRequestsList from '@/pages/dashboard/ServiceRequestsList.tsx';
 import { Route, Routes } from 'react-router-dom';
 import About from '@/pages/About';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+
 import MainLayout from '../layouts/User/MainLayout';
 import CreatePostType from '../pages/ChoosePostType';
 import Home from '../pages/Home';
@@ -35,6 +37,9 @@ import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
 import SignUpOTP from '../pages/SignUpOTP';
+import TermsOfService from '@/pages/TermsofService';
+import HelpCenter from '@/pages/HelpCenter';
+import ContactUs from '@/pages/ContactUs';
 
 function route() {
   return (
@@ -42,6 +47,10 @@ function route() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/help-center" element={<HelpCenter />} />
+        <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetailsPage />} />

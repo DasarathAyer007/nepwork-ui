@@ -58,14 +58,14 @@ function Footer() {
               <li>
                 <a
                   className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
+                  href="/privacy-policy">
                   Privacy Policy
                 </a>
               </li>
               <li>
                 <a
                   className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
+                  href="/terms-of-service">
                   Terms of Service
                 </a>
               </li>
@@ -77,29 +77,15 @@ function Footer() {
               <li>
                 <a
                   className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
+                  href="/help-center">
                   Help Center
                 </a>
               </li>
               <li>
                 <a
                   className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
+                  href="/contact-us">
                   Contact Us
-                </a>
-              </li>
-              <li>
-                <a
-                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
-                  Safety Center
-                </a>
-              </li>
-              <li>
-                <a
-                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
-                  href="#">
-                  Community
                 </a>
               </li>
             </ul>
