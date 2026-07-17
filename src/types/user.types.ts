@@ -1,5 +1,5 @@
 import type { Skill } from './skill.types';
-
+import type { Location } from './location.types';
 interface BaseUser {
   id: string;
   full_name: string;
@@ -14,6 +14,7 @@ interface BaseUser {
   profile_visibility: 'public' | 'private' | 'limited';
   social_links: Record<string, string>;
   last_active_at: string;
+  location: Location | null;
 }
 
 export interface PersonalProfile extends BaseUser {

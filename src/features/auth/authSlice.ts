@@ -38,10 +38,13 @@ const authSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload.user));
     },
 
-    setUser: (state, action: PayloadAction<LoginUser>) => {
-      state.user = action.payload;
-    },
-
+      setUser: (state, action) => {
+        state.user = action.payload;
+        localStorage.setItem(
+          'user',
+          JSON.stringify(action.payload)
+        );
+      },
     logout: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
