@@ -25,6 +25,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import CategoryIcon from '@/components/CategoryIcon';
+import { getCategoryMapPinIcon } from '@/components/CategoryMapPin';
 import CurrentLocationButton from '@/components/map/CurrentLocationButton';
 import DirectionsPanel from '@/components/map/DirectionsPanel';
 import LocationSearchBox from '@/components/map/LocationSearchBox';
@@ -58,81 +59,6 @@ interface StartPoint {
 }
 
 const ROUTE_LINE_COLOR = 'var(--color-primary)';
-
-const PIN_COLORS = [
-  '#3b82f6',
-  '#ef4444',
-  '#10b981',
-  '#f59e0b',
-  '#8b5cf6',
-  '#ec4899',
-  '#14b8a6',
-];
-
-function getPinColor(categoryId?: string) {
-  const id = categoryId ? parseInt(categoryId, 10) : null;
-  return id == null || Number.isNaN(id)
-    ? PIN_COLORS[0]
-    : PIN_COLORS[id % PIN_COLORS.length];
-}
-
-const PIN_WIDTH = 30;
-const PIN_HEIGHT = 40;
-// Classic teardrop marker: a circular head that tapers to a sharp point at
-// the bottom tip (where it touches the map), rather than a rotated-square.
-const PIN_PATH =
-  'M15 0C6.716 0 0 6.716 0 15c0 10.5 12.7 23.7 14.25 25.32a1 1 0 0 0 1.5 0C17.3 38.7 30 25.5 30 15 30 6.716 23.284 0 15 0z';
-
-const iconCache = new Map<string, L.DivIcon>();
-
-function getPinDivIcon(
-  iconName: string | undefined,
-  categoryId: string | undefined
-) {
-  const cacheKey = `${iconName ?? 'default'}-${categoryId ?? 'none'}`;
-  const cached = iconCache.get(cacheKey);
-  if (cached) return cached;
-
-  const color = getPinColor(categoryId);
-
-  const html = renderToStaticMarkup(
-    <div style={{ position: 'relative', width: PIN_WIDTH, height: PIN_HEIGHT }}>
-      <svg
-        width={PIN_WIDTH}
-        height={PIN_HEIGHT}
-        viewBox={`0 0 ${PIN_WIDTH} ${PIN_HEIGHT}`}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))',
-        }}>
-        <path d={PIN_PATH} fill={color} stroke="white" strokeWidth={1.5} />
-      </svg>
-      <div
-        style={{
-          position: 'absolute',
-          top: 6,
-          left: 0,
-          width: PIN_WIDTH,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <CategoryIcon iconname={iconName} size={13} color="white" />
-      </div>
-    </div>
-  );
-
-  const divIcon = L.divIcon({
-    html,
-    className: '',
-    iconSize: [PIN_WIDTH, PIN_HEIGHT],
-    iconAnchor: [PIN_WIDTH / 2, PIN_HEIGHT],
-  });
-  iconCache.set(cacheKey, divIcon);
-  return divIcon;
-}
 
 const userLocationIcon = L.divIcon({
   html: renderToStaticMarkup(
@@ -904,7 +830,10 @@ export default function ServiceMapView({
                 service.location.point.lat,
                 service.location.point.lng,
               ]}
-              icon={getPinDivIcon(service.category?.icon, service.category?.id)}
+              icon={getCategoryMapPinIcon(
+                service.category?.icon,
+                service.category?.color
+              )}
               eventHandlers={{
                 click: () => setSelectedServiceId(service.id),
               }}>
