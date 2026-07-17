@@ -4,6 +4,7 @@ import CreateJob from '@/pages/CreateJob.tsx';
 import CreateService from '@/pages/CreateService.tsx';
 import JobApplicationPage from '@/pages/JobApplicationPage.tsx';
 import MessagePage from '@/pages/MessagePage.tsx';
+import SavedJobs from '@/pages/SavedJobs.tsx';
 import ServiceApplyPage from '@/pages/ServiceApplyPage';
 import ServiceDetailsPage from '@/pages/ServiceDetailsPage.tsx';
 import Services from '@/pages/Services.tsx';
@@ -44,13 +45,13 @@ function route() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetailsPage />} />
         <Route path="jobs/:id/apply" element={<JobApplicationPage />} />
+        <Route path="/saved-jobs" element={<SavedJobs />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/services" element={<Services />} />
         <Route path="/create" element={<CreatePostType />} />
         <Route path="/create/job" element={<CreateJob />} />
         <Route path="/create/service" element={<CreateService />} />
-        <Route path="/services" element={<Services />} />
         <Route path="/services/create" element={<CreateService />} />
         <Route path="/services/:id" element={<ServiceDetailsPage />} />
         <Route path="/services/:id/apply" element={<ServiceApplyPage />} />
@@ -73,9 +74,9 @@ function route() {
           path="my-applications/:id"
           element={<ManageApplicationDetails />}
         />
-        {/* <Route path="/services/:id/apply" element={<ServiceApplyPage />} /> */}
         <Route path="services" element={<DashboardMyServices />} />
         <Route path="services/:id" element={<ManageServiceDetails />} />
+        <Route path="services/:id/requests" element={<ServiceRequestsList />} />
         <Route
           path="requests-received"
           element={<DashboardRequestsReceived />}
@@ -86,12 +87,9 @@ function route() {
         />
         <Route path="my-requests" element={<DashboardMyRequests />} />
         <Route path="my-requests/:id" element={<ManageMyRequestDetails />} />
-        <Route path="services" element={<DashboardMyServices />} />
-        <Route path="services/:id" element={<ManageServiceDetails />} />
-        <Route path="services/:id/requests" element={<ServiceRequestsList />} />
-        <Route path="*" element={<NotFoundPage />} />
       </Route>
       {/* <Route path="/chat/:currentUserId" element={<ChatWindow />} /> */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
