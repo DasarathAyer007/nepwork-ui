@@ -23,7 +23,7 @@ import DashboardOverview from '@/pages/dashboard/Overview.tsx';
 import DashboardRequestsReceived from '@/pages/dashboard/RequestsReceived.tsx';
 import ServiceRequestsList from '@/pages/dashboard/ServiceRequestsList.tsx';
 import { Route, Routes } from 'react-router-dom';
-
+import About from '@/pages/About';
 import MainLayout from '../layouts/User/MainLayout';
 import CreatePostType from '../pages/ChoosePostType';
 import Home from '../pages/Home';
@@ -41,6 +41,7 @@ function route() {
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="jobs/:id" element={<JobDetailsPage />} />

@@ -24,30 +24,23 @@ function Footer() {
             <ul className="space-y-2 text-on-surface-variant font-body text-body-md">
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="jobs">
                   Find Jobs
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
-                  Hire Experts
-                </a>
-              </li>
-              <li>
-                <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
+                  href="services">
                   Marketplace
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
-                  Post a Task
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
+                  href="/create/job">
+                  Post Job
                 </a>
               </li>
             </ul>
@@ -57,28 +50,21 @@ function Footer() {
             <ul className="space-y-2 text-on-surface-variant font-body text-body-md">
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
+                  href="/about">
                   About Us
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
-                  href="#">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Privacy Policy
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Terms of Service
                 </a>
@@ -90,28 +76,28 @@ function Footer() {
             <ul className="space-y-2 text-on-surface-variant font-body text-body-md">
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Help Center
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Contact Us
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Safety Center
                 </a>
               </li>
               <li>
                 <a
-                  className="hover:text-primary dark:hover:text-primary-fixed underline decoration-2 transition-opacity"
+                  className="hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4 transition-all duration-200"
                   href="#">
                   Community
                 </a>
