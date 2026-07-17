@@ -6,6 +6,9 @@ export const userIdSelector = (state: RootState) => state.auth.user?.id;
 
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 
+export const selectRefreshToken = (state: RootState) =>
+  state.auth.refreshToken;
+
 export const selectIsLoggedIn = (state: RootState) =>
   Boolean(state.auth.accessToken);
 

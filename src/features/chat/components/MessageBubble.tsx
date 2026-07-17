@@ -1,4 +1,4 @@
-import { Check, CheckCheck } from 'lucide-react';
+import { Check, CheckCheck, Clock } from 'lucide-react';
 
 import type { Message } from '../types';
 
@@ -42,7 +42,9 @@ export default function MessageBubble({
             })}
           </span>
           {isMine &&
-            (message.is_read ? (
+            (message.pending ? (
+              <Clock size={12} className="text-on-primary/70" />
+            ) : message.is_read ? (
               <CheckCheck size={14} className="text-on-primary/70" />
             ) : (
               <Check size={14} className="text-on-primary/70" />

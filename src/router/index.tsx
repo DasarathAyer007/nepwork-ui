@@ -33,6 +33,7 @@ import JobDetailsPage from '../pages/JobDetailsPage.tsx';
 import Jobs from '../pages/Jobs.tsx';
 import LogIn from '../pages/LogIn';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
+import NotificationsPage from '../pages/NotificationsPage.tsx';
 import Onboarding from '../pages/Onboarding';
 import Profile from '../pages/Profile';
 import SignUp from '../pages/SignUp';
@@ -58,6 +59,7 @@ function route() {
         <Route path="/saved-jobs" element={<SavedJobs />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/messages" element={<MessagePage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/services" element={<Services />} />
         <Route path="/create" element={<CreatePostType />} />
         <Route path="/create/job" element={<CreateJob />} />

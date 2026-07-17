@@ -5,43 +5,88 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
 
+import { AuthApi, useLogoutMutation } from '../../features/auth/api/authApi';
 import {
   selectIsAuthenticated,
+  selectRefreshToken,
   selectUser,
 } from '../../features/auth/authSelectors';
 import { logout } from '../../features/auth/authSlice';
-import { useGetUnreadCountQuery } from '../../features/chat/chatApi';
+import { selectChatUnreadCount } from '../../features/chat/chatSlice';
+import { chatApi } from '../../features/chat/chatApi';
+import NotificationDropdown from '../../features/notifications/components/NotificationDropdown';
+import { useGetUnreadCountQuery as useGetNotificationUnreadCountQuery } from '../../features/notifications/notificationsApi';
+import { notificationsApi } from '../../features/notifications/notificationsApi';
 import {
-  selectChatUnreadCount,
-  setChatUnreadCount,
-} from '../../features/chat/chatSlice';
-import { selectUnreadCount } from '../../features/notifications/notificationsSlice';
+  selectHasHydratedUnreadCount,
+  selectUnreadCount,
+  setInitialUnreadCount,
+} from '../../features/notifications/notificationsSlice';
+import { JobApi } from '../../features/jobs/jobApi';
+import { ServiceApi } from '../../features/services/serviceApi';
+import { ProfileApi } from '../../features/user/api/profileApi';
 import PostDropdown from '../PostDropdown';
 import ProfileDropdown from '../ProfileDropdown';
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isLogin = useAppSelector(selectIsAuthenticated);
   const user = useAppSelector(selectUser);
   const notificationCount = useAppSelector(selectUnreadCount);
+  // Chat unread count is hydrated exclusively from the socket's
+  // "connection.established" event (see webSocketService.ts) — no separate
+  // HTTP fetch, so there's nothing to race against.
   const unreadMessageCount = useAppSelector(selectChatUnreadCount);
-  const handleLogout = () => {
-  dispatch(logout());
-  setShowProfile(false);
-  navigate('/login');
-};
-  const { data: unreadCountData } = useGetUnreadCountQuery(undefined, {
-    skip: !isLogin,
-  });
+  const refreshToken = useAppSelector(selectRefreshToken);
+  const [logoutMutation] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    if (refreshToken) {
+      try {
+        await logoutMutation({ refresh: refreshToken }).unwrap();
+      } catch {
+        // Refresh token may already be expired/invalid — proceed with
+        // clearing local session state regardless.
+      }
+    }
+
+    dispatch(logout());
+    dispatch(AuthApi.util.resetApiState());
+    dispatch(ProfileApi.util.resetApiState());
+    dispatch(chatApi.util.resetApiState());
+    dispatch(notificationsApi.util.resetApiState());
+    dispatch(ServiceApi.util.resetApiState());
+    dispatch(JobApi.util.resetApiState());
+
+    setShowProfile(false);
+    navigate('/login');
+  };
+
+  // Fallback hydration for the notification badge: the socket only reports
+  // the unread count on "connection.established", so on first paint (before
+  // the socket connects, or if it's still reconnecting) fetch it over HTTP.
+  // Guarded by `hasHydratedUnreadCount` in Redux (not a local ref) so that if
+  // this request resolves late — e.g. after the socket has already hydrated
+  // the count or a live notification/read event has updated it — it can't
+  // clobber the newer, authoritative value.
+  const hasHydratedUnreadCount = useAppSelector(selectHasHydratedUnreadCount);
+  const { data: notificationUnreadData } = useGetNotificationUnreadCountQuery(
+    undefined,
+    { skip: !isLogin }
+  );
 
   useEffect(() => {
-    if (unreadCountData?.unread_count !== undefined) {
-      dispatch(setChatUnreadCount(unreadCountData.unread_count));
+    if (
+      !hasHydratedUnreadCount &&
+      notificationUnreadData?.unread_count !== undefined
+    ) {
+      dispatch(setInitialUnreadCount(notificationUnreadData.unread_count));
     }
-  }, [dispatch, unreadCountData]);
+  }, [dispatch, hasHydratedUnreadCount, notificationUnreadData]);
 
   const navLinks = [
     { name: 'Find Jobs', to: '/jobs' },
@@ -90,16 +135,25 @@ function Header() {
                 )}
               </Link>
 
-              <button
-                className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
-                aria-label={`Notifications${notificationCount > 0 ? ` (${notificationCount} new)` : ''}`}>
-                <Bell size={25} />
-                {notificationCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-4.5 h-4.5 text-[10px] font-bold text-white bg-error rounded-full px-1">
-                    {notificationCount}
-                  </span>
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications((prev) => !prev)}
+                  className="relative p-2 text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110"
+                  aria-label={`Notifications${notificationCount > 0 ? ` (${notificationCount} new)` : ''}`}>
+                  <Bell size={25} />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-4.5 h-4.5 text-[10px] font-bold text-white bg-error rounded-full px-1">
+                      {notificationCount > 99 ? '99+' : notificationCount}
+                    </span>
+                  )}
+                </button>
+
+                {showNotifications && (
+                  <NotificationDropdown
+                    onClose={() => setShowNotifications(false)}
+                  />
                 )}
-              </button>
+              </div>
 
               <div className="relative group:">
                 <button

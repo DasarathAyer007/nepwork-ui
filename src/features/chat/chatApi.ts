@@ -42,11 +42,6 @@ export const chatApi = createApi({
           : [{ type: 'Chat' as const, id: 'LIST' }],
     }),
 
-    getUnreadCount: builder.query<{ unread_count: number }, void>({
-      query: () => 'chats/unread-count/',
-      providesTags: [{ type: 'Chat', id: 'UNREAD_COUNT' }],
-    }),
-
     getChatDetail: builder.query<Chat, string>({
       query: (chatId) => `chats/${chatId}/`,
       providesTags: (_result, _error, chatId) => [{ type: 'Chat', id: chatId }],
@@ -118,5 +113,4 @@ export const {
   useGetChatMessagesQuery,
   useSendMessageHttpMutation,
   useMarkChatReadHttpMutation,
-  useGetUnreadCountQuery,
 } = chatApi;

@@ -3,9 +3,14 @@
  *
  * - Opens exactly ONE connection for the whole app (chat + notifications).
  * - Initialized after login, torn down on logout.
- * - Dispatches typed Redux actions on every inbound message.
+ * - Dumb transport layer only: dispatches exactly one plain Redux action per
+ *   inbound event, nothing more. Any cross-slice fan-out (patching the
+ *   chatApi/notificationsApi RTK Query caches alongside chatSlice/
+ *   notificationsSlice) belongs in listener middleware
+ *   (app/listeners/chatListeners.ts, notificationListeners.ts), not here.
  * - Exposes send(type, payload) matching the Django msg contract exactly.
  */
+import { notificationsApi } from '@/features/notifications/notificationsApi';
 import {
   notificationReadAllConfirmed,
   notificationReadConfirmed,
@@ -26,11 +31,14 @@ import type {
 import type { Store } from '@reduxjs/toolkit';
 
 import type { AppDispatch, RootState } from '../app/store';
-import { typingReceived } from '../features/chat/chatSlice';
 import {
-  handleChatReadConfirmed,
-  handleIncomingChatMessage,
-} from '../features/chat/chatThunks';
+  chatCreated,
+  chatReadConfirmed,
+  messageReceived,
+  setChatUnreadCount,
+  typingReceived,
+  userPresenceChanged,
+} from '../features/chat/chatSlice';
 
 const RECONNECT_BASE_DELAY = 1000; // ms
 const RECONNECT_MAX_DELAY = 30000; // ms
@@ -51,6 +59,7 @@ class WebSocketService {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldReconnect = true;
   private messageQueue: string[] = [];
+  private markReadTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   /**
    * Call once, after the Redux store is created (e.g. in AppRoot on mount).
@@ -93,6 +102,8 @@ class WebSocketService {
   disconnect(): void {
     this.shouldReconnect = false;
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.markReadTimers.forEach((timer) => clearTimeout(timer));
+    this.markReadTimers.clear();
 
     if (this.socket) {
       this.socket.close(1000, 'client disconnect');
@@ -126,16 +137,38 @@ class WebSocketService {
   //  Convenience wrappers matching each backend msg type                 //
   // ------------------------------------------------------------------ //
 
-  sendChatMessage(chatId: string, content: string): void {
-    this.send('chat.send', { chat_id: chatId, content });
+  startChat(memberIds: string[], content: string, clientRef?: string): void {
+    this.send('chat.start', {
+      member_ids: memberIds,
+      content,
+      client_ref: clientRef,
+    });
+  }
+
+  sendChatMessage(chatId: string, content: string, clientRef?: string): void {
+    this.send('chat.send', { chat_id: chatId, content, client_ref: clientRef });
   }
 
   sendTyping(chatId: string, isTyping: boolean): void {
     this.send('chat.typing', { chat_id: chatId, is_typing: isTyping });
   }
 
+  /**
+   * Debounced per-chat: a burst of incoming messages while the chat is open
+   * (each one re-triggering a read receipt via chatListeners.ts) collapses
+   * into a single chat.read send instead of one per message.
+   */
   markChatRead(chatId: string): void {
-    this.send('chat.read', { chat_id: chatId });
+    const pending = this.markReadTimers.get(chatId);
+    if (pending) clearTimeout(pending);
+
+    this.markReadTimers.set(
+      chatId,
+      setTimeout(() => {
+        this.markReadTimers.delete(chatId);
+        this.send('chat.read', { chat_id: chatId });
+      }, 250)
+    );
   }
 
   markNotificationRead(notificationId: number): void {
@@ -175,10 +208,31 @@ class WebSocketService {
     switch (data.type) {
       case 'connection.established':
         dispatch(setInitialUnreadCount(data.payload.unread_notifications));
+        dispatch(setChatUnreadCount(data.payload.unread_chat_messages));
+        break;
+
+      case 'chat.created':
+        dispatch(chatCreated(data.payload));
+        break;
+
+      case 'chat.started':
+        // Sender's own ack for chat.start — the new chat + its first
+        // message land the same way a chat.created + chat.message pair
+        // would for the other member, so the sender's UI (and cache)
+        // converges via the same two actions/listeners. client_ref is
+        // merged into the message so it reconciles with any optimistic
+        // bubble the same way a plain chat.send echo does.
+        dispatch(chatCreated(data.payload.chat));
+        dispatch(
+          messageReceived({
+            ...data.payload.message,
+            client_ref: data.payload.client_ref,
+          })
+        );
         break;
 
       case 'chat.message':
-        dispatch(handleIncomingChatMessage(data.payload));
+        dispatch(messageReceived(data.payload));
         break;
 
       case 'chat.typing':
@@ -186,7 +240,11 @@ class WebSocketService {
         break;
 
       case 'chat.read_confirmed':
-        dispatch(handleChatReadConfirmed(data.payload));
+        dispatch(chatReadConfirmed(data.payload));
+        break;
+
+      case 'user.presence':
+        dispatch(userPresenceChanged(data.payload));
         break;
 
       case 'notification.new':
@@ -195,10 +253,27 @@ class WebSocketService {
 
       case 'notification.read_confirmed':
         dispatch(notificationReadConfirmed(data.payload));
+        // liveNotifications (socket-delivered) is patched by the reducer
+        // above, but the dropdown's "latest" fetch and the /notifications
+        // page render from the RTK Query cache — invalidate so they pick
+        // up the read state too.
+        dispatch(
+          notificationsApi.util.invalidateTags([
+            { type: 'Notification', id: data.payload.notification_id },
+            { type: 'Notification', id: 'LIST' },
+            { type: 'Notification', id: 'LATEST' },
+          ])
+        );
         break;
 
       case 'notification.read_all_confirmed':
         dispatch(notificationReadAllConfirmed(data.payload));
+        dispatch(
+          notificationsApi.util.invalidateTags([
+            { type: 'Notification', id: 'LIST' },
+            { type: 'Notification', id: 'LATEST' },
+          ])
+        );
         break;
 
       case 'error':

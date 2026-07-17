@@ -10,4 +10,5 @@ export const authEndpoints: EndpointType = {
   ONBOARDING: '/users/onboarding',
   VERIFY_OTP: '/users/verify-otp',
   RESEND_OTP: '/users/resend-otp',
+  LOGOUT: '/users/logout',
 };

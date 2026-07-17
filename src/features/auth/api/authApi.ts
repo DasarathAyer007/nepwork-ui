@@ -94,6 +94,14 @@ export const AuthApi = createApi({
         body,
       }),
     }),
+
+    logout: builder.mutation<void, { refresh: string }>({
+      query: (body) => ({
+        url: authEndpoints.LOGOUT,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -101,6 +109,7 @@ export const {
   useVerifyOtpMutation,
   useResendOtpMutation,
   useLoginMutation,
+  useLogoutMutation,
   useLoginWithGoogleMutation,
   useLoginWithFacebookMutation,
   useSignupMutation,

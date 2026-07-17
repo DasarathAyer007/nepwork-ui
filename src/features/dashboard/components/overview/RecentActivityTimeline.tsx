@@ -1,11 +1,12 @@
 import EmptyState from '@/features/dashboard/components/EmptyState';
 import { formatRelativeTime } from '@/features/dashboard/utils/overviewHelpers';
-import { useGetNotificationsQuery } from '@/features/notifications/notificationsApi';
+import { resolveNotificationRoute } from '@/features/notifications/notificationRoutes';
+import { useGetLatestNotificationsQuery } from '@/features/notifications/notificationsApi';
 import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function RecentActivityTimeline() {
-  const { data: notifications } = useGetNotificationsQuery();
+  const { data: notifications } = useGetLatestNotificationsQuery();
   const items = (notifications ?? []).slice(0, 8);
 
   return (
@@ -45,15 +46,11 @@ export default function RecentActivityTimeline() {
 
             return (
               <li key={item.id}>
-                {item.action_url ? (
-                  <Link
-                    to={item.action_url}
-                    className="block -m-1 p-1 rounded-lg hover:bg-surface-container transition-colors">
-                    {row}
-                  </Link>
-                ) : (
-                  row
-                )}
+                <Link
+                  to={resolveNotificationRoute(item)}
+                  className="block -m-1 p-1 rounded-lg hover:bg-surface-container transition-colors">
+                  {row}
+                </Link>
               </li>
             );
           })}

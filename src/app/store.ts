@@ -10,6 +10,8 @@ import { JobApi } from '../features/jobs/jobApi';
 import notificationsReducer from '../features/notifications/notificationsSlice';
 import socketReducer from '../features/socket/socketSlice';
 import { ProfileApi } from '../features/user/api/profileApi';
+import { chatListenerMiddleware } from './listeners/chatListeners';
+import { notificationListenerMiddleware } from './listeners/notificationListeners';
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +29,10 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .prepend(
+        chatListenerMiddleware.middleware,
+        notificationListenerMiddleware.middleware
+      )
       .concat(AuthApi.middleware)
       .concat(ProfileApi.middleware)
       .concat(chatApi.middleware)

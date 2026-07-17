@@ -25,7 +25,7 @@ const rawBaseQuery = fetchBaseQuery({
 });
 
 type RefreshResponse = {
-  accessToken: string;
+  access_token: string;
 };
 let isRefreshing = false;
 let refreshSubscribers: Array<() => void> = [];
@@ -47,6 +47,13 @@ export const baseQuery: BaseQueryFn<
   const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
+    const refreshToken = (api.getState() as RootState).auth.refreshToken;
+
+    if (!refreshToken) {
+      api.dispatch(logout());
+      return result;
+    }
+
     if (!isRefreshing) {
       isRefreshing = true;
 
@@ -54,6 +61,9 @@ export const baseQuery: BaseQueryFn<
         {
           url: '/users/token/refresh',
           method: 'POST',
+          body: {
+            refresh: refreshToken,
+          },
         },
         api,
         extraOptions
@@ -67,17 +77,20 @@ export const baseQuery: BaseQueryFn<
 
         api.dispatch(
           setCredentials({
-            accessToken: data.accessToken,
+            accessToken: data.access_token,
             refreshToken: state.auth.refreshToken ?? '',
             user: state.auth.user!,
           })
         );
 
         onRefreshed();
-      } else {
-        api.dispatch(logout());
-        return result;
+
+        return rawBaseQuery(args, api, extraOptions);
       }
+
+      api.dispatch(logout());
+      onRefreshed();
+      return result;
     }
 
     return new Promise((resolve) => {

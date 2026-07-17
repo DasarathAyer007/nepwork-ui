@@ -3,20 +3,29 @@
 //  Domain entities (User/Message/Chat/Notification) live in their
 //  feature folders; this file only defines the frame shapes.
 // ──────────────────────────────────────────────────────────
-import type { Message } from '@/features/chat/types';
+import type { Chat, Message } from '@/features/chat/types';
 import type { Notification } from '@/features/notifications/types';
 
 export type ClientMessageType =
+  | 'chat.start'
   | 'chat.send'
   | 'chat.typing'
   | 'chat.read'
   | 'notification.read'
   | 'notification.read_all';
 
+export interface ChatStartFrame {
+  type: 'chat.start';
+  member_ids: string[];
+  content: string;
+  client_ref?: string;
+}
+
 export interface ChatSendFrame {
   type: 'chat.send';
   chat_id: string;
   content: string;
+  client_ref?: string;
 }
 
 export interface ChatTypingFrame {
@@ -40,6 +49,7 @@ export interface NotificationReadAllFrame {
 }
 
 export type ClientFrame =
+  | ChatStartFrame
   | ChatSendFrame
   | ChatTypingFrame
   | ChatReadFrame
@@ -53,6 +63,7 @@ export type ClientFrame =
 export interface ConnectionEstablishedPayload {
   user_id: string;
   unread_notifications: number;
+  unread_chat_messages: number;
 }
 
 export interface TypingIndicatorPayload {
@@ -64,7 +75,20 @@ export interface TypingIndicatorPayload {
 
 export interface ChatReadConfirmedPayload {
   chat_id: string;
+  reader_id: string;
   marked_read: number;
+  unread_count: number;
+}
+
+export interface ChatStartedPayload {
+  chat: Chat;
+  message: Message;
+  client_ref?: string;
+}
+
+export interface UserPresencePayload {
+  user_id: string;
+  online: boolean;
 }
 
 export interface NotificationReadConfirmedPayload {
@@ -84,9 +108,12 @@ export interface ErrorPayload {
 
 export type ServerEvent =
   | { type: 'connection.established'; payload: ConnectionEstablishedPayload }
+  | { type: 'chat.created'; payload: Chat }
+  | { type: 'chat.started'; payload: ChatStartedPayload }
   | { type: 'chat.message'; payload: Message }
   | { type: 'chat.typing'; payload: TypingIndicatorPayload }
   | { type: 'chat.read_confirmed'; payload: ChatReadConfirmedPayload }
+  | { type: 'user.presence'; payload: UserPresencePayload }
   | { type: 'notification.new'; payload: Notification }
   | {
       type: 'notification.read_confirmed';

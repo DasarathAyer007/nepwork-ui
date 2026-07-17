@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import { useAppDispatch } from '@/hooks/useSelectore';
+import { selectUser } from '@/features/auth/authSelectors';
+import { useAppDispatch, useAppSelector } from '@/hooks/useSelectore';
 
 import webSocketService from '@/services/webSocketService';
 
 import { useCreateChatMutation, useGetChatMessagesQuery } from '../chatApi';
 import {
+  optimisticMessageAdded,
   selectLiveMessages,
   selectTypingUsers,
   setActiveChat,
 } from '../chatSlice';
-import { markChatAsRead } from '../chatThunks';
 import type { Chat, ChatTarget, Message } from '../types';
 import ChatInput from './ChatInput';
 import MessageBubble from './MessageBubble';
@@ -31,7 +32,7 @@ export default function ChatWindow({
   onChatCreated,
 }: ChatWindowProps) {
   const dispatch = useAppDispatch();
-  const [localDraftMessages] = useState<Message[]>([]);
+  const currentUser = useAppSelector(selectUser);
   const [createChat, { isLoading: isCreating }] = useCreateChatMutation();
   const createChatInFlightRef = useRef(false);
   const otherMember =
@@ -64,25 +65,62 @@ export default function ChatWindow({
     );
   }, [historical, liveMessages, chatId]);
 
-  // For draft mode, use local messages
-  const displayMessages =
-    target.mode === 'existing' ? allMessages : localDraftMessages;
+  // Draft mode shows nothing until the first send resolves and creates the
+  // chat (handleSend then hands off to onChatCreated, which switches this
+  // component to 'existing' mode with the real chatId).
+  const displayMessages = target.mode === 'existing' ? allMessages : [];
 
-  // Mark active chat in Redux and let the server know it's been read
+  // Mark active chat in Redux and let the server know it's been read. No
+  // optimistic local zeroing here — the server echoes chat_read_confirmed
+  // back to the reader's own connection too, and chatListeners.ts applies
+  // the authoritative count from that event.
   useEffect(() => {
     if (chatId) {
       dispatch(setActiveChat(chatId));
-      dispatch(markChatAsRead(chatId));
+      webSocketService.markChatRead(chatId);
       return () => {
         dispatch(setActiveChat(null));
       };
     }
   }, [chatId, dispatch]);
 
+  // Builds the local "sending…" bubble shown immediately, before the
+  // server round-trip completes. Reconciled with the real message in
+  // chatSlice.messageReceived once the server echoes it back (matched by
+  // client_ref) — so sends feel instant instead of waiting on a full
+  // client → server → broadcast round-trip.
+  const addOptimisticMessage = (
+    chatId: string,
+    content: string,
+    tempId: string
+  ) => {
+    if (!currentUser) return;
+    dispatch(
+      optimisticMessageAdded({
+        id: tempId,
+        chat_id: chatId,
+        sender: {
+          id: currentUser.id,
+          username: currentUser.username,
+          profile_picture: currentUser.profile_picture,
+          full_name: currentUser.full_name,
+        },
+        content,
+        is_read: false,
+        created_at: new Date().toISOString(),
+        client_ref: tempId,
+        pending: true,
+      })
+    );
+  };
+
   // Send handler – decides between immediate send and draft creation
   const handleSend = async (content: string) => {
+    const tempId = crypto.randomUUID();
+
     if (target.mode === 'existing') {
-      webSocketService.sendChatMessage(target.chatId, content);
+      addOptimisticMessage(target.chatId, content, tempId);
+      webSocketService.sendChatMessage(target.chatId, content, tempId);
       return;
     }
 
@@ -95,7 +133,8 @@ export default function ChatWindow({
         member_ids: [target.otherUser.id],
       }).unwrap();
 
-      webSocketService.sendChatMessage(newChat.id, content);
+      addOptimisticMessage(newChat.id, content, tempId);
+      webSocketService.sendChatMessage(newChat.id, content, tempId);
       onChatCreated?.(newChat.id, newChat);
     } catch (error) {
       console.error('Failed to create chat:', error);
