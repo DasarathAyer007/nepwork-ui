@@ -14,7 +14,6 @@ import type { Chat, Message } from './types';
 interface ChatState {
   messagesByChat: Record<string, Message[]>;
   typingByChat: Record<string, Record<string, string>>; // chatId -> userId -> username
-  onlineUserIds: Record<string, boolean>;
   activeChatId: string | null;
   unreadCount: number;
   // True once an authoritative unread count has been applied (from the
@@ -27,7 +26,6 @@ interface ChatState {
 const initialState: ChatState = {
   messagesByChat: {},
   typingByChat: {},
-  onlineUserIds: {},
   activeChatId: null,
   unreadCount: 0,
   hasHydratedUnreadCount: false,
@@ -96,14 +94,6 @@ const chatSlice = createSlice({
       }
     },
 
-    // Inbound from WebSocketService on "user.presence"
-    userPresenceChanged: (
-      state,
-      action: PayloadAction<{ user_id: string; online: boolean }>
-    ) => {
-      state.onlineUserIds[action.payload.user_id] = action.payload.online;
-    },
-
     // Inbound from WebSocketService on "chat.read_confirmed"
     chatReadConfirmed: (
       state,
@@ -139,7 +129,6 @@ export const {
   incrementChatUnreadCount,
   messageReceived,
   typingReceived,
-  userPresenceChanged,
   chatReadConfirmed,
   optimisticMessageAdded,
   clearChatMessages,
@@ -161,10 +150,5 @@ export const selectTypingUsers =
 
 export const selectActiveChatId = (state: RootState): string | null =>
   state.chat.activeChatId;
-
-export const selectIsUserOnline =
-  (userId: string) =>
-  (state: RootState): boolean =>
-    Boolean(state.chat.onlineUserIds[userId]);
 
 export default chatSlice.reducer;

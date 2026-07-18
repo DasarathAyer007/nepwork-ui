@@ -86,11 +86,6 @@ export interface ChatStartedPayload {
   client_ref?: string;
 }
 
-export interface UserPresencePayload {
-  user_id: string;
-  online: boolean;
-}
-
 export interface NotificationReadConfirmedPayload {
   notification_id: number;
   unread_count: number;
@@ -113,7 +108,6 @@ export type ServerEvent =
   | { type: 'chat.message'; payload: Message }
   | { type: 'chat.typing'; payload: TypingIndicatorPayload }
   | { type: 'chat.read_confirmed'; payload: ChatReadConfirmedPayload }
-  | { type: 'user.presence'; payload: UserPresencePayload }
   | { type: 'notification.new'; payload: Notification }
   | {
       type: 'notification.read_confirmed';

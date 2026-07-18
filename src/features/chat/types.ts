@@ -7,7 +7,6 @@ export interface User {
   username: string;
   profile_picture: string | null;
   full_name?: string;
-  online?: boolean;
 }
 
 export interface Message {

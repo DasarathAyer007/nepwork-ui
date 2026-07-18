@@ -150,7 +150,6 @@ export default function ChatWindow({
 
   // Determine header info
   const headerName = otherMember?.full_name || otherMember?.username || 'User';
-  const isOnline = Boolean(otherMember?.online);
 
   return (
     <section className={`${className} min-w-0 flex-1 flex-col bg-surface-container-low/30`}>
@@ -175,13 +174,11 @@ export default function ChatWindow({
             <h3 className="truncate text-body-md font-bold text-on-surface">
               {headerName}
             </h3>
-            <p className="truncate text-label-sm font-medium text-primary">
-              {typingUsers.length > 0
-                ? 'typing…'
-                : isOnline
-                  ? 'Online'
-                  : 'Offline'}
-            </p>
+            {typingUsers.length > 0 && (
+              <p className="truncate text-label-sm font-medium text-primary">
+                typing…
+              </p>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-xs">{/* optional buttons */}</div>

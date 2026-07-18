@@ -180,9 +180,6 @@ export default function ChatSidebar({
                   className="h-12 w-12 rounded-full object-cover"
                   src={otherMember?.profile_picture || '/default-avatar.png'}
                 />
-                {otherMember?.online && (
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface-container-lowest bg-primary" />
-                )}
               </div>
               <div className="min-w-0 flex-1 border-b border-outline-variant/60 py-sm">
                 <div className="flex items-baseline justify-between gap-xs">

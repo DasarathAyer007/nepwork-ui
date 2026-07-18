@@ -44,7 +44,6 @@ export default function MessagePage() {
       username,
       full_name: searchParams.get('fullName') ?? undefined,
       profile_picture: searchParams.get('profile_picture') ?? null,
-      online: false,
     };
   }, [searchParams]);
 

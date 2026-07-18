@@ -37,7 +37,6 @@ import {
   messageReceived,
   setChatUnreadCount,
   typingReceived,
-  userPresenceChanged,
 } from '../features/chat/chatSlice';
 
 const RECONNECT_BASE_DELAY = 1000; // ms
@@ -241,10 +240,6 @@ class WebSocketService {
 
       case 'chat.read_confirmed':
         dispatch(chatReadConfirmed(data.payload));
-        break;
-
-      case 'user.presence':
-        dispatch(userPresenceChanged(data.payload));
         break;
 
       case 'notification.new':
