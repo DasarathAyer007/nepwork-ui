@@ -126,8 +126,7 @@ const isEditing = editable && activeId === id;
   }
 
   return (
-    <section className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-6 shadow-sm">
-
+    <section className="py-2.5">
       <div className="flex items-start justify-between">
 
         <div>

@@ -44,19 +44,21 @@ export default function AboutSection({
     };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
+    <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm overflow-hidden">
 
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-xl font-semibold text-gray-900">
-          About
+      <div className="px-6 py-5 border-b border-outline-variant">
+        <h2 className="text-2xl font-semibold text-on-surface">
+          About Me
         </h2>
 
-        <p className="text-sm text-gray-500 mt-1">
-          Basic information about yourself.
-        </p>
+        {editable && (
+          <p className="mt-1 text-sm text-on-surface-variant">
+            Update your personal information.
+          </p>
+        )}
       </div>
 
-      <div className="divide-y divide-gray-100 px-6 py-2">
+      <div className="divide-y divide-outline-variant px-6">
 
         {/* BIO */}
 
@@ -78,7 +80,7 @@ export default function AboutSection({
             })
             }
           renderDisplay={(value) => (
-            <p className="text-gray-700 whitespace-pre-wrap leading-7">
+            <p className="whitespace-pre-wrap text-[15px] leading-7 text-on-surface">
               {value ||
                 'Tell people about yourself.'}
             </p>
@@ -99,7 +101,8 @@ export default function AboutSection({
           )}
         />
 
-        {/* PHONE */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
         <EditableProfileSection
           id="phone"
@@ -120,10 +123,15 @@ export default function AboutSection({
             })
           }
           renderDisplay={(value) => (
-            <p className="text-gray-700">
-              {value ||
-                'No phone number'}
-            </p>
+            <div className="rounded-xl bg-surface-container border border-outline-variant p-4">
+              <p className="text-xs uppercase tracking-wide text-on-surface-variant">
+                Phone Number
+              </p>
+
+              <p className="mt-2 text-base font-semibold text-on-surface">
+                {value || 'Not specified'}
+              </p>
+            </div>
           )}
           renderEditor={({
             draft,
@@ -162,11 +170,15 @@ export default function AboutSection({
               })
             }
             renderDisplay={(value) => (
-              <p className="text-gray-700">
-                {value
-                  ? `${value} years`
-                  : 'Not specified'}
-              </p>
+              <div className="rounded-xl bg-surface-container border border-outline-variant p-4">
+                <p className="text-xs uppercase tracking-wide text-on-surface-variant">
+                  Age
+                </p>
+
+                <p className="mt-2 text-base font-semibold text-on-surface">
+                  {value ? `${value} Years` : 'Not specified'}
+                </p>
+              </div>
             )}
             renderEditor={({
               draft,
@@ -210,13 +222,15 @@ export default function AboutSection({
               })
             }
             renderDisplay={(value) => (
-              <p className="text-gray-700 capitalize">
-                {value
-                  ?.replace(
-                    '_',
-                    ' '
-                  ) || 'Not specified'}
-              </p>
+              <div className="rounded-xl bg-surface-container border border-outline-variant p-4">
+                <p className="text-xs uppercase tracking-wide text-on-surface-variant">
+                  Gender
+                </p>
+
+                <p className="mt-2 text-base font-semibold capitalize text-on-surface">
+                  {value?.replace('_', ' ') || 'Not specified'}
+                </p>
+              </div>
             )}
             renderEditor={({
               draft,
@@ -254,6 +268,8 @@ export default function AboutSection({
             )}
           />
         )}
+
+        </div>
 
       </div>
 

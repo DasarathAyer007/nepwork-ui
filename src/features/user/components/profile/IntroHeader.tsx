@@ -334,7 +334,7 @@ export default function IntroHeader({
             {isOwner && !editMode && (
               <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Pencil size={14} />
-                Click Edit Profile to make changes
+                Click below to edit 
               </div>
             )}
 

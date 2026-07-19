@@ -64,18 +64,20 @@ export default function SkillsSection({
 
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
+    <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm overflow-hidden">
 
 
-      <div className="px-6 py-5 border-b border-gray-100">
+      <div className="px-6 py-5 border-b border-outline-variant">
 
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-on-surface">
           Skills
         </h2>
 
-        <p className="text-sm text-gray-500 mt-1">
-          Add skills that describe your expertise.
-        </p>
+        {editable && (
+          <p className="mt-1 text-sm text-on-surface-variant">
+            Add or remove your professional skills.
+          </p>
+        )}
 
       </div>
 
@@ -114,14 +116,14 @@ export default function SkillsSection({
 
             skills.length ? (
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
 
                 {skills.map(
                   (skill) => (
 
                     <span
                       key={skill}
-                      className="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-sm"
+                      className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
                     >
                       {skill}
                     </span>
@@ -133,9 +135,11 @@ export default function SkillsSection({
 
             ) : (
 
-              <p className="text-gray-500">
-                No skills added yet.
-              </p>
+             <div className="rounded-xl border border-dashed border-outline-variant p-6 text-center">
+                <p className="text-sm text-on-surface-variant">
+                  No skills have been added yet.
+                </p>
+              </div>
 
             )
 
@@ -166,10 +170,11 @@ export default function SkillsSection({
                 );
 
               }}
+              
             />
+            
 
           )}
-
         />
 
 

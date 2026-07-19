@@ -4,7 +4,7 @@ import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
 import SocialLinksSection from './sections/SocialLinksSection';
 import BasicInfoSection from './sections/BasicInfoSection';
-import Location from './Location';
+// import Location from './Location';
 
 type ProfileInfoProps = {
   profileDetails: UserDetails;
@@ -41,7 +41,7 @@ function ProfileInfo({
         profile={profileDetails}
         editable={editable}
       />
-      <Location user_id={profileDetails.id} />
+      {/* <Location user_id={profileDetails.id} /> */}
 
     </div>
   );

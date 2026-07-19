@@ -46,19 +46,19 @@ export default function BasicInfoSection({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
 
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="px-5 py-3 border-b border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-900">
           Basic Information
         </h2>
 
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="mt-0.5 text-xs text-gray-500">
           Your public identity on NepWork.
         </p>
       </div>
 
-      <div className="divide-y divide-gray-100 px-6 py-2">
+      <div className="divide-y divide-gray-100 px-5">
 
         {/* FULL NAME */}
 

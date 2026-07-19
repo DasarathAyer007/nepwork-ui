@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Globe} from 'lucide-react';
+import {
+  Globe,
+  ExternalLink,
+} from 'lucide-react';
 
 import EditableSection from '../EditableProfileSection';
 
@@ -40,7 +43,6 @@ const platforms = [
   {
     key: 'website',
     label: 'Website',
-    icon: Globe,
     placeholder: 'https://yourwebsite.com',
   },
 ];
@@ -58,25 +60,29 @@ export default function SocialLinksSection({
   async function saveLinks(
     links: SocialLinks
   ) {
-    const cleaned = Object.fromEntries(
-      Object.entries(links).filter(
-        ([, value]) => value.trim() !== ''
-      )
-    );
+    try {
+      const cleaned = Object.fromEntries(
+        Object.entries(links).filter(
+          ([, value]) => value.trim() !== ''
+        )
+      );
 
-    await updateProfile({
-      social_links: cleaned,
-    }).unwrap();
+      await updateProfile({
+        social_links: cleaned,
+      }).unwrap();
 
-    setActiveId(null);
+      setActiveId(null);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
     <EditableSection
       id="social-links"
       title="Social Links"
+      subtitle="Connect your online profiles."
       editable={editable}
-      subtitle="Add links to your social profiles."
       value={profile.social_links ?? {}}
       activeId={activeId}
       onActivate={setActiveId}
@@ -85,60 +91,75 @@ export default function SocialLinksSection({
       onSave={saveLinks}
       renderDisplay={(links) =>
         Object.keys(links).length ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {Object.entries(links).map(
               ([platform, url]) => (
                 <div
                   key={platform}
-                  className="flex items-center justify-between rounded-xl border border-outline-variant px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 hover:border-primary/30 transition-colors"
                 >
-                  <span className="font-medium capitalize">
-                    {platform}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe
+                        size={16}
+                        className="text-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium capitalize text-on-surface">
+                        {platform}
+                      </p>
+
+                      <p className="text-xs text-on-surface-variant truncate max-w-55">
+                        {url}
+                      </p>
+                    </div>
+                  </div>
 
                   <a
                     href={url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-primary hover:underline truncate max-w-[70%]"
+                    className="text-primary hover:text-primary/80"
                   >
-                    {url}
+                    <ExternalLink size={18} />
                   </a>
                 </div>
               )
             )}
           </div>
         ) : (
-          <p className="text-on-surface-variant">
+          <div className="rounded-lg border border-dashed border-outline-variant p-5 text-center text-sm text-on-surface-variant">
             No social links added yet.
-          </p>
+          </div>
         )
       }
       renderEditor={({ draft, setDraft }) => (
-        <div className="space-y-5">
-          {platforms.map((platform) => {
-
-            return (
-              <div key={platform.key}>
-                <Label className="mb-2 flex items-center gap-2">
-                <Globe size={16} />
-                {platform.label}
-                </Label>
-                
-                <Input
-                  placeholder={platform.placeholder}
-                  value={draft[platform.key] ?? ''}
-                  onChange={(e) =>
-                    setDraft({
-                      ...draft,
-                      [platform.key]:
-                        e.target.value,
-                    })
-                  }
+        <div className="space-y-4">
+          {platforms.map((platform) => (
+            <div key={platform.key}>
+              <Label className="mb-2 flex items-center gap-2">
+                <Globe
+                  size={15}
+                  className="text-primary"
                 />
-              </div>
-            );
-          })}
+                {platform.label}
+              </Label>
+
+              <Input
+                placeholder={platform.placeholder}
+                value={draft[platform.key] ?? ''}
+                onChange={(e) =>
+                  setDraft({
+                    ...draft,
+                    [platform.key]:
+                      e.target.value,
+                  })
+                }
+              />
+            </div>
+          ))}
         </div>
       )}
     />

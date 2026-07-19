@@ -1,18 +1,26 @@
+import { useAppSelector } from '@/app/hooks';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { IntroHeader, ProfileInfo } from '@/features/user';
 import { useGetProfileDetailsQuery } from '@/features/user/api/profileApi';
 import type { UserDetails } from '@/types/user.types';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-// import AboutSection from '@/features/user/components/profile/sections/AboutSection';
-// import SkillsSection from '@/features/user/components/profile/sections/SkillsSection';
-// import SocialLinksSection from '@/features/user/components/profile/sections/SocialLinksSection';
+
+import Location from '@/features/user/components/profile/Location';
+
+import { useGetMyJobsQuery } from '@/features/jobs/jobApi';
+import ProfileRecentJobCard from '@/features/jobs/components/ProfileRecentJobCard';
+
 type ProfileParams = {
   username?: string;
 };
 
-
 function Profile() {
   const { username } = useParams<ProfileParams>();
+
+  const currentUser = useAppSelector(
+    (state) => state.auth.user
+  );
 
   const {
     data: profileDetails,
@@ -26,10 +34,26 @@ function Profile() {
       skip: !username,
     }
   );
-    const [editMode, setEditMode] = useState(false);
+
+  const {
+    data: recentJobs,
+  } = useGetMyJobsQuery(
+    {
+      page: 1,
+      page_size: 4,
+      ordering: '-created_at',
+    },
+    {
+    skip:
+        !currentUser ||
+        currentUser.username !== username,
+    }
+  );
+
+  const [editMode, setEditMode] = useState(false);
 
 
-
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -44,12 +68,10 @@ function Profile() {
     );
   }
 
-
   if (isError || !profileDetails) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white shadow-sm rounded-xl p-8 text-center max-w-md">
-
           <h2 className="text-xl font-semibold text-gray-800">
             Profile unavailable
           </h2>
@@ -57,23 +79,18 @@ function Profile() {
           <p className="mt-2 text-sm text-gray-500">
             This profile does not exist or you do not have permission to view it.
           </p>
-
         </div>
       </div>
     );
   }
 
-
   const profile = profileDetails as UserDetails;
-
-
-  return (
+    return (
     <main className="min-h-screen bg-gray-50 pb-16">
 
-      {/* Main profile container */}
       <div
         className="
-          max-w-7xl 
+          max-w-7xl
           mx-auto
           px-4
           sm:px-6
@@ -82,7 +99,8 @@ function Profile() {
         "
       >
 
-        {/* Profile Header */}
+        {/* Header */}
+
         <section
           className="
             bg-white
@@ -91,16 +109,15 @@ function Profile() {
             overflow-hidden
           "
         >
-        <IntroHeader
-          profileDetails={profile}
-          editMode={editMode}
-          setEditMode={setEditMode}
-        />
+          <IntroHeader
+            profileDetails={profile}
+            editMode={editMode}
+            setEditMode={setEditMode}
+          />
         </section>
 
+        {/* Body */}
 
-
-        {/* Profile Content */}
         <section
           className="
             mt-6
@@ -112,14 +129,9 @@ function Profile() {
           "
         >
 
+          {/* LEFT COLUMN */}
 
-          {/* Left/Main information */}
-          <div
-            className="
-              lg:col-span-8
-              space-y-6
-            "
-          >
+          <div className="lg:col-span-8">
 
             <div
               className="
@@ -134,44 +146,77 @@ function Profile() {
                 profileDetails={profile}
                 editable={editMode}
               />
-              {/* <AboutSection profile={profileDetails} />
-
-              <SkillsSection profile={profileDetails} />
-              <SocialLinksSection profile={profileDetails} /> */}
             </div>
-
 
           </div>
 
+          {/* RIGHT COLUMN */}
 
+          <aside className="lg:col-span-4 space-y-6">
 
-          {/* Right sidebar ready for future */}
-          <aside
-            className="
-              lg:col-span-4
-              space-y-6
-            "
-          >
+            {/* LOCATION */}
 
-            {/* Future sections:
-                - Contact
-                - Location
-                - Skills
-                - Social links
-                - Reviews
-            */}
+            <Location user_id={profile.id} />
+
+            {/* RECENT JOBS - ONLY FOR OWN PROFILE */}
+
+            {currentUser?.username === username && (
+
+              <div className="bg-white rounded-2xl shadow-sm border border-outline-variant p-5">
+
+                <div className="mb-5">
+
+                  <h2 className="text-lg font-semibold text-on-surface">
+                    Recent Jobs
+                  </h2>
+
+                  <p className="text-sm text-on-surface-variant">
+                    Your latest job posts
+                  </p>
+
+                </div>
+
+                {recentJobs?.results?.length ? (
+
+                  <div className="grid grid-cols-2 gap-3">
+
+                    {recentJobs.results
+                      .slice(0, 4)
+                      .map((job) => (
+
+                        <ProfileRecentJobCard
+                          key={job.id}
+                          job={job}
+                        />
+
+                      ))}
+
+                  </div>
+
+                ) : (
+
+                  <div className="rounded-xl border border-dashed border-outline-variant py-10 px-4 text-center">
+
+                    <p className="text-sm text-on-surface-variant">
+                      No jobs posted yet.
+                    </p>
+
+                  </div>
+
+                )}
+
+              </div>
+
+            )}
 
           </aside>
 
-
         </section>
-
 
       </div>
 
     </main>
   );
 }
-
 
 export default Profile;
