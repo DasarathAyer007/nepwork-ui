@@ -21,7 +21,12 @@ export interface PersonalProfile extends BaseUser {
   account_type: 'personal';
   skills: Skill[];
   bio: string | null;
-  date_of_birth: string | null;
+  age: number | null;
+   gender:
+    | 'male'
+    | 'female'
+    | 'other'
+    | 'not_specified';
   access_level: 'full' | 'public' | 'limited' | 'private';
 }
 
