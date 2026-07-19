@@ -38,12 +38,51 @@ export const ProfileApi = createApi({
     }),
 
 
-    updateProfile: builder.mutation<UserDetails, FormData>({
-      query: (body) => ({
-        url: '/users/profile/update/',
-        method: 'PATCH',
-        body,
-      }),
+    updateProfile: builder.mutation<UserDetails, FormData |Record<string, unknown>>({
+     query: (body) => {
+        const payload =
+          body instanceof FormData
+            ? body
+            : (() => {
+                const formData = new FormData();
+
+                Object.entries(body).forEach(([key, value]) => {
+                  if (
+                    value === undefined ||
+                    value === null
+                  ) {
+                    return;
+                  }
+
+                  if (Array.isArray(value)) {
+                    value.forEach((item) =>
+                      formData.append(key, String(item))
+                    );
+                  } else if (
+                    typeof value === 'object' &&
+                    !(value instanceof File)
+                  ) {
+                    formData.append(
+                      key,
+                      JSON.stringify(value)
+                    );
+                  } else {
+                    formData.append(
+                      key,
+                      value as string | Blob
+                    );
+                  }
+                });
+
+                return formData;
+              })();
+
+        return {
+          url: '/users/profile/update/',
+          method: 'PATCH',
+          body: payload,
+        };
+      },
 
       invalidatesTags: [
         {

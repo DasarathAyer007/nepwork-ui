@@ -1,9 +1,11 @@
 import { IntroHeader, ProfileInfo } from '@/features/user';
 import { useGetProfileDetailsQuery } from '@/features/user/api/profileApi';
 import type { UserDetails } from '@/types/user.types';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-
-
+// import AboutSection from '@/features/user/components/profile/sections/AboutSection';
+// import SkillsSection from '@/features/user/components/profile/sections/SkillsSection';
+// import SocialLinksSection from '@/features/user/components/profile/sections/SocialLinksSection';
 type ProfileParams = {
   username?: string;
 };
@@ -24,6 +26,8 @@ function Profile() {
       skip: !username,
     }
   );
+    const [editMode, setEditMode] = useState(false);
+
 
 
   if (isLoading) {
@@ -87,7 +91,11 @@ function Profile() {
             overflow-hidden
           "
         >
-          <IntroHeader profileDetails={profile} />
+        <IntroHeader
+          profileDetails={profile}
+          editMode={editMode}
+          setEditMode={setEditMode}
+        />
         </section>
 
 
@@ -122,7 +130,14 @@ function Profile() {
                 sm:p-6
               "
             >
-              <ProfileInfo profileDetails={profile} />
+              <ProfileInfo
+                profileDetails={profile}
+                editable={editMode}
+              />
+              {/* <AboutSection profile={profileDetails} />
+
+              <SkillsSection profile={profileDetails} />
+              <SocialLinksSection profile={profileDetails} /> */}
             </div>
 
 

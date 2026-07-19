@@ -25,14 +25,11 @@ function EditProfileModal({
       profileDetails.phone_number ?? ''
     );
 
-  const [dateOfBirth, setDateOfBirth] =
-    useState(
-      profileDetails.account_type ===
-        'personal'
-        ? profileDetails.date_of_birth ??
-            ''
-        : ''
-    );
+  const [age, setAge] = useState(
+    profileDetails.account_type === 'personal'
+      ? profileDetails.age ?? ''
+      : ''
+  );
 
   const [facebook, setFacebook] =
     useState(
@@ -98,10 +95,10 @@ function EditProfileModal({
         profileDetails.account_type ===
         'personal'
       ) {
-        if (dateOfBirth) {
+        if (age) {
           formData.append(
-            'date_of_birth',
-            dateOfBirth
+            'age',
+            String(age)
           );
         }
 
@@ -268,17 +265,15 @@ function EditProfileModal({
             'personal' && (
             <div>
               <label className="block mb-2 font-medium">
-                Date of Birth
+                Age
               </label>
 
               <input
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) =>
-                  setDateOfBirth(
-                    e.target.value
-                  )
-                }
+                type="number"
+                min={13}
+                max={120}
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 className="w-full border border-outline-variant rounded-xl p-3"
               />
             </div>
