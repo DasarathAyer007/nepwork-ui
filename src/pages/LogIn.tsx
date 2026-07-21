@@ -53,7 +53,7 @@ function LogIn() {
             </div>
             <footer className="mt-xl text-center w-full ">
               <p className="font-label-md text-label-md text-outline">
-                © 2024 NepWork . All rights reserved.
+                © 2026 NepWork . All rights reserved.
               </p>
             </footer>
           </section>
